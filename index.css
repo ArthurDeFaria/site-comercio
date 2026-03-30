@@ -329,7 +329,7 @@ nav.scrolled {
   width: 28px;
   height: 2px;
   background: rgba(201, 169, 110, 0.35);
-  cursor: none;
+  cursor: pointer;
   transition: background 0.3s, width 0.4s;
 }
 
@@ -355,7 +355,7 @@ nav.scrolled {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: none;
+  cursor: pointer;
   transition: background 0.3s, border-color 0.3s;
   color: var(--text-muted);
   font-size: 1.15rem;
@@ -681,7 +681,7 @@ section {
   background: var(--warm-white);
   position: relative;
   overflow: hidden;
-  cursor: none;
+  cursor: pointer;
 }
 
 .product-img {
@@ -1161,75 +1161,12 @@ footer {
   color: rgba(245, 240, 232, 0.25);
 }
 
-/* WA FLOAT */
-.wa-float {
-  position: fixed;
-  bottom: 34px;
-  right: 34px;
-  z-index: 200;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
-}
-
-.wa-float-label {
-  background: var(--espresso);
-  color: var(--cream);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  padding: 8px 16px;
-  opacity: 0;
-  transform: translateX(8px);
-  transition: all 0.3s;
-  white-space: nowrap;
-}
-
-.wa-float:hover .wa-float-label {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.wa-float-btn {
-  width: 56px;
-  height: 56px;
-  background: #25D366;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.38);
-  transition: transform 0.3s, box-shadow 0.3s;
-  animation: pulse 3s ease-in-out infinite;
-}
-
-.wa-float-btn:hover {
-  transform: scale(1.1);
-  box-shadow: 0 12px 36px rgba(37, 211, 102, 0.5);
-}
-
-.wa-float-btn svg {
-  width: 26px;
-  height: 26px;
-  fill: #fff;
-}
-
 @keyframes float {
   0%, 100% {
     transform: translateY(0);
   }
   50% {
     transform: translateY(-14px);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 8px 28px rgba(37, 211, 102, 0.38);
-  }
-  50% {
-    box-shadow: 0 8px 40px rgba(37, 211, 102, 0.65);
   }
 }
 
