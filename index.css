@@ -1170,13 +1170,13 @@ footer {
   }
 }
 
-.reveal {
+.js .reveal {
   opacity: 0;
   transform: translateY(36px);
   transition: opacity 0.8s, transform 0.8s;
 }
 
-.reveal.visible {
+.js .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }

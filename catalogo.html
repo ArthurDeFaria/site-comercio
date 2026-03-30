@@ -263,6 +263,8 @@
 </footer>
 
 <script>
+  document.documentElement.classList.add('js');
+
   function filter(cat,btn){
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
@@ -276,8 +278,13 @@
     document.getElementById('countDisplay').textContent=count;
   }
 
-  const obs=new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting)setTimeout(()=>el.target.classList.add('visible'),i*70);});},{threshold:.08});
-  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting)setTimeout(()=>el.target.classList.add('visible'),i*70);});},{threshold:.08});
+    revealEls.forEach(el=>obs.observe(el));
+  } else {
+    revealEls.forEach(el=>el.classList.add('visible'));
+  }
 </script>
 </body>
 </html>
