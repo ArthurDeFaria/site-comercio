@@ -1277,3 +1277,224 @@ footer {
     display: none;
   }
 }
+
+@media (max-width: 768px) {
+  nav,
+  nav.scrolled {
+    padding: 14px 16px;
+  }
+
+  .nav-logo {
+    font-size: 1.3rem;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-cta {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    padding: 8px 12px;
+  }
+
+  .slide-left {
+    padding: 92px 16px 34px;
+  }
+
+  .slide-eyebrow {
+    font-size: 0.64rem;
+    letter-spacing: 0.18em;
+    margin-bottom: 14px;
+  }
+
+  .slide-title {
+    font-size: clamp(2.1rem, 9vw, 2.8rem);
+    margin-bottom: 16px;
+  }
+
+  .slide-desc {
+    font-size: 0.94rem;
+    line-height: 1.6;
+    max-width: none;
+    margin-bottom: 24px;
+  }
+
+  .slide-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  .btn-gold {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .slide-right {
+    height: 220px;
+  }
+
+  .slide-visual-circle {
+    width: 210px;
+    height: 210px;
+  }
+
+  .slide-visual-circle svg {
+    width: 96px;
+    height: 96px;
+  }
+
+  .slide-badge {
+    width: 92px;
+    height: 92px;
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .slide-badge strong {
+    font-size: 1.3rem;
+  }
+
+  .slide-badge span {
+    font-size: 0.54rem;
+  }
+
+  .min-strip {
+    padding: 28px 16px;
+  }
+
+  .min-strip-main {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 0;
+  }
+
+  .min-strip-amount {
+    border-right: none;
+    border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+    padding-right: 0;
+    padding-bottom: 10px;
+    font-size: 3.2rem;
+  }
+
+  .min-strip-text h3 {
+    font-size: 1.4rem;
+  }
+
+  .min-strip-text p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .min-strip-cta {
+    width: 100%;
+    padding-top: 16px;
+  }
+
+  .stats-strip {
+    grid-template-columns: 1fr;
+    padding: 26px 16px;
+  }
+
+  .stat-item {
+    padding: 10px 0 14px;
+  }
+
+  section {
+    padding: 56px 16px;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 8vw, 2.6rem);
+  }
+
+  .section-desc {
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .about-wrap {
+    gap: 32px;
+  }
+
+  .featured-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .featured-grid,
+  .process-steps,
+  .testimonials-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-card {
+    padding: 28px 20px;
+  }
+
+  .testimonial-card {
+    padding: 26px 20px;
+  }
+
+  .testimonial-card::before {
+    font-size: 4.2rem;
+    top: 6px;
+    left: 12px;
+  }
+
+  .contact-inner {
+    gap: 32px;
+  }
+
+  .contact-right {
+    padding: 26px 18px;
+  }
+
+  .contact-right h3 {
+    font-size: 1.7rem;
+  }
+
+  footer {
+    padding: 40px 16px 24px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-cta {
+    display: none;
+  }
+
+  .slide-title {
+    font-size: clamp(1.9rem, 10vw, 2.4rem);
+  }
+
+  .product-info {
+    padding: 18px 16px;
+  }
+
+  .product-name {
+    font-size: 1.2rem;
+  }
+
+  .product-desc {
+    font-size: 0.86rem;
+  }
+
+  .product-price {
+    font-size: 1.05rem;
+  }
+}
