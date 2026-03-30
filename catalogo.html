@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo Completo | Ateliê Porcelana</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link href="catalogo.css" rel="stylesheet">
+
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">Ateliê <span>Porcelana</span></a>
+  <ul class="nav-links">
+    <li><a href="catalogo.html" class="active">Catálogo</a></li>
+    <li><a href="index.html#sobre">Sobre</a></li>
+    <li><a href="index.html#processo">Como Funciona</a></li>
+    <li><a href="index.html#contato">Contato</a></li>
+  </ul>
+  <a href="https://wa.me/5500000000000" class="nav-cta">Fazer Pedido</a>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <div class="breadcrumb">
+      <a href="index.html">Início</a>
+      <span>/</span>
+      <strong>Catálogo</strong>
+    </div>
+    <h1 class="page-title">Catálogo<br><em>Completo</em></h1>
+    <p class="page-desc">Todas as nossas peças de porcelana, disponíveis para pedidos corporativos, eventos e estabelecimentos. Pedido mínimo de R$ 2.000.</p>
+    <div class="page-header-meta">
+      <div class="meta-item"><p class="meta-label">Pedido Mínimo</p><p class="meta-value">R$ 2.000</p></div>
+      <div class="meta-item"><p class="meta-label">Modelos Disponíveis</p><p class="meta-value">15+ Modelos</p></div>
+      <div class="meta-item"><p class="meta-label">Prazo de Entrega</p><p class="meta-value">A combinar</p></div>
+      <div class="meta-item"><p class="meta-label">Pagamento</p><p class="meta-value">Pix Antecipado</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- MIN ORDER NOTICE -->
+<div class="min-notice">
+  <p>Pedido mínimo de <strong>R$ 2.000</strong> — todos os pedidos são processados após confirmação de pagamento antecipado via Pix.</p>
+  <a href="https://wa.me/5500000000000?text=Olá, gostaria de solicitar um orçamento!">Solicitar orçamento agora</a>
+</div>
+
+<!-- CATALOG MAIN -->
+<div class="catalog-main">
+  <div class="catalog-controls">
+    <div class="filter-group">
+      <span class="filter-label">Filtrar por:</span>
+      <button class="filter-btn active" onclick="filter('todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filter('canecas',this)">Canecas</button>
+      <button class="filter-btn" onclick="filter('xicaras',this)">Xícaras & Pires</button>
+      <button class="filter-btn" onclick="filter('cumbucas',this)">Cumbucas</button>
+    </div>
+    <p class="results-count"><strong id="countDisplay">9</strong> produtos encontrados</p>
+  </div>
+
+  <div class="catalog-grid" id="catalogGrid">
+
+    <!-- CANECAS -->
+    <div class="product-card reveal" data-cat="canecas">
+      <div class="product-img" style="background:linear-gradient(145deg,#EDE0CE,#D8C8B4)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#5C3D2E" stroke-width="1.2"><path d="M25 70 Q25 80 35 80 L65 80 Q75 80 75 70 L75 35 Q75 25 65 25 L35 25 Q25 25 25 35 Z"/><path d="M75 42 Q88 42 88 52 Q88 62 75 62"/><path d="M40 25 Q40 18 50 18 Q60 18 60 25"/></svg>
+        <div class="product-label">Mais Vendido</div>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Caneca Clássica 300ml" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Disponível para personalização</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Canecas</p>
+        <h3 class="product-name">Caneca Clássica 300ml</h3>
+        <p class="product-desc">Porcelana branca de alta resistência, ideal para brindes corporativos e uso diário. Personalizável com logo, nome ou arte.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 18,00 <span>/ unidade</span></div>
+        <span class="product-tag">Personalizável</span>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="canecas">
+      <div class="product-img" style="background:linear-gradient(145deg,#E8E0D2,#D0C0A8)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#5C3D2E" stroke-width="1.2"><path d="M20 72 Q20 82 35 82 L65 82 Q80 82 80 72 L80 32 Q80 22 65 22 L35 22 Q20 22 20 32 Z"/><path d="M80 44 Q95 44 95 56 Q95 68 80 68"/><path d="M38 22 Q38 14 50 14 Q62 14 62 22"/></svg>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Caneca Grande 500ml" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Disponível para personalização</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Canecas</p>
+        <h3 class="product-name">Caneca Grande 500ml</h3>
+        <p class="product-desc">Caneca generosa para quem valoriza o café em grande estilo. Excelente para brindes de alto impacto e lembranças corporativas.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 24,00 <span>/ unidade</span></div>
+        <span class="product-tag">Personalizável</span>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="canecas">
+      <div class="product-img" style="background:linear-gradient(145deg,#F0E8DC,#DDD0BC)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#5C3D2E" stroke-width="1.2"><path d="M30 68 Q30 76 45 76 L55 76 Q70 76 70 68 L70 38 Q70 30 55 30 L45 30 Q30 30 30 38 Z"/><path d="M70 46 Q80 46 80 54 Q80 62 70 62"/><path d="M42 30 Q42 24 50 24 Q58 24 58 30"/></svg>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Caneca Slim 250ml" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Disponível para personalização</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Canecas</p>
+        <h3 class="product-name">Caneca Slim 250ml</h3>
+        <p class="product-desc">Design contemporâneo e elegante, ideal para escritórios e ambientes corporativos que prezam pela estética refinada.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 20,00 <span>/ unidade</span></div>
+        <span class="product-tag">Personalizável</span>
+      </div>
+    </div>
+
+    <!-- XICARAS -->
+    <div class="product-card reveal" data-cat="xicaras">
+      <div class="product-img" style="background:linear-gradient(145deg,#E4DDD4,#CCC0B0)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#3D5C4E" stroke-width="1.2"><ellipse cx="50" cy="62" rx="28" ry="10"/><path d="M22 62 Q20 72 30 75 L70 75 Q80 72 78 62"/><ellipse cx="50" cy="44" rx="22" ry="8"/><path d="M28 44 L28 62 M72 44 L72 62"/><path d="M38 36 Q38 28 50 28 Q62 28 62 36"/></svg>
+        <div class="product-label">Popular</div>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Xícara de Café com Pires" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Vendido em conjunto</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Xícaras & Pires</p>
+        <h3 class="product-name">Xícara de Café com Pires</h3>
+        <p class="product-desc">Conjunto elegante para cafeterias e restaurantes. Acabamento refinado, resistência comprovada para uso intenso.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 22,00 <span>/ conjunto</span></div>
+        <span class="product-tag">Conjunto</span>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="xicaras">
+      <div class="product-img" style="background:linear-gradient(145deg,#E8E0D4,#D0C4B4)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#3D5C4E" stroke-width="1.2"><ellipse cx="50" cy="66" rx="30" ry="10"/><path d="M20 66 Q18 76 32 79 L68 79 Q82 76 80 66"/><ellipse cx="50" cy="48" rx="24" ry="8"/><path d="M26 48 L26 66 M74 48 L74 66"/><path d="M36 38 Q36 28 50 28 Q64 28 64 38"/></svg>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Xícara Chá 200ml" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Vendido em conjunto</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Xícaras & Pires</p>
+        <h3 class="product-name">Xícara Chá 200ml com Pires</h3>
+        <p class="product-desc">Design clássico e refinado para serviços de chá em hotéis, restaurantes e eventos de alto padrão.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 19,00 <span>/ conjunto</span></div>
+        <span class="product-tag">Conjunto</span>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="xicaras">
+      <div class="product-img" style="background:linear-gradient(145deg,#DDD8D0,#C8C0B4)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#3D5C4E" stroke-width="1.2"><ellipse cx="50" cy="60" rx="26" ry="9"/><path d="M24 60 Q22 70 34 73 L66 73 Q78 70 76 60"/><ellipse cx="50" cy="42" rx="20" ry="7"/><path d="M30 42 L30 60 M70 42 L70 60"/><path d="M40 34 Q40 26 50 26 Q60 26 60 34"/><path d="M76 50 Q84 50 84 58 Q84 66 76 66"/></svg>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse no Kit Café & Chá" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Kit completo</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Xícaras & Pires</p>
+        <h3 class="product-name">Kit Café & Chá — 6 peças</h3>
+        <p class="product-desc">Kit completo com xícaras de café e chá com seus respectivos pires. Ideal para presentes corporativos premium.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 110,00 <span>/ kit</span></div>
+        <span class="product-tag">Kit Premium</span>
+      </div>
+    </div>
+
+    <!-- CUMBUCAS -->
+    <div class="product-card reveal" data-cat="cumbucas">
+      <div class="product-img" style="background:linear-gradient(145deg,#DDD4C8,#C4AE98)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#5C3D2E" stroke-width="1.2"><path d="M20 55 Q18 75 50 78 Q82 75 80 55 L75 38 Q72 28 50 28 Q28 28 25 38 Z"/><ellipse cx="50" cy="38" rx="25" ry="8"/><path d="M30 50 Q50 56 70 50"/></svg>
+        <div class="product-label">Destaque</div>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Cumbuca Média 400ml" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Alta durabilidade</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Cumbucas</p>
+        <h3 class="product-name">Cumbuca Média 400ml</h3>
+        <p class="product-desc">Versátil e resistente para restaurantes e delivery premium. Alta durabilidade mesmo com uso intenso no dia a dia.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 16,00 <span>/ unidade</span></div>
+        <span class="product-tag">Alta Durabilidade</span>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="cumbucas">
+      <div class="product-img" style="background:linear-gradient(145deg,#D8CCBE,#C0B0A0)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#5C3D2E" stroke-width="1.2"><path d="M25 52 Q23 72 50 74 Q77 72 75 52 L72 38 Q70 30 50 30 Q30 30 28 38 Z"/><ellipse cx="50" cy="38" rx="22" ry="7"/><path d="M32 48 Q50 53 68 48"/></svg>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Cumbuca Pequena 250ml" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Alta durabilidade</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Cumbucas</p>
+        <h3 class="product-name">Cumbuca Pequena 250ml</h3>
+        <p class="product-desc">Tamanho ideal para sobremesas, petiscos e porções individuais. Muito utilizada em restaurantes de culinária contemporânea.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 12,00 <span>/ unidade</span></div>
+        <span class="product-tag">Porção Individual</span>
+      </div>
+    </div>
+
+    <div class="product-card reveal" data-cat="cumbucas">
+      <div class="product-img" style="background:linear-gradient(145deg,#E4D8C8,#CCB8A4)">
+        <svg viewBox="0 0 100 100" fill="none" stroke="#5C3D2E" stroke-width="1.2"><path d="M15 58 Q13 78 50 82 Q87 78 85 58 L80 36 Q76 24 50 24 Q24 24 20 36 Z"/><ellipse cx="50" cy="36" rx="30" ry="10"/><path d="M25 54 Q50 62 75 54"/><path d="M30 44 Q50 50 70 44"/></svg>
+        <div class="product-overlay">
+          <a href="https://wa.me/5500000000000?text=Olá, tenho interesse na Cumbuca Grande 600ml" class="overlay-btn">Solicitar Orçamento</a>
+          <span class="overlay-info">Alta durabilidade</span>
+        </div>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Cumbucas</p>
+        <h3 class="product-name">Cumbuca Grande 600ml</h3>
+        <p class="product-desc">Para porções generosas de sopas, caldos e ensopados. Resistência superior para uso em cozinhas industriais.</p>
+      </div>
+      <div class="product-footer">
+        <div class="product-price">R$ 20,00 <span>/ unidade</span></div>
+        <span class="product-tag">Uso Intenso</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CTA BANNER -->
+<div class="cta-banner reveal">
+  <div>
+    <h2>Não encontrou o que procurava?</h2>
+    <p>Nosso catálogo se expande constantemente. Entre em contato pelo WhatsApp — apresentamos novas peças, auxiliamos na escolha e montamos uma proposta personalizada para a sua necessidade.</p>
+  </div>
+  <div class="cta-actions">
+    <a href="https://wa.me/5500000000000?text=Olá, gostaria de ver mais opções do catálogo!" class="btn-light">Falar pelo WhatsApp</a>
+    <span class="cta-note">Pedido mínimo de R$ 2.000</span>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><a href="index.html" class="nav-logo">Ateliê <span>Porcelana</span></a><p>Porcelana de qualidade para brindes, eventos e estabelecimentos. Atendimento personalizado e entrega confiável.</p></div>
+    <div class="footer-col"><h4>Produtos</h4><ul><li><a href="catalogo.html">Canecas</a></li><li><a href="catalogo.html">Xícaras & Pires</a></li><li><a href="catalogo.html">Cumbucas</a></li></ul></div>
+    <div class="footer-col"><h4>Navegação</h4><ul><li><a href="index.html#sobre">Sobre Nós</a></li><li><a href="index.html#processo">Como Funciona</a></li><li><a href="index.html#contato">Contato</a></li></ul></div>
+    <div class="footer-col"><h4>Contato</h4><ul><li><a href="https://wa.me/5500000000000">WhatsApp</a></li><li><a href="#">Instagram</a></li><li><a href="mailto:contato@atelieporcelana.com.br">E-mail</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>© 2025 Ateliê Porcelana · Todos os direitos reservados</p><p>Pedido mínimo: R$ 2.000</p></div>
+</footer>
+
+<div class="wa-float">
+  <div class="wa-float-label">Fale conosco agora</div>
+  <a href="https://wa.me/5500000000000?text=Olá! Vi o catálogo e gostaria de saber mais." class="wa-float-btn" target="_blank"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 1.998C6.476 1.998 1.998 6.476 1.998 12c0 1.76.455 3.41 1.255 4.838L1.5 22.5l5.81-1.525A10.003 10.003 0 0 0 12 22.002c5.523 0 10.001-4.478 10.001-10.002C22 6.476 17.522 1.998 11.999 1.998z" fill-rule="evenodd"/></svg></a>
+</div>
+
+<script>
+  const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  (function a(){cur.style.left=mx+'px';cur.style.top=my+'px';rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(a);})();
+  document.querySelectorAll('a,button,.product-card,.filter-btn').forEach(el=>{el.addEventListener('mouseenter',()=>{cur.classList.add('hover');ring.classList.add('hover');});el.addEventListener('mouseleave',()=>{cur.classList.remove('hover');ring.classList.remove('hover');});});
+
+  function filter(cat,btn){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const cards=document.querySelectorAll('.product-card');
+    let count=0;
+    cards.forEach(c=>{
+      const match=cat==='todos'||c.dataset.cat===cat;
+      c.classList.toggle('hidden',!match);
+      if(match)count++;
+    });
+    document.getElementById('countDisplay').textContent=count;
+  }
+
+  const obs=new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting)setTimeout(()=>el.target.classList.add('visible'),i*70);});},{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
