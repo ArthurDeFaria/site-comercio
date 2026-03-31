@@ -754,7 +754,7 @@ section {
 }
 
 .product-info {
-  padding: 22px 26px;
+  padding: 22px 26px 14px;
 }
 
 .product-category {
@@ -780,17 +780,91 @@ section {
 }
 
 .product-price {
-  margin-top: 12px;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.21rem;
-  color: var(--clay);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .product-price span {
-  font-size: 0.80rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
+  font-weight: 400;
   font-family: 'Jost';
-  margin-left: 4px;
+  margin-left: 0;
+}
+
+.product-footer {
+  padding: 8px 26px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.12);
+}
+
+.product-badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.badge-feature {
+  font-size: 0.76rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--clay);
+  background: rgba(139, 111, 94, 0.08);
+  border: 1px solid rgba(139, 111, 94, 0.25);
+  padding: 5px 10px;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.badge-atacado {
+  font-size: 0.76rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--warm-white);
+  background: var(--terracota);
+  padding: 5px 10px;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.badge-atacado:hover {
+  background: var(--clay);
+}
+
+.badge-varejo {
+  font-size: 0.76rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--espresso);
+  background: var(--gold);
+  padding: 5px 10px;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.badge-varejo:hover {
+  background: var(--gold-light);
+}
+
+.price-pill {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--espresso);
+  background: linear-gradient(120deg, rgba(201, 169, 110, 0.26), rgba(201, 169, 110, 0.1));
+  border: 1px solid rgba(201, 169, 110, 0.45);
+  border-radius: 999px;
+  padding: 6px 12px 7px;
+  box-shadow: 0 8px 18px rgba(28, 20, 16, 0.09);
 }
 
 /* PROCESS */
@@ -1030,14 +1104,14 @@ section {
 
 .contact-right h3 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2.18rem;
+  font-size: 2.62rem;
   font-weight: 300;
   color: var(--cream);
   margin-bottom: 10px;
 }
 
 .contact-right > p {
-  font-size: 0.98rem;
+  font-size: 1.18rem;
   color: rgba(245, 240, 232, 0.5);
   line-height: 1.75;
   margin-bottom: 36px;
@@ -1078,19 +1152,19 @@ section {
 
 .wa-text strong {
   display: block;
-  font-size: 1.01rem;
+  font-size: 1.21rem;
   font-weight: 500;
   color: var(--cream);
   margin-bottom: 2px;
 }
 
 .wa-text span {
-  font-size: 0.90rem;
+  font-size: 1.08rem;
   color: rgba(245, 240, 232, 0.5);
 }
 
 .contact-note {
-  font-size: 0.86rem;
+  font-size: 1.03rem;
   color: rgba(245, 240, 232, 0.3);
   line-height: 1.7;
   border-top: 1px solid rgba(201, 169, 110, 0.1);
@@ -1455,7 +1529,7 @@ footer {
   }
 
   .contact-right h3 {
-    font-size: 1.7rem;
+    font-size: 2.04rem;
   }
 
   footer {
@@ -1483,7 +1557,7 @@ footer {
   }
 
   .product-info {
-    padding: 18px 16px;
+    padding: 18px 16px 12px;
   }
 
   .product-name {
@@ -1495,6 +1569,36 @@ footer {
   }
 
   .product-price {
-    font-size: 1.05rem;
+    gap: 6px;
   }
+
+  .product-price span {
+    font-size: 0.86rem;
+  }
+
+  .price-pill {
+    font-size: 1.7rem;
+    padding: 5px 10px 6px;
+  }
+
+  .product-footer {
+    padding: 8px 16px 12px;
+  }
+}
+
+/* Adicione isso ao seu index.css ou catalogo.css */
+.img-produto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Faz a imagem preencher o espaço sem esticar */
+    display: block;
+    border-radius: inherit; /* Mantém o arredondamento se o container tiver */
+}
+
+/* No caso do Hero (Carousel), remova a opacidade baixa que estava no SVG */
+.slide-visual-circle img {
+    opacity: 1; 
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 'contain' é melhor para mostrar o produto inteiro no círculo */
 }

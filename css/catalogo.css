@@ -350,8 +350,7 @@ nav {
 }
 
 .product-card.hidden {
-  opacity: 0.15;
-  pointer-events: none;
+  display: none;
 }
 
 .product-img {
@@ -439,11 +438,11 @@ nav {
 }
 
 .product-info {
-  padding: 24px 28px;
+  padding: 24px 28px 14px;
 }
 
 .product-category {
-  font-size: 0.77rem;
+  font-size: 0.84rem;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--gold);
@@ -452,14 +451,14 @@ nav {
 
 .product-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.43rem;
+  font-size: 1.55rem;
   font-weight: 400;
   color: var(--espresso);
   margin-bottom: 6px;
 }
 
 .product-desc {
-  font-size: 0.88rem;
+  font-size: 0.96rem;
   color: var(--text-muted);
   line-height: 1.65;
 }
@@ -469,22 +468,38 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid rgba(201, 169, 110, 0.12);
-  padding-top: 16px;
-  margin-top: 4px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.12);
+  padding-top: 8px;
+  padding-bottom: 14px;
+  margin-top: 0;
 }
 
 .product-price {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.26rem;
-  color: var(--clay);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .product-price span {
-  font-size: 0.80rem;
+  font-size: 0.92rem;
   color: var(--text-muted);
+  font-weight: 400;
   font-family: 'Jost';
-  margin-left: 3px;
+  margin-left: 0;
+}
+
+.price-pill {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.74rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  color: var(--espresso);
+  background: linear-gradient(120deg, rgba(201, 169, 110, 0.26), rgba(201, 169, 110, 0.1));
+  border: 1px solid rgba(201, 169, 110, 0.45);
+  border-radius: 999px;
+  padding: 6px 12px 7px;
+  box-shadow: 0 8px 18px rgba(28, 20, 16, 0.09);
 }
 
 .product-tag {
@@ -509,14 +524,14 @@ nav {
 
 .cta-banner h2 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.62rem;
+  font-size: 1.93rem;
   font-weight: 300;
   color: var(--cream);
   margin-bottom: 12px;
 }
 
 .cta-banner p {
-  font-size: 0.92rem;
+  font-size: 1.10rem;
   color: rgba(245, 240, 232, 0.7);
   line-height: 1.8;
   max-width: 560px;
@@ -574,13 +589,13 @@ footer {
 }
 
 .footer-brand p {
-  font-size: 0.94rem;
+  font-size: 1.18rem;
   line-height: 1.75;
   color: rgba(245, 240, 232, 0.38);
 }
 
 .footer-col h4 {
-  font-size: 0.77rem;
+  font-size: 0.96rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--gold);
@@ -595,7 +610,7 @@ footer {
 }
 
 .footer-col ul li a {
-  font-size: 0.82rem;
+  font-size: 1.03rem;
   color: rgba(245, 240, 232, 0.38);
   text-decoration: none;
   transition: color 0.3s;
@@ -613,7 +628,7 @@ footer {
 }
 
 .footer-bottom p {
-  font-size: 0.80rem;
+  font-size: 1.0rem;
   color: rgba(245, 240, 232, 0.25);
 }
 
@@ -772,26 +787,35 @@ footer {
   }
 
   .product-info {
-    padding: 18px 16px;
+    padding: 18px 16px 12px;
   }
 
   .product-footer {
-    padding: 12px 16px 18px;
+    padding: 8px 16px 12px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
   }
 
   .product-name {
-    font-size: 1.24rem;
+    font-size: 1.34rem;
   }
 
   .product-desc {
-    font-size: 0.86rem;
+    font-size: 0.92rem;
   }
 
   .product-price {
-    font-size: 1.1rem;
+    gap: 6px;
+  }
+
+  .product-price span {
+    font-size: 0.86rem;
+  }
+
+  .price-pill {
+    font-size: 2.32rem;
+    padding: 5px 10px 6px;
   }
 
   .cta-banner {
@@ -843,4 +867,56 @@ footer {
     padding: 10px 12px;
     font-size: 0.65rem;
   }
+}
+
+.product-badges {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.badge-feature {
+  font-size: 0.76rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--clay);
+  background: rgba(139, 111, 94, 0.08);
+  border: 1px solid rgba(139, 111, 94, 0.25);
+  padding: 5px 10px;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.badge-atacado {
+  font-size: 0.76rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--warm-white);
+  background: var(--terracota);
+  padding: 5px 10px;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.badge-atacado:hover {
+  background: var(--clay);
+}
+
+.badge-varejo {
+  font-size: 0.76rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--espresso);
+  background: var(--gold);
+  padding: 5px 10px;
+  border-radius: 2px;
+  transition: all 0.3s;
+}
+
+.badge-varejo:hover {
+  background: var(--gold-light);
 }
