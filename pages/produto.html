@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Produto | ArtBrasil Presentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="../css/produto.css" rel="stylesheet">
+</head>
+<body>
+<nav class="top-nav" id="navbar">
+	<a href="../index.html" class="nav-logo">ArtBrasil <span>Presentes</span></a>
+	<ul class="nav-links">
+		<li><a href="../catalogo.html">Catálogo</a></li>
+		<li><a href="../index.html#sobre">Sobre</a></li>
+		<li><a href="../index.html#processo">Como Funciona</a></li>
+		<li><a href="../index.html#contato">Contato</a></li>
+	</ul>
+	<a href="https://wa.me/5500000000000" class="nav-cta">Fazer Pedido</a>
+</nav>
+
+<main class="product-page">
+	<header class="product-header">
+		<div class="breadcrumb">
+			<a href="../index.html">Início</a>
+			<span>/</span>
+			<a href="../catalogo.html">Catálogo</a>
+			<span>/</span>
+			<strong id="crumbName">Produto</strong>
+		</div>
+	</header>
+
+	<section class="product-main">
+		<div class="product-visual-column reveal">
+			<div class="product-media-wrap">
+				<div class="media-gradient"></div>
+				<img id="productImage" src="" alt="Produto de porcelana" class="product-image">
+				<span class="quality-badge">Porcelana Premium</span>
+			</div>
+			<div class="product-tags" id="productTags"></div>
+		</div>
+
+		<div class="product-content reveal">
+			<p class="product-eyebrow" id="productCategory">Pratos</p>
+			<h1 class="product-title" id="productName">Produto</h1>
+			<p class="product-description" id="productDescription"></p>
+
+			<div class="product-actions product-actions-top">
+				<a href="#" id="quoteBtn" class="btn-primary">Solicitar Orçamento</a>
+				<a href="../catalogo.html" class="btn-secondary">Voltar ao Catálogo</a>
+			</div>
+
+			<div class="product-meta">
+				<div class="meta-item">
+					<span class="meta-label" id="productMeasureLabel">Tamanho (D x A)</span>
+					<strong id="productMeasure">-</strong>
+				</div>
+				<div class="meta-item">
+					<span class="meta-label">Modalidade</span>
+					<strong id="productMode">-</strong>
+				</div>
+				<div class="meta-item" id="basePriceMetaItem">
+					<span class="meta-label">Valor Base</span>
+					<strong id="productPrice">-</strong>
+				</div>
+			</div>
+
+			<section class="pricing-panel" id="pricingPanel" hidden>
+				<p class="pricing-eyebrow">Valores por acabamento</p>
+				<div class="pricing-list" id="pricingList"></div>
+				<p class="pricing-note">Valores de referência por unidade. Para grandes volumes e artes específicas, consulte orçamento.</p>
+			</section>
+		</div>
+	</section>
+
+	<section class="about-piece reveal">
+		<article class="about-card">
+			<p class="about-eyebrow">Sobre a peça</p>
+			<h2 id="aboutTitle">Detalhes da peça</h2>
+			<p id="aboutText"></p>
+		</article>
+	</section>
+</main>
+
+<script>
+	const products = {
+		"prato-raso-iguacu": {
+			id: "prato-raso-iguacu",
+			name: "Prato Raso Iguaçu 25cm",
+			category: "Pratos",
+			description: "Prato raso em porcelana branca com acabamento elegante, ideal para restaurantes, hotéis e eventos corporativos.",
+			about: "O Prato Raso Iguaçu 25cm foi desenvolvido para composições principais com apresentação refinada. Seu formato amplo favorece pratos executivos, massas e montagens contemporâneas, mantendo estabilidade e elegância no serviço diário.",
+			image: "../assets/iguacu-prato-raso-25cm/iguacu-prato-raso-25cm.jpg",
+			price: "R$ 19,00 / unidade",
+			measureLabel: "Tamanho (D x A)",
+			measure: "25x3 cm",
+			mode: "Atacado",
+			personalizationPricing: [
+				{ label: "Peça branca", price: "R$ 19,00" },
+				{ label: "Personalização 1 cor", price: "R$ 23,00" },
+				{ label: "Personalização 2 cores", price: "R$ 27,00" },
+				{ label: "Personalização 3 cores", price: "R$ 31,00" }
+			],
+			tags: ["Personalizável", "Linha Iguaçu", "Mais Vendido"],
+			whatsappText: "Olá, tenho interesse no Prato Raso Iguaçu 25cm"
+		},
+		"prato-sobremesa-iguacu": {
+			id: "prato-sobremesa-iguacu",
+			name: "Prato Sobremesa Iguaçu 19cm",
+			category: "Pratos",
+			description: "Prato de sobremesa em porcelana branca, ideal para doces, entradas e apresentações delicadas em serviços profissionais.",
+			about: "O Prato Sobremesa Iguaçu 19cm oferece proporção ideal para sobremesas, entradas e porções menores. A borda equilibrada valoriza a finalização dos preparos e ajuda a destacar detalhes visuais em serviços de confeitaria e buffet.",
+			image: "../assets/iguacu-prato-sobremesa-19cm/iguacu-prato-sobremesa-19cm.jpg",
+			price: "R$ 17,00 / unidade",
+			measureLabel: "Tamanho (D x A)",
+			measure: "19x3 cm",
+			mode: "Atacado",
+			personalizationPricing: [
+				{ label: "Peça branca", price: "R$ 17,00" },
+				{ label: "Personalização 1 cor", price: "R$ 21,00" },
+				{ label: "Personalização 2 cores", price: "R$ 25,00" },
+				{ label: "Personalização 3 cores", price: "R$ 29,00" }
+			],
+			tags: ["Personalizável", "Linha Iguaçu", "Destaque"],
+			whatsappText: "Olá, tenho interesse no Prato Sobremesa Iguaçu 19cm"
+		},
+		"prato-fundo-iguacu": {
+			id: "prato-fundo-iguacu",
+			name: "Prato Fundo Iguaçu 21cm",
+			category: "Pratos",
+			description: "Prato fundo em porcelana branca, excelente para sopas, caldos e porções quentes em operações de alto giro.",
+			about: "O Prato Fundo Iguaçu 21cm possui profundidade funcional para sopas, caldos e receitas com molho. A curvatura interna foi pensada para conforto no uso e melhor retenção térmica, atendendo operações que exigem resistência e repetição.",
+			image: "../assets/iguacu-prato-fundo-21cm/iguacu-prato-fundo-21cm.jpg",
+			price: "R$ 19,00 / unidade",
+			measureLabel: "Tamanho (D x A)",
+			measure: "21x4 cm",
+			mode: "Atacado",
+			personalizationPricing: [
+				{ label: "Peça branca", price: "R$ 19,00" },
+				{ label: "Personalização 1 cor", price: "R$ 23,00" },
+				{ label: "Personalização 2 cores", price: "R$ 27,00" },
+				{ label: "Personalização 3 cores", price: "R$ 31,00" }
+			],
+			tags: ["Personalizável", "Linha Iguaçu", "Uso Profissional"],
+			whatsappText: "Olá, tenho interesse no Prato Fundo Iguaçu 21cm"
+		},
+		"kit-cafe-cha": {
+			id: "kit-cafe-cha",
+			name: "Kit Café & Chá - 6 peças",
+			category: "Xícaras & Pires",
+			description: "Kit completo com xícaras de café e chá com seus respectivos pires. Ideal para presentes corporativos premium.",
+			about: "O Kit Café & Chá reúne peças coordenadas para serviço elegante em recepções, salas de reunião e presentes especiais. A composição foi pensada para manter unidade visual entre café e chá, com excelente apresentação em contextos corporativos e institucionais.",
+			image: "../assets/iguacu-prato-sobremesa-19cm/iguacu-prato-sobremesa-19cm.jpg",
+			price: "R$ 110,00 / kit",
+			measureLabel: "Composição",
+			measure: "6 peças",
+			mode: "Atacado e Varejo",
+			tags: ["Kit Premium", "Pronta Entrega", "Sem Personalização"],
+			whatsappText: "Olá, tenho interesse no Kit Café e Chá - 6 peças"
+		}
+	};
+
+	const params = new URLSearchParams(window.location.search);
+	const requestedId = params.get("id") || params.get("slug") || "prato-raso-iguacu";
+	const product = products[requestedId] || products["prato-raso-iguacu"];
+
+	document.title = `${product.name} | ArtBrasil Presentes`;
+	document.getElementById("crumbName").textContent = product.name;
+	document.getElementById("productCategory").textContent = product.category;
+	document.getElementById("productName").textContent = product.name;
+	document.getElementById("productDescription").textContent = product.description;
+	document.getElementById("productImage").src = product.image;
+	document.getElementById("productImage").alt = product.name;
+	document.getElementById("productMeasureLabel").textContent = product.measureLabel || "Tamanho";
+	document.getElementById("productMeasure").textContent = product.measure || "Sob consulta";
+	document.getElementById("productMode").textContent = product.mode;
+	document.getElementById("productPrice").textContent = product.price;
+	document.getElementById("aboutTitle").textContent = `Sobre o ${product.name}`;
+	document.getElementById("aboutText").textContent = product.about;
+
+	const pricingPanel = document.getElementById("pricingPanel");
+	const pricingList = document.getElementById("pricingList");
+	const basePriceMetaItem = document.getElementById("basePriceMetaItem");
+	if (Array.isArray(product.personalizationPricing) && product.personalizationPricing.length > 0) {
+		pricingPanel.hidden = false;
+		basePriceMetaItem.classList.add("is-hidden");
+		document.querySelector(".product-meta").classList.add("without-base-price");
+		pricingList.innerHTML = "";
+		product.personalizationPricing.forEach(item => {
+			const row = document.createElement("div");
+			row.className = "pricing-row";
+
+			const label = document.createElement("span");
+			label.className = "pricing-label";
+			label.textContent = item.label;
+
+			const price = document.createElement("strong");
+			price.className = "pricing-value";
+			price.textContent = item.price;
+
+			row.appendChild(label);
+			row.appendChild(price);
+			pricingList.appendChild(row);
+		});
+	} else {
+		pricingPanel.hidden = true;
+		basePriceMetaItem.classList.remove("is-hidden");
+		document.querySelector(".product-meta").classList.remove("without-base-price");
+	}
+
+	document.getElementById("quoteBtn").href = `https://wa.me/5500000000000?text=${encodeURIComponent(product.whatsappText)}`;
+
+	const tagsWrap = document.getElementById("productTags");
+	product.tags.forEach(tag => {
+		const tagEl = document.createElement("span");
+		tagEl.className = "tag";
+		tagEl.textContent = tag;
+		tagsWrap.appendChild(tagEl);
+	});
+
+	function wrapNumericText(rootEl) {
+		if (!rootEl) return;
+		const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, null);
+		const textNodes = [];
+		let node = walker.nextNode();
+		while (node) {
+			textNodes.push(node);
+			node = walker.nextNode();
+		}
+
+		textNodes.forEach(textNode => {
+			const text = textNode.nodeValue;
+			if (!text || !/\d/.test(text)) return;
+
+			const frag = document.createDocumentFragment();
+			const parts = text.split(/(\d+[.,]?\d*)/g);
+			parts.forEach(part => {
+				if (!part) return;
+				if (/^\d+[.,]?\d*$/.test(part)) {
+					const span = document.createElement("span");
+					span.className = "num-glyph";
+					span.textContent = part;
+					frag.appendChild(span);
+				} else {
+					frag.appendChild(document.createTextNode(part));
+				}
+			});
+
+			textNode.parentNode.replaceChild(frag, textNode);
+		});
+	}
+
+	[
+		document.getElementById("crumbName"),
+		document.getElementById("productName"),
+		document.getElementById("productDescription"),
+		document.getElementById("productMeasure"),
+		document.getElementById("productPrice"),
+		document.getElementById("pricingPanel"),
+		document.getElementById("aboutTitle"),
+		document.getElementById("aboutText"),
+		document.getElementById("productTags")
+	].forEach(wrapNumericText);
+
+	const revealEls = document.querySelectorAll('.reveal');
+	if ('IntersectionObserver' in window) {
+		const obs = new IntersectionObserver(entries => {
+			entries.forEach((entry, i) => {
+				if (entry.isIntersecting) {
+					setTimeout(() => entry.target.classList.add('visible'), i * 70);
+				}
+			});
+		}, { threshold: 0.1 });
+		revealEls.forEach(el => obs.observe(el));
+	} else {
+		revealEls.forEach(el => el.classList.add('visible'));
+	}
+</script>
+</body>
+</html>

@@ -477,16 +477,18 @@ nav {
   overflow: hidden;
 }
 
+.product-name a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.product-name a:hover {
+  text-decoration: underline;
+  text-decoration-color: rgba(201, 169, 110, 0.6);
+}
+
 .product-desc {
-  font-size: 0.96rem;
-  color: var(--text-muted);
-  line-height: 1.65;
-  min-height: 4.95em;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  display: none;
 }
 
 .product-footer {
@@ -505,6 +507,19 @@ nav {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+.price-prefix {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.price-unit {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .product-price span {
