@@ -58,7 +58,7 @@ nav {
 
 .nav-logo {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 3.5rem;
+  font-size: 5.25rem;
   font-weight: 300;
   letter-spacing: 0.12em;
   color: var(--espresso);
@@ -744,6 +744,10 @@ footer {
     padding: 20px 24px;
   }
 
+  .nav-logo {
+    font-size: 3.75rem;
+  }
+
   .nav-links {
     display: none;
   }
@@ -802,7 +806,7 @@ footer {
   }
 
   .nav-logo {
-    font-size: 1.3rem;
+    font-size: 3rem;
     letter-spacing: 0.08em;
   }
 
@@ -949,6 +953,10 @@ footer {
 }
 
 @media (max-width: 480px) {
+  .nav-logo {
+    font-size: 2.4rem;
+  }
+
   .nav-cta {
     display: none;
   }

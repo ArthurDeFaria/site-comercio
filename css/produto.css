@@ -432,6 +432,10 @@ body {
     padding: 16px 22px;
   }
 
+  .nav-logo {
+    font-size: 2rem;
+  }
+
   .nav-links {
     display: none;
   }
