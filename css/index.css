@@ -354,8 +354,8 @@ nav.scrolled {
 }
 
 .carousel-dot {
-  width: 28px;
-  height: 2px;
+  width: 34px;
+  height: 5px;
   background: rgba(201, 169, 110, 0.35);
   cursor: pointer;
   transition: background 0.3s, width 0.4s;
@@ -363,16 +363,11 @@ nav.scrolled {
 
 .carousel-dot.active {
   background: var(--gold);
-  width: 52px;
+  width: 62px;
 }
 
 .carousel-arrows {
-  position: absolute;
-  bottom: 32px;
-  left: 230px;
-  display: flex;
-  gap: 10px;
-  z-index: 10;
+  display: none;
 }
 
 .carousel-arrow {
