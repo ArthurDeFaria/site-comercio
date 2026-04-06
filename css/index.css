@@ -20,6 +20,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 165px;
 }
 
 body {
@@ -47,23 +48,46 @@ nav {
   left: 0;
   right: 0;
   z-index: 500;
-  padding: 28px 60px;
+  padding: 22px 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   transition: background 0.5s, padding 0.4s;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(253, 250, 244, 0.98), rgba(245, 240, 232, 0.95) 48%, rgba(233, 223, 208, 0.9));
+  border-bottom: 1px solid rgba(201, 169, 110, 0.22);
+  box-shadow: 0 10px 30px rgba(28, 20, 16, 0.08);
+  z-index: -1;
+}
+
+nav::after {
+  content: '';
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 169, 110, 0), rgba(201, 169, 110, 0.95), rgba(201, 169, 110, 0));
+  opacity: 0.9;
 }
 
 nav.scrolled {
-  background: rgba(253, 250, 244, 0.94);
+  background: rgba(253, 250, 244, 0.78);
   backdrop-filter: blur(12px);
-  padding: 18px 60px;
-  border-bottom: 1px solid rgba(201, 169, 110, 0.2);
+  padding: 14px 54px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.16);
 }
 
 .nav-logo {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.72rem;
+  font-size: 3.50rem;
   font-weight: 300;
   letter-spacing: 0.12em;
   color: var(--espresso);
@@ -85,7 +109,7 @@ nav.scrolled {
   font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--espresso);
   text-decoration: none;
   position: relative;
   transition: color 0.3s;
@@ -103,7 +127,7 @@ nav.scrolled {
 }
 
 .nav-links a:hover {
-  color: var(--espresso);
+  color: var(--terracota);
 }
 
 .nav-links a:hover::after {
@@ -114,16 +138,20 @@ nav.scrolled {
   font-size: 0.82rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--espresso);
+  color: var(--warm-white);
   text-decoration: none;
-  border: 1px solid var(--gold);
+  border: 1px solid rgba(28, 20, 16, 0.08);
+  background: linear-gradient(135deg, var(--gold), var(--terracota));
   padding: 10px 24px;
-  transition: background 0.3s, color 0.3s;
+  box-shadow: 0 10px 24px rgba(193, 122, 90, 0.18);
+  transition: background 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 .nav-cta:hover {
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--espresso), #403029);
   color: var(--warm-white);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(28, 20, 16, 0.16);
 }
 
 /* HERO CAROUSEL */
@@ -474,6 +502,10 @@ nav.scrolled {
 /* SECTIONS */
 section {
   padding: 110px 60px;
+}
+
+section[id] {
+  scroll-margin-top: 165px;
 }
 
 .section-eyebrow {
@@ -1372,8 +1404,12 @@ footer {
 }
 
 @media (max-width: 1024px) {
+  html {
+    scroll-padding-top: 130px;
+  }
+
   nav, nav.scrolled {
-    padding: 20px 24px;
+    padding: 16px 24px;
   }
 
   .nav-links {
@@ -1430,6 +1466,10 @@ footer {
     padding: 72px 24px;
   }
 
+  section[id] {
+    scroll-margin-top: 130px;
+  }
+
   .about-wrap {
     grid-template-columns: 1fr;
   }
@@ -1469,9 +1509,13 @@ footer {
 }
 
 @media (max-width: 768px) {
+  html {
+    scroll-padding-top: 112px;
+  }
+
   nav,
   nav.scrolled {
-    padding: 14px 16px;
+    padding: 10px 16px;
   }
 
   .nav-logo {
@@ -1483,6 +1527,10 @@ footer {
     font-size: 0.62rem;
     letter-spacing: 0.12em;
     padding: 8px 12px;
+  }
+
+  nav::after {
+    height: 4px;
   }
 
   .slide-left {
@@ -1559,6 +1607,10 @@ footer {
     align-items: flex-start;
     gap: 18px;
     padding: 0;
+  }
+
+  section[id] {
+    scroll-margin-top: 112px;
   }
 
   .min-strip-amount {

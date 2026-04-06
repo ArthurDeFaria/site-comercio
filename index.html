@@ -310,7 +310,49 @@
 <script>
   document.documentElement.classList.add('js');
 
-  window.addEventListener('scroll',()=>document.getElementById('navbar').classList.toggle('scrolled',scrollY>60));
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',scrollY>60));
+
+  function getAnchorOffset() {
+    return (navbar ? navbar.getBoundingClientRect().height : 0) + 18;
+  }
+
+  function scrollToHash(hash, updateHash = true) {
+    const id = hash.replace('#', '');
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    const top = target.getBoundingClientRect().top + window.scrollY - getAnchorOffset();
+    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+
+    if (updateHash) {
+      history.pushState(null, '', `#${id}`);
+    }
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (event) => {
+      const hash = link.getAttribute('href');
+      if (!hash || hash === '#') return;
+      if (!document.querySelector(hash)) return;
+
+      event.preventDefault();
+      scrollToHash(hash, true);
+    });
+  });
+
+  window.addEventListener('load', () => {
+    if (location.hash) {
+      setTimeout(() => scrollToHash(location.hash, false), 0);
+    }
+  });
+
+  window.addEventListener('hashchange', () => {
+    if (location.hash) {
+      scrollToHash(location.hash, false);
+    }
+  });
+
   let curr=0;const slides=document.querySelectorAll('.slide'),dots=document.querySelectorAll('.carousel-dot');
   let at=setInterval(()=>nextSlide(),5000);
   function goToSlide(n){slides[curr].classList.remove('active');dots[curr].classList.remove('active');curr=n;slides[curr].classList.add('active');dots[curr].classList.add('active');}
