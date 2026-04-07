@@ -399,28 +399,26 @@
     const productLink = card.querySelector('.overlay-btn[href*="produto.html"], .product-name a[href*="produto.html"]');
     if (!productLink) return;
 
-    const productImage = card.querySelector('.product-img');
-    if (!productImage) return;
+    const productUrl = productLink.getAttribute('href');
+    if (!productUrl) return;
 
     const goToProduct = () => {
-      window.location.href = productLink.getAttribute('href');
+      window.location.href = productUrl;
     };
 
-    productImage.style.cursor = 'pointer';
-    productImage.setAttribute('role', 'link');
-    productImage.setAttribute('tabindex', '0');
-
     const productName = card.querySelector('.product-name')?.textContent?.trim();
+    card.setAttribute('role', 'link');
+    card.setAttribute('tabindex', '0');
     if (productName) {
-      productImage.setAttribute('aria-label', `Abrir produto ${productName}`);
+      card.setAttribute('aria-label', `Abrir produto ${productName}`);
     }
 
-    productImage.addEventListener('click', event => {
-      if (event.target.closest('a')) return;
+    card.addEventListener('click', event => {
+      if (event.target.closest('a, button')) return;
       goToProduct();
     });
 
-    productImage.addEventListener('keydown', event => {
+    card.addEventListener('keydown', event => {
       if (event.key === 'Enter' || event.key === ' ') {
         event.preventDefault();
         goToProduct();
