@@ -1412,6 +1412,7 @@ footer {
   }
 
   nav {
+    justify-content: flex-start;
     padding: 20px 24px;
   }
 
@@ -1421,6 +1422,11 @@ footer {
 
   .nav-logo {
     font-size: 3.75rem;
+    margin-right: auto;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    width: max-content;
   }
 
   .nav-links {
@@ -1525,6 +1531,7 @@ footer {
   }
 
   nav {
+    justify-content: flex-start;
     padding: 14px 16px;
   }
 
@@ -1535,6 +1542,11 @@ footer {
   .nav-logo {
     font-size: 3rem;
     letter-spacing: 0.08em;
+    margin-right: auto;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    width: max-content;
   }
 
   .nav-cta {
@@ -1732,6 +1744,10 @@ footer {
 @media (max-width: 480px) {
   .nav-logo {
     font-size: 2.4rem;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    width: max-content;
   }
 
   .nav-cta {
