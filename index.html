@@ -311,7 +311,26 @@
   document.documentElement.classList.add('js');
 
   const navbar = document.getElementById('navbar');
-  window.addEventListener('scroll',()=>navbar.classList.toggle('scrolled',scrollY>60));
+  const mobileNavbarQuery = window.matchMedia('(max-width: 768px)');
+
+  function updateNavbarState() {
+    if (!navbar) return;
+
+    if (mobileNavbarQuery.matches) {
+      navbar.classList.remove('scrolled');
+      return;
+    }
+
+    navbar.classList.toggle('scrolled', scrollY > 60);
+  }
+
+  window.addEventListener('scroll', updateNavbarState, { passive: true });
+  if (typeof mobileNavbarQuery.addEventListener === 'function') {
+    mobileNavbarQuery.addEventListener('change', updateNavbarState);
+  } else if (typeof mobileNavbarQuery.addListener === 'function') {
+    mobileNavbarQuery.addListener(updateNavbarState);
+  }
+  updateNavbarState();
 
   function getAnchorOffset() {
     return (navbar ? navbar.getBoundingClientRect().height : 0) + 18;
