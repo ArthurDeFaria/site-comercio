@@ -358,6 +358,36 @@
   function goToSlide(n){slides[curr].classList.remove('active');dots[curr].classList.remove('active');curr=n;slides[curr].classList.add('active');dots[curr].classList.add('active');}
   function nextSlide(){goToSlide((curr+1)%slides.length);clearInterval(at);at=setInterval(()=>nextSlide(),5000);}
   function prevSlide(){goToSlide((curr-1+slides.length)%slides.length);clearInterval(at);at=setInterval(()=>nextSlide(),5000);}
+  document.querySelectorAll('.featured-grid .product-card').forEach(card => {
+    const productLink = card.querySelector('.overlay-btn[href*="produto.html"], .product-name a[href*="produto.html"]');
+    if (!productLink) return;
+
+    const productUrl = productLink.getAttribute('href');
+    if (!productUrl) return;
+
+    const goToProduct = () => {
+      window.location.href = productUrl;
+    };
+
+    const productName = card.querySelector('.product-name')?.textContent?.trim();
+    card.setAttribute('role', 'link');
+    card.setAttribute('tabindex', '0');
+    if (productName) {
+      card.setAttribute('aria-label', `Abrir produto ${productName}`);
+    }
+
+    card.addEventListener('click', event => {
+      if (event.target.closest('a, button')) return;
+      goToProduct();
+    });
+
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        goToProduct();
+      }
+    });
+  });
   const revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
     const obs = new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting)setTimeout(()=>el.target.classList.add('visible'),i*80);});},{threshold:.1});

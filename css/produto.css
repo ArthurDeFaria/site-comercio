@@ -5,6 +5,7 @@
   --clay: #8b6f5e;
   --gold: #c9a96e;
   --gold-light: #e8d5a3;
+  --terracota: #c17a5a;
   --text: #2a1f1a;
   --text-muted: #7a6a5e;
   --sage: #d6e0d8;
@@ -27,22 +28,52 @@ body {
   min-height: 100vh;
 }
 
-.top-nav {
-  position: sticky;
+nav {
+  position: fixed;
   top: 0;
-  z-index: 200;
-  padding: 20px 60px;
-  background: rgba(253, 250, 244, 0.92);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(201, 169, 110, 0.24);
+  left: 0;
+  right: 0;
+  z-index: 500;
+  padding: 22px 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: background 0.5s, padding 0.4s;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(253, 250, 244, 0.98), rgba(245, 240, 232, 0.95) 48%, rgba(233, 223, 208, 0.9));
+  border-bottom: 1px solid rgba(201, 169, 110, 0.22);
+  box-shadow: 0 10px 30px rgba(28, 20, 16, 0.08);
+  z-index: -1;
+}
+
+nav::after {
+  content: '';
+  position: absolute;
+  left: 60px;
+  right: 60px;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(201, 169, 110, 0), rgba(201, 169, 110, 0.95), rgba(201, 169, 110, 0));
+  opacity: 0.9;
+}
+
+nav.scrolled {
+  background: rgba(253, 250, 244, 0.78);
+  backdrop-filter: blur(12px);
+  padding: 14px 54px;
+  border-bottom: 1px solid rgba(201, 169, 110, 0.16);
 }
 
 .nav-logo {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.72rem;
+  font-size: 3.5rem;
   font-weight: 300;
   letter-spacing: 0.12em;
   color: var(--espresso);
@@ -61,36 +92,58 @@ body {
 
 .nav-links a {
   font-size: 0.85rem;
+  font-weight: 400;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--espresso);
   text-decoration: none;
+  position: relative;
+  transition: color 0.3s;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--gold);
+  transition: width 0.4s;
 }
 
 .nav-links a:hover {
-  color: var(--espresso);
+  color: var(--terracota);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
 }
 
 .nav-cta {
   font-size: 0.82rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--espresso);
+  color: var(--warm-white);
   text-decoration: none;
-  border: 1px solid var(--gold);
+  border: 1px solid rgba(28, 20, 16, 0.08);
+  background: linear-gradient(135deg, var(--gold), var(--terracota));
   padding: 10px 24px;
-  transition: 0.3s;
+  box-shadow: 0 10px 24px rgba(193, 122, 90, 0.18);
+  transition: background 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
 .nav-cta:hover {
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--espresso), #403029);
   color: var(--warm-white);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(28, 20, 16, 0.16);
 }
 
 .product-page {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 44px 26px 80px;
+  padding: 160px 26px 80px;
 }
 
 .product-header {
@@ -428,18 +481,6 @@ body {
 }
 
 @media (max-width: 980px) {
-  .top-nav {
-    padding: 16px 22px;
-  }
-
-  .nav-logo {
-    font-size: 2rem;
-  }
-
-  .nav-links {
-    display: none;
-  }
-
   .product-main {
     grid-template-columns: 1fr;
     gap: 26px;
@@ -455,6 +496,59 @@ body {
 
   .about-card {
     padding: 22px;
+  }
+}
+
+@media (max-width: 1024px) {
+  nav {
+    padding: 20px 24px;
+  }
+
+  .nav-logo {
+    font-size: 3.75rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .product-page {
+    padding-top: 146px;
+  }
+}
+
+@media (max-width: 768px) {
+  nav {
+    padding: 14px 16px;
+  }
+
+  .nav-logo {
+    font-size: 3rem;
+    letter-spacing: 0.08em;
+  }
+
+  .nav-cta {
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    padding: 8px 12px;
+  }
+
+  .product-page {
+    padding-top: 126px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-logo {
+    font-size: 2.4rem;
+  }
+
+  .nav-cta {
+    display: none;
+  }
+
+  .product-page {
+    padding-top: 112px;
   }
 }
 
