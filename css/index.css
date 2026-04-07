@@ -92,6 +92,9 @@ nav.scrolled {
   letter-spacing: 0.12em;
   color: var(--espresso);
   text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-block;
 }
 
 .nav-logo span {
@@ -1412,6 +1415,10 @@ footer {
     padding: 20px 24px;
   }
 
+  nav.scrolled {
+    padding: 20px 24px;
+  }
+
   .nav-logo {
     font-size: 3.75rem;
   }
@@ -1518,6 +1525,10 @@ footer {
   }
 
   nav {
+    padding: 14px 16px;
+  }
+
+  nav.scrolled {
     padding: 14px 16px;
   }
 
