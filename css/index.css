@@ -1527,9 +1527,13 @@ footer {
   }
 
   .nav-cta {
-    font-size: 0.62rem;
-    letter-spacing: 0.12em;
-    padding: 8px 10px;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    white-space: normal;
+    text-align: center;
+    width: 86px;
+    padding: 8px 8px;
   }
 
   .slide-left {
