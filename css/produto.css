@@ -71,20 +71,18 @@ nav.scrolled {
   border-bottom: 1px solid rgba(201, 169, 110, 0.16);
 }
 
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 3.5rem;
-  font-weight: 300;
-  letter-spacing: 0.12em;
-  color: var(--espresso);
+nav .nav-logo {
   text-decoration: none;
-  white-space: nowrap;
   flex-shrink: 0;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  margin-right: auto;
 }
 
-.nav-logo span {
-  color: var(--gold);
+nav .nav-logo img {
+  height: 84px;
+  width: auto;
+  display: block;
 }
 
 .nav-links {
@@ -516,8 +514,8 @@ nav.scrolled {
     padding: 20px 24px;
   }
 
-  .nav-logo {
-    font-size: 3.75rem;
+  nav .nav-logo img {
+    height: 78px;
   }
 
   .nav-links {
@@ -538,9 +536,13 @@ nav.scrolled {
     padding: 14px 16px;
   }
 
-  .nav-logo {
-    font-size: 3rem;
-    letter-spacing: 0.08em;
+  nav .nav-logo {
+    max-width: calc(100vw - 130px);
+  }
+
+  nav .nav-logo img {
+    height: clamp(52px, 12vw, 64px);
+    max-width: 100%;
   }
 
   .nav-cta {
@@ -559,8 +561,12 @@ nav.scrolled {
 }
 
 @media (max-width: 480px) {
-  .nav-logo {
-    font-size: 2.4rem;
+  nav .nav-logo {
+    max-width: calc(100vw - 112px);
+  }
+
+  nav .nav-logo img {
+    height: clamp(44px, 11vw, 54px);
   }
 
   .nav-cta {
@@ -589,7 +595,16 @@ footer {
 .footer-brand .nav-logo {
   display: block;
   margin-bottom: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
   color: var(--cream);
+  text-decoration: none;
+}
+
+.footer-brand .nav-logo span {
+  color: var(--gold);
 }
 
 .footer-brand p {

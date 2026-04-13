@@ -85,20 +85,18 @@ nav.scrolled {
   border-bottom: 1px solid rgba(201, 169, 110, 0.16);
 }
 
-.nav-logo {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 3.5rem;
-  font-weight: 300;
-  letter-spacing: 0.12em;
-  color: var(--espresso);
+nav .nav-logo {
   text-decoration: none;
-  white-space: nowrap;
   flex-shrink: 0;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  margin-right: auto;
 }
 
-.nav-logo span {
-  color: var(--gold);
+nav .nav-logo img {
+  height: 84px;
+  width: auto;
+  display: block;
 }
 
 .nav-links {
@@ -141,6 +139,7 @@ nav.scrolled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin-left: 24px;
   font-size: 0.82rem;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -1339,7 +1338,16 @@ footer {
 .footer-brand .nav-logo {
   display: block;
   margin-bottom: 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
   color: var(--cream);
+  text-decoration: none;
+}
+
+.footer-brand .nav-logo span {
+  color: var(--gold);
 }
 
 .footer-brand p {
@@ -1420,13 +1428,8 @@ footer {
     padding: 20px 24px;
   }
 
-  .nav-logo {
-    font-size: 3.75rem;
-    margin-right: auto;
-    white-space: nowrap;
-    word-break: keep-all;
-    overflow-wrap: normal;
-    width: max-content;
+  nav .nav-logo img {
+    height: 78px;
   }
 
   .nav-links {
@@ -1539,21 +1542,17 @@ footer {
     padding: 14px 16px;
   }
 
-  .nav-logo {
-    font-size: clamp(2.25rem, 7vw, 2.85rem);
-    line-height: 1;
-    letter-spacing: 0.05em;
-    margin-right: auto;
-    white-space: nowrap;
-    word-break: keep-all;
-    overflow-wrap: normal;
-    width: auto;
+  nav .nav-logo {
     max-width: calc(100vw - 130px);
   }
 
-  nav.scrolled .nav-logo {
-    font-size: clamp(2.1rem, 6.4vw, 2.7rem);
-    letter-spacing: 0.04em;
+  nav .nav-logo img {
+    height: clamp(52px, 12vw, 64px);
+    max-width: 100%;
+  }
+
+  nav.scrolled .nav-logo img {
+    height: clamp(48px, 11vw, 60px);
   }
 
   .nav-cta {
@@ -1749,18 +1748,16 @@ footer {
 }
 
 @media (max-width: 480px) {
-  .nav-logo {
-    font-size: clamp(2rem, 8vw, 2.35rem);
-    line-height: 1;
-    white-space: nowrap;
-    word-break: keep-all;
-    overflow-wrap: normal;
-    width: auto;
+  nav .nav-logo {
     max-width: calc(100vw - 112px);
   }
 
-  nav.scrolled .nav-logo {
-    font-size: clamp(1.9rem, 7.5vw, 2.2rem);
+  nav .nav-logo img {
+    height: clamp(44px, 11vw, 54px);
+  }
+
+  nav.scrolled .nav-logo img {
+    height: clamp(42px, 10.5vw, 50px);
   }
 
   .nav-cta {
