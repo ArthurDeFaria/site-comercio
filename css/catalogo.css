@@ -1280,6 +1280,14 @@ footer {
   color: var(--text);
 }
 
+.option-line {
+  display: block;
+}
+
+.option-line + .option-line::before {
+  content: ' ';
+}
+
 .modal-skip {
   width: 100%;
   padding: 14px 20px;
@@ -1303,7 +1311,7 @@ footer {
 
 @media (max-width: 640px) {
   .modal-card {
-    padding: 36px 24px;
+    padding: 34px 20px 30px;
   }
 
   .modal-content h2 {
@@ -1312,28 +1320,39 @@ footer {
 
   .modal-options {
     grid-template-columns: 1fr;
-    gap: 12px;
-    margin-bottom: 24px;
+    gap: 10px;
+    margin-bottom: 22px;
   }
 
   .modal-option {
     flex-direction: row;
-    padding: 16px;
-    gap: 16px;
+    min-height: 78px;
+    padding: 16px 18px;
+    gap: 18px;
     justify-content: flex-start;
   }
 
   .option-icon {
-    font-size: 28px;
+    font-size: 34px;
+    width: 50px;
+    height: 50px;
     flex-shrink: 0;
   }
 
   .option-icon svg {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
   }
 
   .option-text {
     text-align: left;
+    white-space: nowrap;
+    line-height: 1.1;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+  }
+
+  .option-line {
+    display: inline;
   }
 }
