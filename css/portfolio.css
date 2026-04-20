@@ -93,12 +93,15 @@ nav .nav-logo {
   font-size: 2.2rem;
   font-weight: 300;
   letter-spacing: 0.08em;
+  line-height: 0.95;
   color: var(--espresso);
   white-space: nowrap;
 }
 
 nav .nav-logo span {
   color: var(--gold);
+  display: inline-block;
+  margin-left: 0.2em;
 }
 
 nav .nav-logo img {
@@ -542,6 +545,12 @@ footer {
 
   nav .nav-logo {
     max-width: calc(100vw - 130px);
+    white-space: normal;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    line-height: 0.92;
+    letter-spacing: 0.05em;
   }
 
   nav .nav-logo img {
@@ -551,6 +560,14 @@ footer {
 
   nav .nav-logo {
     font-size: clamp(1.35rem, 5.2vw, 1.8rem);
+  }
+
+  nav .nav-logo span {
+    margin-left: 0;
+    font-size: 0.62em;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1.1;
   }
 
   .nav-cta {
@@ -636,8 +653,17 @@ footer {
     font-size: clamp(1.15rem, 5vw, 1.45rem);
   }
 
+  nav .nav-logo span {
+    font-size: 0.6em;
+    letter-spacing: 0.16em;
+  }
+
   .nav-cta {
     display: none;
+  }
+
+  nav .nav-logo {
+    max-width: 100%;
   }
 
   .page-header-meta {
