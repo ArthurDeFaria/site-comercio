@@ -874,6 +874,14 @@ section[id] {
   gap: 8px;
 }
 
+.price-prefix {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
 .product-price span {
   font-size: 0.92rem;
   color: var(--text-muted);
