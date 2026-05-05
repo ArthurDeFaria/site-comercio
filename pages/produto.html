@@ -97,85 +97,43 @@
 
 <script>
 	const products = {
-		"prato-raso-iguacu": {
-			id: "prato-raso-iguacu",
-			name: "Prato Raso Iguaçu 25cm",
-			category: "Pratos",
-			description: "Prato raso em porcelana branca com acabamento elegante, ideal para restaurantes, hotéis e eventos corporativos.",
-			about: "O Prato Raso Iguaçu 25cm foi desenvolvido para composições principais com apresentação refinada. Seu formato amplo favorece pratos executivos, massas e montagens contemporâneas, mantendo estabilidade e elegância no serviço diário.",
-			image: "../assets/iguacu-prato-raso-25cm/iguacu-prato-raso-25cm.jpg",
-			price: "R$ 19,00 / unidade",
-			measureLabel: "Tamanho (D x A)",
-			measure: "25x3 cm",
+		"caneca-24-260ml-branca": {
+			id: "caneca-24-260ml-branca",
+			name: "Caneca 24 Branca 260ml",
+			category: "Canecas",
+			description: "Caneca branca 260ml com opção de personalização sob consulta. Venda somente em caixas com 24 peças (múltiplos de 24).",
+			about: "A Caneca 24 Branca 260ml atende pedidos em volume com padrão comercial. A peça branca sai por R$ 6,50 e a personalização é tratada por consulta, conforme arte e processo. Comercialização exclusiva em caixas fechadas de 24 unidades.",
+			image: "../assets/24-caneca-260ml/24-caneca-260ml-branca.jpeg",
+			price: "R$ 6,50 / unidade",
+			measureLabel: "Capacidade",
+			measure: "260 ml",
 			mode: "Uso Profissional",
-			personalizationPricing: [
-				{ label: "Peça branca", price: "R$ 19,00" },
-				{ label: "Personalização 1 cor", price: "R$ 23,00" },
-				{ label: "Personalização 2 cores", price: "R$ 27,00" },
-				{ label: "Personalização 3 cores", price: "R$ 31,00" }
-			],
-			tags: ["Personalizável", "Linha Iguaçu", "Mais Vendido"],
-			whatsappText: "Olá, tenho interesse no Prato Raso Iguaçu 25cm"
+			tags: ["Peça branca", "Personalização sob consulta", "Múltiplos de 24"],
+			whatsappText: "Olá, tenho interesse na Caneca 24 Branca 260ml"
 		},
-		"prato-sobremesa-iguacu": {
-			id: "prato-sobremesa-iguacu",
-			name: "Prato Sobremesa Iguaçu 19cm",
-			category: "Pratos",
-			description: "Prato de sobremesa em porcelana branca, ideal para doces, entradas e apresentações delicadas em serviços profissionais.",
-			about: "O Prato Sobremesa Iguaçu 19cm oferece proporção ideal para sobremesas, entradas e porções menores. A borda equilibrada valoriza a finalização dos preparos e ajuda a destacar detalhes visuais em serviços de confeitaria e buffet.",
-			image: "../assets/iguacu-prato-sobremesa-19cm/iguacu-prato-sobremesa-19cm.jpg",
-			price: "R$ 17,00 / unidade",
-			measureLabel: "Tamanho (D x A)",
-			measure: "19x3 cm",
+		"caneca-31-120ml-branca": {
+			id: "caneca-31-120ml-branca",
+			name: "Caneca 31 Branca 120ml",
+			category: "Canecas",
+			description: "Caneca branca 120ml com personalização sob consulta, para pedidos em caixa de 12 ou 24 peças (múltiplos de 12).",
+			about: "A Caneca 31 Branca 120ml tem preço de R$ 4,80 na peça branca e atende operações que compram em lote. A personalização é tratada sob consulta, conforme arte e processo. A venda é feita apenas em caixas com 12 ou 24 unidades, sempre em múltiplos de 12.",
+			image: "../assets/31-caneca-120ml/31-caneca-120ml-branca.jpeg",
+			price: "R$ 4,80 / unidade",
+			measureLabel: "Capacidade",
+			measure: "120 ml",
 			mode: "Uso Profissional",
-			personalizationPricing: [
-				{ label: "Peça branca", price: "R$ 17,00" },
-				{ label: "Personalização 1 cor", price: "R$ 21,00" },
-				{ label: "Personalização 2 cores", price: "R$ 25,00" },
-				{ label: "Personalização 3 cores", price: "R$ 29,00" }
-			],
-			tags: ["Personalizável", "Linha Iguaçu", "Destaque"],
-			whatsappText: "Olá, tenho interesse no Prato Sobremesa Iguaçu 19cm"
-		},
-		"prato-fundo-iguacu": {
-			id: "prato-fundo-iguacu",
-			name: "Prato Fundo Iguaçu 21cm",
-			category: "Pratos",
-			description: "Prato fundo em porcelana branca, excelente para sopas, caldos e porções quentes em operações de alto giro.",
-			about: "O Prato Fundo Iguaçu 21cm possui profundidade funcional para sopas, caldos e receitas com molho. A curvatura interna foi pensada para conforto no uso e melhor retenção térmica, atendendo operações que exigem resistência e repetição.",
-			image: "../assets/iguacu-prato-fundo-21cm/iguacu-prato-fundo-21cm.jpg",
-			price: "R$ 19,00 / unidade",
-			measureLabel: "Tamanho (D x A)",
-			measure: "21x4 cm",
-			mode: "Uso Profissional",
-			personalizationPricing: [
-				{ label: "Peça branca", price: "R$ 19,00" },
-				{ label: "Personalização 1 cor", price: "R$ 23,00" },
-				{ label: "Personalização 2 cores", price: "R$ 27,00" },
-				{ label: "Personalização 3 cores", price: "R$ 31,00" }
-			],
-			tags: ["Personalizável", "Linha Iguaçu", "Uso Profissional"],
-			whatsappText: "Olá, tenho interesse no Prato Fundo Iguaçu 21cm"
-		},
-		"conjunto-premium-12-pecas": {
-			id: "conjunto-premium-12-pecas",
-			name: "Conjunto Premium 12 Peças",
-			category: "Conjuntos Premium",
-			description: "Composição completa com 3 pratos rasos, 3 pratos fundos, 3 pratos de sobremesa e 3 taças para serviço refinado.",
-			about: "O Conjunto Premium 12 Peças foi pensado para montar mesas elegantes em recepções, eventos corporativos e serviços especiais. A combinação de pratos em três formatos e taças oferece unidade visual, praticidade operacional e apresentação de alto padrão em cada etapa do serviço.",
-			image: "../assets/iguacu-prato-raso-25cm/iguacu-prato-raso-25cm.jpg",
-			price: "R$ 289,00 / conjunto",
-			measureLabel: "Composição",
-			measure: "12 peças",
-			mode: "Uso Profissional e Casa & Presentes Finos",
-			tags: ["Conjunto Premium", "Mesa Completa", "Pronta Entrega"],
-			whatsappText: "Olá, tenho interesse no Conjunto Premium 12 Peças"
+			tags: ["Peça branca", "Personalização sob consulta", "Caixas de 12 ou 24", "Múltiplos de 12"],
+			whatsappText: "Olá, tenho interesse na Caneca 31 Branca 120ml"
 		}
+		/*
+		Produtos de exemplo/teste comentados (nao excluidos):
+		"prato-raso-iguacu", "prato-sobremesa-iguacu", "prato-fundo-iguacu", "conjunto-premium-12-pecas"
+		*/
 	};
 
 	const params = new URLSearchParams(window.location.search);
-	const requestedId = params.get("id") || params.get("slug") || "prato-raso-iguacu";
-	const product = products[requestedId] || products["prato-raso-iguacu"];
+	const requestedId = params.get("id") || params.get("slug") || "caneca-24-260ml-branca";
+	const product = products[requestedId] || products["caneca-24-260ml-branca"];
 
 	document.title = `${product.name} | ArtBrasil Presentes`;
 	document.getElementById("crumbName").textContent = product.name;

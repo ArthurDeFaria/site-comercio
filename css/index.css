@@ -315,9 +315,10 @@ nav .nav-logo img {
 }
 
 .slide-visual-circle {
-  width: 340px;
-  height: 340px;
-  border-radius: 50%;
+  width: 372px;
+  height: 372px;
+  border-radius: 32px;
+  overflow: hidden;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15));
   box-shadow: 40px 40px 80px rgba(28, 20, 16, 0.18), -10px -10px 30px rgba(255, 255, 255, 0.5), inset 2px 2px 8px rgba(255, 255, 255, 0.6);
   display: flex;
@@ -742,13 +743,18 @@ section[id] {
   overflow: hidden;
   transition: transform 0.6s;
   position: relative;
+  padding: 0;
+  box-sizing: border-box;
+  background: linear-gradient(145deg, rgba(245, 232, 217, 0.88), rgba(215, 229, 218, 0.82));
 }
 
 .product-img img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .product-img svg {
@@ -1914,17 +1920,48 @@ footer {
 
 /* Adicione isso ao seu index.css ou catalogo.css */
 .img-produto {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Faz a imagem preencher o espaço sem esticar */
-    display: block;
-    border-radius: inherit; /* Mantém o arredondamento se o container tiver */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Preenche o frame inteiro sem sobras */
+  object-position: center;
+  display: block;
+  border-radius: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /* No caso do Hero (Carousel), remova a opacidade baixa que estava no SVG */
 .slide-visual-circle img {
     opacity: 1; 
-    width: 100%;
-    height: 100%;
-    object-fit: contain; /* 'contain' é melhor para mostrar o produto inteiro no círculo */
+  width: 100%;
+  height: 100%;
+    object-fit: cover; /* Preenche o frame inteiro sem borda vazia */
+  object-position: center;
+}
+
+/* Mid-size screens: hide nav links and keep brand + CTA visible (1024px - 1250px) */
+@media (min-width: 1024px) and (max-width: 1250px) {
+  nav {
+    padding: 14px 28px;
+    justify-content: space-between;
+  }
+
+  .nav-links {
+    display: none !important;
+  }
+
+  nav .nav-logo {
+    display: inline-flex;
+    font-size: 1.6rem;
+    margin-right: auto;
+  }
+
+  .nav-cta {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 14px;
+    font-size: 0.78rem;
+    min-width: 110px;
+    margin-left: 0;
+  }
 }

@@ -234,9 +234,9 @@ nav .nav-logo img {
 .product-image {
   position: relative;
   z-index: 2;
-  width: 82%;
-  max-width: 410px;
-  object-fit: contain;
+  width: 100%;
+  max-width: 520px;
+  object-fit: cover;
   display: block;
   margin: 0 auto;
   filter: drop-shadow(0 20px 20px rgba(28, 20, 16, 0.22));

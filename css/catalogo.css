@@ -407,7 +407,7 @@ nav .nav-logo img {
 .catalog-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
+  gap: 24px;
 }
 
 .product-card {
@@ -433,6 +433,9 @@ nav .nav-logo img {
   overflow: hidden;
   transition: transform 0.6s;
   position: relative;
+  padding: 0;
+  box-sizing: border-box;
+  background: linear-gradient(145deg, rgba(245, 232, 217, 0.88), rgba(215, 229, 218, 0.82));
 }
 
 .product-img img {
@@ -440,6 +443,8 @@ nav .nav-logo img {
   height: 100%;
   object-fit: cover;
   display: block;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 .product-img svg {
@@ -583,6 +588,7 @@ nav .nav-logo img {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
 .price-unit {
@@ -620,7 +626,7 @@ nav .nav-logo img {
 
 @media (max-height: 900px) and (min-width: 1025px) {
   .product-img {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 1;
   }
 
   .product-info {
@@ -852,7 +858,7 @@ footer {
   }
 
   .catalog-main {
-    padding: 48px 24px;
+    padding: 48px 20px;
   }
 
   .catalog-controls {
@@ -871,6 +877,27 @@ footer {
 
   .catalog-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Ensure price stays on one line for tablets */
+  .product-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    flex-wrap: nowrap;
+  }
+
+  .price-prefix {
+    display: none; /* hide label on tablet to keep numeric price visible */
   }
 
   .cta-banner {
@@ -893,6 +920,89 @@ footer {
   .page-header-meta {
     flex-wrap: wrap;
     gap: 24px;
+  }
+}
+
+/* Mid-size screens: prevent price overflow around 1024–1250px (e.g., 1160px) */
+@media (min-width: 1024px) and (max-width: 1250px) {
+  .product-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .price-pill {
+    font-size: 1.8rem;
+    padding: 4px 8px 5px;
+    flex-shrink: 0;
+  }
+
+  .price-prefix {
+    display: none;
+  }
+}
+
+/* Navbar adjustments for mid-size screens to prevent overflow/cutoff */
+@media (min-width: 1024px) and (max-width: 1250px) {
+  nav {
+    padding: 14px 28px;
+  }
+
+  nav .nav-logo {
+    font-size: 1.6rem;
+  }
+
+  .nav-links {
+    gap: 22px;
+  }
+
+  .nav-links a {
+    font-size: 0.82rem;
+    padding: 6px 2px;
+  }
+
+  .nav-cta {
+    padding: 8px 14px;
+    font-size: 0.78rem;
+    min-width: 110px;
+  }
+
+  /* Ensure header items don't overflow */
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+
+  /* Show only CTA in navbar for this size range */
+  .nav-links {
+    display: none !important;
+  }
+
+  /* Keep brand text visible and show CTA; space between them */
+  nav {
+    justify-content: space-between;
+  }
+
+  nav .nav-logo {
+    display: inline-flex;
+    margin-right: auto;
+  }
+
+  .nav-cta {
+    margin-left: 0;
+    display: inline-flex;
+    align-items: center;
   }
 }
 
@@ -994,6 +1104,27 @@ footer {
     letter-spacing: 0.08em;
   }
 
+  .product-footer {
+    flex-wrap: nowrap;
+  }
+
+  .product-price {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .price-prefix {
+    display: none;
+  }
+
+  .price-unit {
+    white-space: nowrap;
+    font-size: 0.75rem;
+  }
+
   .catalog-grid {
     grid-template-columns: 1fr;
   }
@@ -1004,25 +1135,20 @@ footer {
 
   .product-footer {
     padding: 8px 16px 12px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .product-name {
-    font-size: 1.34rem;
-  }
-
-  .product-desc {
-    font-size: 0.92rem;
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
   .product-price {
-    gap: 6px;
+    gap: 4px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
-  .product-price span {
-    font-size: 0.86rem;
+  .price-prefix {
+    font-size: 0.55rem;
+    white-space: nowrap;
   }
 
   .price-pill {
