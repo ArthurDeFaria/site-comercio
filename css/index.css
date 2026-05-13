@@ -559,26 +559,34 @@ section[id] {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 80px;
-  align-items: center;
+  align-items: start;
+  min-width: 0;
 }
 
 .about-visual {
   position: relative;
-  height: 680px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 16px;
+  min-width: 0;
+  min-height: 0;
 }
 
 .av-main {
-  position: absolute;
-  left: 0;
-  top: 0;
+  grid-column: 1 / -1;
+  grid-row: 1;
   width: 100%;
-  height: 520px;
+  height: 480px;
   background: #FFFFFF;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
   box-shadow: 0 10px 40px rgba(28, 20, 16, 0.08);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .av-main svg {
@@ -589,18 +597,18 @@ section[id] {
 
 .av-main img,
 .logo-about {
-  max-width: 90%;
-  max-height: 90%;
+  max-width: 100%;
+  max-height: 100%;
   width: auto;
   height: auto;
   object-fit: contain;
+  display: block;
 }
 
 .av-dark {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 48%;
+  grid-column: 1;
+  grid-row: 2;
+  width: 100%;
   height: 140px;
   background: var(--espresso);
   display: flex;
@@ -608,6 +616,7 @@ section[id] {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  min-width: 0;
 }
 
 .av-dark strong {
@@ -627,15 +636,15 @@ section[id] {
 }
 
 .av-light {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 52%;
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
   height: 140px;
   background: var(--gold-light);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 0;
 }
 
 .av-light svg {
@@ -1586,7 +1595,26 @@ footer {
   }
 
   .about-visual {
-    height: 280px;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+  }
+
+  .av-main {
+    grid-column: 1;
+    grid-row: 1;
+    height: 360px;
+  }
+
+  .av-dark {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .av-light {
+    grid-column: 1;
+    grid-row: 3;
   }
 
   .featured-grid {
@@ -1814,6 +1842,15 @@ footer {
 
   .about-wrap {
     gap: 32px;
+  }
+
+  .av-main {
+    height: 280px;
+  }
+
+  .av-dark,
+  .av-light {
+    height: 120px;
   }
 
   .featured-header {
