@@ -20,6 +20,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -752,8 +753,12 @@ nav .nav-logo img {
 /* FOOTER */
 footer {
   background: var(--espresso);
-  padding: 56px 60px 32px;
+  padding: 56px 0 32px;
   border-top: 1px solid rgba(201, 169, 110, 0.12);
+  margin-top: 88px;
+  margin-bottom: -100vh;
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
 }
 
 .footer-grid {
@@ -761,6 +766,7 @@ footer {
   grid-template-columns: 1.6fr 1fr 1fr 1fr;
   gap: 44px;
   margin-bottom: 44px;
+  padding: 0 60px;
 }
 
 .footer-brand .nav-logo {
@@ -812,6 +818,8 @@ footer {
 
 .footer-bottom {
   padding-top: 26px;
+  padding-left: 60px;
+  padding-right: 60px;
   border-top: 1px solid rgba(201, 169, 110, 0.08);
   display: flex;
   justify-content: space-between;
@@ -911,10 +919,14 @@ footer {
 
   .footer-grid {
     grid-template-columns: 1fr 1fr;
+    padding: 0 24px;
   }
 
   footer {
-    padding: 48px 24px 28px;
+    padding: 48px 0 28px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-bottom: -100vh;
   }
 
   .page-header-meta {
@@ -1178,15 +1190,21 @@ footer {
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 24px;
+    padding: 0 16px;
   }
 
   footer {
-    padding: 40px 16px 24px;
+    padding: 40px 0 24px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-bottom: -100vh;
   }
 
   .footer-bottom {
     flex-direction: column;
     gap: 8px;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
   }
 }
 
