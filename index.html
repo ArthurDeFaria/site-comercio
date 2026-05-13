@@ -10,6 +10,25 @@
 
   gtag('config', 'AW-18160806832');
 </script>
+<!-- Event snippet for Enviar formulário de lead conversion page
+In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
+<script>
+function gtag_report_conversion(url) {
+  var callback = function () {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  };
+  gtag('event', 'conversion', {
+      'send_to': 'AW-18160806832/X0EkCKPrx6wcELDX39ND',
+      'value': 1.0,
+      'currency': 'BRL',
+      'event_callback': callback
+  });
+  return false;
+}
+</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ArtBrasil Presentes | Porcelanas</title>
@@ -29,7 +48,7 @@
     <li><a href="#processo">Como Funciona</a></li>
     <li><a href="#contato">Contato</a></li>
   </ul>
-  <a href="https://wa.me/5519991407919" class="nav-cta">Fazer Pedido</a>
+  <a href="https://wa.me/5519991407919" class="nav-cta" onclick="return gtag_report_conversion(this.href);">Fazer Pedido</a>
 </nav>
 
 <!-- HERO CAROUSEL -->
@@ -41,7 +60,7 @@
       <p class="slide-desc">Peça branca a R$ 6,50. Personalização por consulta. Venda somente em caixas com 24 peças.</p>
       <div class="slide-actions">
         <a href="pages/catalogo.html" class="btn-primary">Ver Catálogo</a>
-        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse na Caneca 24 Branca 260ml" class="btn-secondary">Solicitar orçamento</a>
+        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse na Caneca 24 Branca 260ml" class="btn-secondary" onclick="return gtag_report_conversion(this.href);">Solicitar orçamento</a>
       </div>
     </div>
     <div class="slide-right">
@@ -59,7 +78,7 @@
       <p class="slide-desc">Peça branca a R$ 4,80. Personalização sob consulta. Venda em caixas de 12 ou 24 peças.</p>
       <div class="slide-actions">
         <a href="pages/catalogo.html" class="btn-primary">Ver Catálogo</a>
-        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse na Caneca 31 Branca 120ml" class="btn-secondary">Solicitar orçamento</a>
+        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse na Caneca 31 Branca 120ml" class="btn-secondary" onclick="return gtag_report_conversion(this.href);">Solicitar orçamento</a>
       </div>
     </div>
     <div class="slide-right">
@@ -77,7 +96,7 @@
       <p class="slide-desc">Peça branca a R$ 21,29. Personalização sob consulta. Venda em caixas com 4, 8 ou 12 peças.</p>
       <div class="slide-actions">
         <a href="pages/catalogo.html" class="btn-primary">Ver Catálogo</a>
-        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse no Prato Raso G Coup Branco 27cm" class="btn-secondary">Solicitar orçamento</a>
+        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse no Prato Raso G Coup Branco 27cm" class="btn-secondary" onclick="return gtag_report_conversion(this.href);">Solicitar orçamento</a>
       </div>
     </div>
     <div class="slide-right">
@@ -95,7 +114,7 @@
       <p class="slide-desc">Peça branca a R$ 20,89. Personalização sob consulta. Venda em caixas com 4, 8 ou 12 peças.</p>
       <div class="slide-actions">
         <a href="pages/catalogo.html" class="btn-primary">Ver Catálogo</a>
-        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse no Prato Raso Capri Branco 26cm" class="btn-secondary">Solicitar orçamento</a>
+        <a href="https://wa.me/5519991407919?text=Olá, tenho interesse no Prato Raso Capri Branco 26cm" class="btn-secondary" onclick="return gtag_report_conversion(this.href);">Solicitar orçamento</a>
       </div>
     </div>
     <div class="slide-right">
@@ -435,7 +454,7 @@
       <div class="contact-right">
         <h3>Pronto para fazer seu pedido?</h3>
         <p>Entre em contato pelo WhatsApp e receba seu orçamento personalizado em até 24 horas. Atendimento direto, sem formulários.</p>
-        <a href="https://wa.me/5519991407919?text=Olá! Gostaria de receber um orçamento." class="wa-block">
+        <a href="https://wa.me/5519991407919?text=Olá! Gostaria de receber um orçamento." class="wa-block" onclick="return gtag_report_conversion(this.href);">
           <div class="wa-icon"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M11.999 1.998C6.476 1.998 1.998 6.476 1.998 12c0 1.76.455 3.41 1.255 4.838L1.5 22.5l5.81-1.525A10.003 10.003 0 0 0 12 22.002c5.523 0 10.001-4.478 10.001-10.002C22 6.476 17.522 1.998 11.999 1.998z" fill-rule="evenodd"/></svg></div>
           <div class="wa-text"><strong>Falar pelo WhatsApp</strong><span>Clique para iniciar uma conversa</span></div>
         </a>
@@ -450,7 +469,7 @@
     <div class="footer-brand"><a href="index.html" class="nav-logo">ArtBrasil <span>Presentes</span></a><p>Porcelana de qualidade para brindes, eventos, estabelecimentos e outros. Atendimento personalizado e entrega confiável.</p></div>
     <div class="footer-col"><h4>Produtos</h4><ul><li><a href="pages/catalogo.html">Canecas</a></li><li><a href="pages/catalogo.html">Xícaras & Pires</a></li><li><a href="pages/catalogo.html">Cumbucas</a></li><li><a href="pages/catalogo.html">Catálogo Completo</a></li></ul></div>
     <div class="footer-col"><h4>Navegação</h4><ul><li><a href="#sobre">Sobre Nós</a></li><li><a href="#processo">Como Funciona</a></li><li><a href="#destaque">Destaques</a></li><li><a href="#contato">Contato</a></li></ul></div>
-    <div class="footer-col"><h4>Contato</h4><ul><li><a href="https://wa.me/5519991407919">WhatsApp</a></li><li><a href="#">Instagram</a></li><li><a href="mailto:contato@atelieporcelana.com.br">E-mail</a></li></ul></div>
+    <div class="footer-col"><h4>Contato</h4><ul><li><a href="https://wa.me/5519991407919" onclick="return gtag_report_conversion(this.href);">WhatsApp</a></li><li><a href="#">Instagram</a></li><li><a href="mailto:contato@atelieporcelana.com.br">E-mail</a></li></ul></div>
   </div>
   <div class="footer-bottom"><p>© 2025 ArtBrasil Presentes · Todos os direitos reservados</p><p style="font-size: 1rem; margin-top: 14px; opacity: 1; color: var(--gold); font-weight: 500; letter-spacing: 0.05em;">CNPJ: 58.151.605/0001-63 · Pedreira - SP</p></div>
 </footer>
