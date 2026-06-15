@@ -68,6 +68,7 @@ function gtag_report_conversion(url) {
 				<img id="productImage" src="" alt="Produto de porcelana" class="product-image">
 				<span class="quality-badge">Porcelana Premium</span>
 			</div>
+			<div class="product-thumbnails" id="productThumbnails" hidden></div>
 			<div class="product-tags" id="productTags"></div>
 		</div>
 
@@ -124,132 +125,86 @@ function gtag_report_conversion(url) {
 </footer>
 
 <script>
-	const products = {
-		"caneca-24-260ml-branca": {
-			id: "caneca-24-260ml-branca",
-			name: "Caneca 24 Branca 260ml",
-			category: "Canecas",
-			description: "Caneca branca 260ml com opção de personalização sob consulta. Venda somente em caixas com 24 peças (múltiplos de 24).",
-			about: "A Caneca 24 Branca 260ml atende pedidos em volume com padrão comercial. A peça branca sai por R$ 6,50 e a personalização é tratada por consulta, conforme arte e processo. Comercialização exclusiva em caixas fechadas de 24 unidades.",
-			image: "../assets/24-caneca-260ml/24-caneca-260ml-branca.png",
-			price: "R$ 6,50 / unidade",
-			measureLabel: "Capacidade",
-			measure: "260 ml",
-			mode: "Uso Profissional",
-			tags: ["Peça branca", "Personalização sob consulta", "Múltiplos de 24"],
-			whatsappText: "Olá, tenho interesse na Caneca 24 Branca 260ml"
-		},
-		"caneca-31-120ml-branca": {
-			id: "caneca-31-120ml-branca",
-			name: "Caneca 31 Branca 120ml",
-			category: "Canecas",
-			description: "Caneca branca 120ml com personalização sob consulta, para pedidos em caixa de 12 ou 24 peças (múltiplos de 12).",
-			about: "A Caneca 31 Branca 120ml tem preço de R$ 4,80 na peça branca e atende operações que compram em lote. A personalização é tratada sob consulta, conforme arte e processo. A venda é feita apenas em caixas com 12 ou 24 unidades, sempre em múltiplos de 12.",
-			image: "../assets/31-caneca-120ml/31-caneca-120ml-branca.jpeg",
-			price: "R$ 4,80 / unidade",
-			measureLabel: "Capacidade",
-			measure: "120 ml",
-			mode: "Uso Profissional",
-			tags: ["Peça branca", "Personalização sob consulta", "Caixas de 12 ou 24", "Múltiplos de 12"],
-			whatsappText: "Olá, tenho interesse na Caneca 31 Branca 120ml"
+	function assetUrl(path) {
+		if (!path) return '';
+		if (/^(https?:)?\/\//.test(path) || path.startsWith('/') || path.startsWith('data:')) {
+			return path;
 		}
-		,
-		"prato-coup-g-raso-285cm-branco": {
-			id: "prato-coup-g-raso-285cm-branco",
-			name: "Prato Raso G Coup Branco 28,5cm",
-			category: "Pratos",
-			description: "Prato raso branco de elegância refinada. Personalização sob consulta. Disponível em caixas com 4, 8 ou 12 peças.",
-			about: "Prato raso G Coup branco com acabamento fino, ideal para servir em eventos e presentes. Peça disponível em caixas com 4, 8 ou 12 unidades. Personalização sob consulta.",
-			image: "../assets/coup-g-prato-raso-28,5cm/coup-g-prato-raso-285cm.png",
-			price: "R$ 21,29 / unidade",
-			measureLabel: "Diâmetro",
-			measure: "28,5 cm",
-			mode: "Casa & Presentes",
-			tags: ["Peça branca", "Personalização sob consulta", "Caixas de 4, 8 ou 12"],
-			whatsappText: "Olá, tenho interesse no Prato Raso G Coup Branco 28,5cm"
-		},
-		"prato-coup-g-raso-27cm-branco": {
-			id: "prato-coup-g-raso-27cm-branco",
-			name: "Prato Raso G Coup Branco 28,5cm",
-			category: "Pratos",
-			description: "Prato raso branco de elegância refinada. (Atualizado para 28,5cm) Personalização sob consulta.",
-			about: "Prato raso G Coup branco com acabamento fino — registro mantido para compatibilidade de URL; tamanho correto: 28,5 cm.",
-			image: "../assets/coup-g-prato-raso-28,5cm/coup-g-prato-raso-285cm.png",
-			price: "R$ 21,29 / unidade",
-			measureLabel: "Diâmetro",
-			measure: "28,5 cm",
-			mode: "Casa & Presentes",
-			tags: ["Peça branca", "Personalização sob consulta", "Caixas de 4, 8 ou 12"],
-			whatsappText: "Olá, tenho interesse no Prato Raso G Coup Branco 28,5cm"
-		}
-		/*
-		Produtos de exemplo/teste comentados (nao excluidos):
-		"prato-raso-iguacu", "prato-sobremesa-iguacu", "prato-fundo-iguacu", "conjunto-premium-12-pecas"
-		*/
-	};
+		return `../${path}`;
+	}
 
-	const params = new URLSearchParams(window.location.search);
-	const requestedId = params.get("id") || params.get("slug") || "caneca-24-260ml-branca";
-	const product = products[requestedId] || products["caneca-24-260ml-branca"];
+	function escapeHtml(value) {
+		return String(value)
+			.replace(/&/g, '&amp;')
+			.replace(/</g, '&lt;')
+			.replace(/>/g, '&gt;')
+			.replace(/"/g, '&quot;')
+			.replace(/'/g, '&#39;');
+	}
 
-	document.title = `${product.name} | ArtBrasil Presentes`;
-	document.getElementById("crumbName").textContent = product.name;
-	document.getElementById("productCategory").textContent = product.category;
-	document.getElementById("productName").textContent = product.name;
-	document.getElementById("productDescription").textContent = product.description;
-	document.getElementById("productImage").src = product.image;
-	document.getElementById("productImage").alt = product.name;
-	document.getElementById("productMeasureLabel").textContent = product.measureLabel || "Tamanho";
-	document.getElementById("productMeasure").textContent = product.measure || "Sob consulta";
-	document.getElementById("productMode").textContent = product.mode;
-	document.getElementById("productPrice").textContent = product.price;
-	document.getElementById("aboutTitle").textContent = `Sobre o ${product.name}`;
-	document.getElementById("aboutText").textContent = product.about;
+	function getCategoryLabel(category) {
+		const labels = {
+			canecas: 'Canecas',
+			pratos: 'Pratos',
+			xicaras: 'Xícaras & Pires',
+			cumbucas: 'Cumbucas',
+			'conjuntos-premium': 'Conjuntos Premium'
+		};
 
-	const pricingPanel = document.getElementById("pricingPanel");
-	const pricingList = document.getElementById("pricingList");
-	const basePriceMetaItem = document.getElementById("basePriceMetaItem");
-	if (Array.isArray(product.personalizationPricing) && product.personalizationPricing.length > 0) {
-		pricingPanel.hidden = false;
-		basePriceMetaItem.classList.add("is-hidden");
-		document.querySelector(".product-meta").classList.add("without-base-price");
-		pricingList.innerHTML = "";
-		product.personalizationPricing.forEach(item => {
-			const row = document.createElement("div");
-			row.className = "pricing-row";
+		return labels[category] || category || '';
+	}
 
-			const label = document.createElement("span");
-			label.className = "pricing-label";
-			label.textContent = item.label;
+	function formatModeLabel(mode) {
+		if (mode === 'uso-profissional') return 'Uso Profissional';
+		if (mode === 'casa-presentes') return 'Casa & Presentes Finos';
+		return mode || 'Sob consulta';
+	}
 
-			const price = document.createElement("strong");
-			price.className = "pricing-value";
-			price.textContent = item.price;
-
-			row.appendChild(label);
-			row.appendChild(price);
-			pricingList.appendChild(row);
+	function renderTags(tags, container) {
+		container.innerHTML = '';
+		(tags || []).forEach(tag => {
+			const tagEl = document.createElement('span');
+			tagEl.className = 'tag';
+			tagEl.textContent = tag;
+			container.appendChild(tagEl);
 		});
-	} else {
-		pricingPanel.hidden = true;
-		basePriceMetaItem.classList.remove("is-hidden");
-		document.querySelector(".product-meta").classList.remove("without-base-price");
 	}
 
-	document.getElementById("quoteBtn").href = `https://wa.me/5519991407919?text=${encodeURIComponent(product.whatsappText)}`;
+	function renderGallery(images, productName) {
+		const gallery = document.getElementById('productThumbnails');
+		const mainImage = document.getElementById('productImage');
 
-	const quoteBtnEl = document.getElementById("quoteBtn");
-	if (quoteBtnEl) {
-		quoteBtnEl.onclick = function() { return gtag_report_conversion(this.href); };
+		gallery.innerHTML = '';
+		if (!Array.isArray(images) || images.length <= 1) {
+			gallery.hidden = true;
+			return;
+		}
+
+		gallery.hidden = false;
+		gallery.setAttribute('role', 'list');
+
+		images.forEach((imagePath, index) => {
+			const button = document.createElement('button');
+			button.type = 'button';
+			button.className = `product-thumbnail${index === 0 ? ' active' : ''}`;
+			button.setAttribute('aria-label', `Ver imagem ${index + 1} de ${productName}`);
+			button.setAttribute('role', 'listitem');
+
+			const thumb = document.createElement('img');
+			thumb.src = assetUrl(imagePath);
+			thumb.alt = `${productName} - imagem ${index + 1}`;
+			button.appendChild(thumb);
+
+			button.addEventListener('click', () => {
+				mainImage.src = assetUrl(imagePath);
+				mainImage.alt = `${productName} - imagem ${index + 1}`;
+				gallery.querySelectorAll('.product-thumbnail').forEach(item => item.classList.remove('active'));
+				button.classList.add('active');
+			});
+
+			gallery.appendChild(button);
+		});
 	}
-
-	const tagsWrap = document.getElementById("productTags");
-	product.tags.forEach(tag => {
-		const tagEl = document.createElement("span");
-		tagEl.className = "tag";
-		tagEl.textContent = tag;
-		tagsWrap.appendChild(tagEl);
-	});
 
 	function wrapNumericText(rootEl) {
 		if (!rootEl) return;
@@ -270,8 +225,8 @@ function gtag_report_conversion(url) {
 			parts.forEach(part => {
 				if (!part) return;
 				if (/^\d+[.,]?\d*$/.test(part)) {
-					const span = document.createElement("span");
-					span.className = "num-glyph";
+					const span = document.createElement('span');
+					span.className = 'num-glyph';
 					span.textContent = part;
 					frag.appendChild(span);
 				} else {
@@ -283,31 +238,115 @@ function gtag_report_conversion(url) {
 		});
 	}
 
-	[
-		document.getElementById("crumbName"),
-		document.getElementById("productName"),
-		document.getElementById("productDescription"),
-		document.getElementById("productMeasure"),
-		document.getElementById("productPrice"),
-		document.getElementById("pricingPanel"),
-		document.getElementById("aboutTitle"),
-		document.getElementById("aboutText"),
-		document.getElementById("productTags")
-	].forEach(wrapNumericText);
+	async function loadProduct() {
+		const params = new URLSearchParams(window.location.search);
+		const requestedId = params.get('id');
 
-	const revealEls = document.querySelectorAll('.reveal');
-	if ('IntersectionObserver' in window) {
-		const obs = new IntersectionObserver(entries => {
-			entries.forEach((entry, i) => {
-				if (entry.isIntersecting) {
-					setTimeout(() => entry.target.classList.add('visible'), i * 70);
-				}
-			});
-		}, { threshold: 0.1 });
-		revealEls.forEach(el => obs.observe(el));
-	} else {
-		revealEls.forEach(el => el.classList.add('visible'));
+		if (!requestedId) {
+			window.location.href = 'catalogo.html';
+			return;
+		}
+
+		try {
+			const response = await fetch('../produtos.json');
+			if (!response.ok) throw new Error(`Falha ao carregar produtos: ${response.status}`);
+
+			const products = await response.json();
+			const product = products.find(item => item.id === requestedId);
+
+			if (!product) {
+				window.location.href = 'catalogo.html';
+				return;
+			}
+
+			document.title = `${product.nome} | ArtBrasil Presentes`;
+			document.getElementById('crumbName').textContent = product.nome;
+			document.getElementById('productCategory').textContent = getCategoryLabel(product.categoria);
+			document.getElementById('productName').textContent = product.nome;
+			document.getElementById('productDescription').textContent = product.descricaoCompleta || product.descricaoCurta || '';
+			document.getElementById('productImage').src = assetUrl(product.imagens?.[0]);
+			document.getElementById('productImage').alt = product.nome;
+			document.getElementById('productMeasureLabel').textContent = product.medidaLabel || 'Tamanho';
+			document.getElementById('productMeasure').textContent = product.medidaValor || 'Sob consulta';
+			document.getElementById('productMode').textContent = formatModeLabel(product.modalidade);
+			document.getElementById('productPrice').textContent = product.precos?.[0]?.valor || 'Sob consulta';
+			document.getElementById('aboutTitle').textContent = `Sobre o ${product.nome}`;
+			document.getElementById('aboutText').textContent = product.descricaoCompleta || product.descricaoCurta || '';
+			document.getElementById('quoteBtn').href = `https://wa.me/5519991407919?text=${encodeURIComponent(product.whatsappText || `Olá, tenho interesse em ${product.nome}`)}`;
+
+			const quoteBtnEl = document.getElementById('quoteBtn');
+			if (quoteBtnEl) {
+				quoteBtnEl.onclick = function() { return gtag_report_conversion(this.href); };
+			}
+
+			renderTags(product.tagsProduto, document.getElementById('productTags'));
+			renderGallery(product.imagens || [], product.nome);
+
+			const pricingPanel = document.getElementById('pricingPanel');
+			const pricingList = document.getElementById('pricingList');
+			const basePriceMetaItem = document.getElementById('basePriceMetaItem');
+			const priceItems = Array.isArray(product.precos) ? product.precos : [];
+
+			if (priceItems.length > 1) {
+				pricingPanel.hidden = false;
+				basePriceMetaItem.classList.add('is-hidden');
+				document.querySelector('.product-meta').classList.add('without-base-price');
+				pricingList.innerHTML = '';
+				priceItems.forEach(item => {
+					const row = document.createElement('div');
+					row.className = 'pricing-row';
+
+					const label = document.createElement('span');
+					label.className = 'pricing-label';
+					label.textContent = item.tipo;
+
+					const price = document.createElement('strong');
+					price.className = 'pricing-value';
+					price.textContent = item.valor;
+
+					row.appendChild(label);
+					row.appendChild(price);
+					pricingList.appendChild(row);
+				});
+			} else {
+				pricingPanel.hidden = true;
+				basePriceMetaItem.classList.remove('is-hidden');
+				document.querySelector('.product-meta').classList.remove('without-base-price');
+				pricingList.innerHTML = '';
+			}
+
+			[
+				document.getElementById('crumbName'),
+				document.getElementById('productName'),
+				document.getElementById('productDescription'),
+				document.getElementById('productMeasure'),
+				document.getElementById('productPrice'),
+				document.getElementById('pricingPanel'),
+				document.getElementById('aboutTitle'),
+				document.getElementById('aboutText'),
+				document.getElementById('productTags')
+			].forEach(wrapNumericText);
+
+			const revealEls = document.querySelectorAll('.reveal');
+			if ('IntersectionObserver' in window) {
+				const obs = new IntersectionObserver(entries => {
+					entries.forEach((entry, i) => {
+						if (entry.isIntersecting) {
+							setTimeout(() => entry.target.classList.add('visible'), i * 70);
+						}
+					});
+				}, { threshold: 0.1 });
+				revealEls.forEach(el => obs.observe(el));
+			} else {
+				revealEls.forEach(el => el.classList.add('visible'));
+			}
+		} catch (error) {
+			console.error(error);
+			window.location.href = 'catalogo.html';
+		}
 	}
+
+	loadProduct();
 </script>
 </body>
 </html>
