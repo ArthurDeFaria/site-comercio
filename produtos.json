@@ -3,7 +3,7 @@
     "id": "caneca-260ml-branca",
     "nome": "Caneca 24 Branca 260ml",
     "categoria": "canecas",
-    "descricaoCurta": "Peça branca por R$ 6,50. Venda em caixas com 24 peças.",
+    "descricaoCurta": "Peça branca com preço sob consulta. Venda em caixas com 24 peças.",
     "descricaoCompleta": "A Caneca 24 Branca 260ml atende pedidos em volume com acabamento branco e personalização sob consulta. A venda é feita em caixas fechadas com 24 peças, ideal para brindes corporativos e ações promocionais.",
     "imagens": [
       "assets/24-caneca-260ml/24-caneca-260ml-branca.png",
@@ -16,8 +16,8 @@
     "medidaValor": "260 ml",
     "whatsappText": "Olá, tenho interesse na Caneca 24 Branca 260ml",
     "precos": [
-      { "tipo": "Peça Branca", "valor": "A partir de R$ 6,50" },
-      { "tipo": "Personalizada 5 cores", "valor": "A partir de R$ 10,80" }
+      { "tipo": "Peça Branca", "valor": "Preço sob consulta" },
+      { "tipo": "Personalizada 5 cores", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": false
   },
@@ -25,7 +25,7 @@
     "id": "caneca-120ml-branca",
     "nome": "Caneca 31 Branca 120ml",
     "categoria": "canecas",
-    "descricaoCurta": "Peça branca por R$ 4,80. Venda em caixas com 12 ou 24 peças.",
+    "descricaoCurta": "Peça branca com preço sob consulta. Venda em caixas com 12 ou 24 peças.",
     "descricaoCompleta": "A Caneca 31 Branca 120ml foi pensada para pedidos em volume, com personalização sob consulta e venda em caixas fechadas de 12 ou 24 peças. É uma opção prática para brindes e projetos corporativos.",
     "imagens": [
       "assets/31-caneca-120ml/31-caneca-120ml-branca.jpeg",
@@ -38,8 +38,8 @@
     "medidaValor": "120 ml",
     "whatsappText": "Olá, tenho interesse na Caneca 31 Branca 120ml",
     "precos": [
-      { "tipo": "Peça Branca", "valor": "R$ 4,80" },
-      { "tipo": "Personalizada 2 cor", "valor": "R$ 6,20" }
+      { "tipo": "Peça Branca", "valor": "Preço sob consulta" },
+      { "tipo": "Personalizada 2 cor", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": false
   },
@@ -47,7 +47,7 @@
     "id": "prato-coup-g-raso-285cm-branco",
     "nome": "Prato Raso G Coup Branco 28,5cm",
     "categoria": "pratos",
-    "descricaoCurta": "Prato branco por R$ 21,29. Disponível em caixas com 4, 8 ou 12 peças.",
+    "descricaoCurta": "Prato branco com preço sob consulta. Disponível em caixas com 4, 8 ou 12 peças.",
     "descricaoCompleta": "O Prato Raso G Coup Branco 28,5cm tem acabamento refinado e personalização sob consulta. É indicado para projetos de casa e presentes finos, com venda em caixas de 4, 8 ou 12 peças.",
     "imagens": [
       "assets/coup-g-prato-raso-28,5cm/coup-g-prato-raso-285cm.png"
@@ -59,7 +59,7 @@
     "medidaValor": "28,5 cm",
     "whatsappText": "Olá, tenho interesse no Prato Raso G Coup Branco 28,5cm",
     "precos": [
-      { "tipo": "Peça Branca", "valor": "R$ 21,29" }
+      { "tipo": "Peça Branca", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": false
   },
@@ -67,7 +67,7 @@
     "id": "prato-capri-raso-26cm-branco",
     "nome": "Prato Raso Capri 26cm Branco",
     "categoria": "pratos",
-    "descricaoCurta": "Prato branco por R$ 20,89. Disponível em caixas com 4, 8 ou 12 peças.",
+    "descricaoCurta": "Prato branco com preço sob consulta. Disponível em caixas com 4, 8 ou 12 peças.",
     "descricaoCompleta": "O Prato Raso Capri 26cm Branco combina design sofisticado com personalização sob consulta. A venda é feita em caixas de 4, 8 ou 12 peças, sendo uma escolha versátil para casa e presentes finos.",
     "imagens": [
       "assets/capri-prato-raso-26cm/capri-prato-raso-26cm.png"
@@ -79,8 +79,8 @@
     "medidaValor": "26 cm",
     "whatsappText": "Olá, tenho interesse no Prato Raso Capri 26cm Branco",
     "precos": [
-      { "tipo": "Peça Branca", "valor": "R$ 20,89" },
-      { "tipo": "Personalizada 1 cor", "valor": "R$ 24,50" }
+      { "tipo": "Peça Branca", "valor": "Preço sob consulta" },
+      { "tipo": "Personalizada 1 cor", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": false
   },
@@ -88,7 +88,7 @@
     "id": "caneca-120ml-2cores-branca",
     "nome": "Caneca Branca 120ml 2 Cores",
     "categoria": "canecas",
-    "descricaoCurta": "Caneca branca 120ml 2 cores por R$ 7,00. Venda a partir de 300 peças.",
+    "descricaoCurta": "Caneca branca 120ml 2 cores com preço sob consulta. Venda a partir de 300 peças.",
     "descricaoCompleta": "A Caneca 2 Cores 120ml foi pensada para pedidos em volume, com personalização sob consulta e venda a partir de 300 peças. É uma opção prática para brindes e projetos corporativos.",
     "imagens": [
       "assets/caneca-120ml-branca/caneca-120ml-2cores-branca.jpeg"
@@ -100,7 +100,7 @@
     "medidaValor": "120 ml",
     "whatsappText": "Olá, tenho interesse na Caneca Branca 120ml 2 Cores 120ml",
     "precos": [
-      { "tipo": "Personalizada 2 cores", "valor": "A partir de R$ 7,00" }
+      { "tipo": "Personalizada 2 cores", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": true
   },
@@ -108,7 +108,7 @@
     "id": "caneca-branca-200ml-1e2cores",
     "nome": "Caneca Branca 200ml 1 e 2 Cores",
     "categoria": "canecas",
-    "descricaoCurta": "Caneca branca 200ml 1 e 2 cores por R$ 18,00. Venda a partir de 200 peças.",
+    "descricaoCurta": "Caneca branca 200ml 1 e 2 cores com preço sob consulta. Venda a partir de 200 peças.",
     "descricaoCompleta": "A Caneca Branca 200ml 1 e 2 Cores foi pensada para pedidos em volume, com personalização sob consulta e venda a partir de 200 peças. É uma opção prática para brindes e projetos corporativos.",
     "imagens": [
       "assets/caneca-branca-200ml/caneca-branca-200ml-1e2cores.jpeg"
@@ -120,7 +120,7 @@
     "medidaValor": "200 ml",
     "whatsappText": "Olá, tenho interesse na Caneca Branca 200ml 1 e 2 Cores 200ml",
     "precos": [
-      { "tipo": "Personalizada 2 cores", "valor": "A partir de R$ 18,00" }
+      { "tipo": "Personalizada 2 cores", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": true
   },
@@ -128,7 +128,7 @@
     "id": "caneca-colorida-200ml-2cores",
     "nome": "Caneca colorida 2 Cores 200ml",
     "categoria": "canecas",
-    "descricaoCurta": "Caneca colorida 200ml 2 cores por R$ 7,00. Venda a partir de 200 peças.",
+    "descricaoCurta": "Caneca colorida 200ml 2 cores com preço sob consulta. Venda a partir de 200 peças.",
     "descricaoCompleta": "A Caneca colorida 2 Cores 200ml foi pensada para pedidos em volume, com personalização sob consulta e venda a partir de 200 peças. É uma opção prática para brindes e projetos corporativos.",
     "imagens": [
       "assets/caneca-colorida-200ml/caneca-colorida-200ml-2cores.jpeg"
@@ -140,7 +140,7 @@
     "medidaValor": "200 ml",
     "whatsappText": "Olá, tenho interesse na Caneca colorida 200ml 2 Cores",
     "precos": [
-      { "tipo": "Personalizada 2 cores", "valor": "A partir de R$ 18,00" }
+      { "tipo": "Personalizada 2 cores", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": true
   },
@@ -148,7 +148,7 @@
     "id": "caneca-branca-220ml-ate7cores",
     "nome": "Caneca Branca 220ml até 7 Cores",
     "categoria": "canecas",
-    "descricaoCurta": "Caneca branca 220ml até 7 cores por R$ 16,90. Venda em caixas de 24 peças.",
+    "descricaoCurta": "Caneca branca 220ml até 7 cores com preço sob consulta. Venda em caixas de 24 peças.",
     "descricaoCompleta": "A Caneca Branca 220ml até 7 Cores foi pensada para pedidos em volume, com personalização sob consulta e vendas em caixas de 24 peças. É uma opção prática para brindes e projetos corporativos.",
     "imagens": [
       "assets/caneca-220ml-branca/caneca-220ml-branca-personalizada-ate7cores.jpeg"
@@ -160,7 +160,7 @@
     "medidaValor": "220 ml",
     "whatsappText": "Olá, tenho interesse na Caneca Branca 220ml até 7 Cores 220ml",
     "precos": [
-      { "tipo": "Personalizada até 7 cores", "valor": "A partir de R$ 16,90" }
+      { "tipo": "Personalizada até 7 cores", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": true
   },
@@ -168,7 +168,7 @@
     "id": "xicara-cafe-colorida-80ml",
     "nome": "Xícara de Café Colorida 80ml",
     "categoria": "xicaras",
-    "descricaoCurta": "Xícara de café colorida 80ml por R$ 5,00. Venda em caixas com 24 peças.",
+    "descricaoCurta": "Xícara de café colorida 80ml com preço sob consulta. Venda em caixas com 24 peças.",
     "descricaoCompleta": "",
     "imagens": [
       "assets/xicara-cafe-colorida-80ml/xicara-cafe-80ml-colorida.jpeg"
@@ -180,7 +180,7 @@
     "medidaValor": "80 ml",
     "whatsappText": "Olá, tenho interesse na Xícara de Café Colorida 80ml",
     "precos": [
-      { "tipo": "Colorida 1 cor", "valor": "A partir de R$ 4,90" }
+      { "tipo": "Colorida 1 cor", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": false
   },
@@ -188,7 +188,7 @@
     "id": "xicara-cafe-com-pires-70ml",
     "nome": "Xícara de Café com Pires 70ml",
     "categoria": "xicaras",
-    "descricaoCurta": "Xícara de café com pires 70ml por R$ 6,00. Venda em caixas com 24 peças.",
+    "descricaoCurta": "Xícara de café com pires 70ml com preço sob consulta. Venda em caixas com 24 peças.",
     "descricaoCompleta": "",
     "imagens": [
       "assets/xicara-café-com-pires-70ml/xicara-cafe-com-pires-70ml-personalizada-e-filete-em-ouro.jpeg"
@@ -200,7 +200,7 @@
     "medidaValor": "70 ml",
     "whatsappText": "Olá, tenho interesse na Xícara de Café com Pires 70ml personalizada e filete em ouro",
     "precos": [
-      { "tipo": "Personalizada e filete em ouro", "valor": "A partir de R$ 42,90" }
+      { "tipo": "Personalizada e filete em ouro", "valor": "Preço sob consulta" }
     ],
     "destaqueHome": false
   }

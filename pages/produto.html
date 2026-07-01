@@ -92,15 +92,15 @@ function gtag_report_conversion(url) {
 					<strong id="productMode">-</strong>
 				</div>
 				<div class="meta-item" id="basePriceMetaItem">
-					<span class="meta-label">Valor Base</span>
+					<span class="meta-label">Consulta Comercial</span>
 					<strong id="productPrice">-</strong>
 				</div>
 			</div>
 
 			<section class="pricing-panel" id="pricingPanel" hidden>
-				<p class="pricing-eyebrow">Valores por acabamento</p>
+				<p class="pricing-eyebrow">Consulta por acabamento</p>
 				<div class="pricing-list" id="pricingList"></div>
-				<p class="pricing-note">Valores de referência por unidade. Para grandes volumes e artes específicas, consulte orçamento.</p>
+				<p class="pricing-note">Condições comerciais sob consulta. Para grandes volumes e artes específicas, solicite orçamento.</p>
 			</section>
 		</div>
 	</section>
@@ -157,7 +157,7 @@ function gtag_report_conversion(url) {
 	function formatModeLabel(mode) {
 		if (mode === 'uso-profissional') return 'Uso Profissional';
 		if (mode === 'casa-presentes') return 'Casa & Presentes Finos';
-		return mode || 'Sob consulta';
+		return mode || 'Preço sob consulta';
 	}
 
 	function renderTags(tags, container) {
@@ -267,9 +267,9 @@ function gtag_report_conversion(url) {
 			document.getElementById('productImage').src = assetUrl(product.imagens?.[0]);
 			document.getElementById('productImage').alt = product.nome;
 			document.getElementById('productMeasureLabel').textContent = product.medidaLabel || 'Tamanho';
-			document.getElementById('productMeasure').textContent = product.medidaValor || 'Sob consulta';
+			document.getElementById('productMeasure').textContent = product.medidaValor || 'Preço sob consulta';
 			document.getElementById('productMode').textContent = formatModeLabel(product.modalidade);
-			document.getElementById('productPrice').textContent = product.precos?.[0]?.valor || 'Sob consulta';
+			document.getElementById('productPrice').textContent = product.precos?.[0]?.valor || 'Preço sob consulta';
 			document.getElementById('aboutTitle').textContent = `Sobre o ${product.nome}`;
 			document.getElementById('aboutText').textContent = product.descricaoCompleta || product.descricaoCurta || '';
 			document.getElementById('quoteBtn').href = `https://wa.me/5519991407919?text=${encodeURIComponent(product.whatsappText || `Olá, tenho interesse em ${product.nome}`)}`;

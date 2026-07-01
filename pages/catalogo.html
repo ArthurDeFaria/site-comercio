@@ -185,7 +185,7 @@ function gtag_report_conversion(url) {
 
     const productUrl = `produto.html?id=${encodeURIComponent(product.id)}`;
     const imageUrl = assetUrl(product.imagens?.[0]);
-    const priceValue = product.precos?.[0]?.valor || 'Sob consulta';
+    const priceValue = product.precos?.[0]?.valor || 'Preço sob consulta';
     const overlayInfo = product.tagsProduto?.[0] || '';
     const badges = (product.tagsProduto || []).slice(0, 2);
     const labelMarkup = product.label && String(product.label).trim()
@@ -208,7 +208,7 @@ function gtag_report_conversion(url) {
         ${badges.length ? `<div class="product-badges">${badges.map(tag => `<span class="badge-feature">${escapeHtml(tag)}</span>`).join('')}</div>` : ''}
       </div>
       <div class="product-footer">
-        <div class="product-price"><span class="price-prefix">A PARTIR DE</span><span class="price-pill">${escapeHtml(priceValue)}</span><span class="price-unit">/ unidade</span></div>
+        <div class="product-price"><span class="price-pill">${escapeHtml(priceValue)}</span></div>
       </div>
     `;
 
