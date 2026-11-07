@@ -1,0 +1,9 @@
+node_modules
+.astro
+dist
+.git
+.env
+.env.*
+.secrets
+Dockerfile
+.dockerignore
