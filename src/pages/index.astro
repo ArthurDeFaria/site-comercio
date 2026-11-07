@@ -10,6 +10,7 @@ const { data, error } = await supabase
 	.order('nome');
 
 const produtos = (data ?? []) as Produto[];
+const tags = [...new Set(produtos.flatMap((produto) => produto.tags))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 const storageUrl = import.meta.env.PUBLIC_SUPABASE_URL + '/storage/v1/object/public/produtos/';
 const formatPrice = (value: number | string) =>
 	Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -87,9 +88,38 @@ const whatsappLink = (produto: Produto) =>
 						</a>
 					</div>
 				) : (
-					<div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+					<>
+						{tags.length > 0 && (
+							<nav class="mt-6 flex flex-wrap gap-2" aria-label="Filtrar produtos por categoria">
+								<button
+									type="button"
+									class="filter-button rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+									data-filter="todos"
+								>
+									Todos
+								</button>
+								{tags.map((tag) => (
+									<button
+										type="button"
+										class="filter-button rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-500 focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+										data-filter={tag}
+									>
+										{tag}
+									</button>
+								))}
+							</nav>
+						)}
+
+						<p class="mt-4 text-sm text-slate-600" aria-live="polite">
+							<span id="visible-product-count">{produtos.length}</span> produto(s) exibido(s)
+						</p>
+
+					<div id="product-grid" class="mt-2 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 						{produtos.map((produto) => (
-							<article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+							<article
+								class="product-card overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+								data-tags={produto.tags.join('|')}
+							>
 								{produto.fotos[0] ? (
 									<img
 										src={productImage(produto.fotos[0])}
@@ -121,8 +151,39 @@ const whatsappLink = (produto: Produto) =>
 							</article>
 						))}
 					</div>
+					</>
 				)}
 			</section>
 		</main>
+		<script>
+			const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-button');
+			const cards = document.querySelectorAll<HTMLElement>('.product-card');
+			const count = document.querySelector<HTMLElement>('#visible-product-count');
+
+			buttons.forEach((button) => {
+				button.addEventListener('click', () => {
+					const selectedFilter = button.dataset.filter ?? 'todos';
+					let visibleCards = 0;
+
+					buttons.forEach((currentButton) => {
+						const isSelected = currentButton === button;
+						currentButton.classList.toggle('bg-slate-900', isSelected);
+						currentButton.classList.toggle('text-white', isSelected);
+						currentButton.classList.toggle('border-slate-300', !isSelected);
+						currentButton.classList.toggle('bg-white', !isSelected);
+						currentButton.classList.toggle('text-slate-700', !isSelected);
+					});
+
+					cards.forEach((card) => {
+						const productTags = card.dataset.tags?.split('|') ?? [];
+						const isVisible = selectedFilter === 'todos' || productTags.includes(selectedFilter);
+						card.hidden = !isVisible;
+						if (isVisible) visibleCards += 1;
+					});
+
+					if (count) count.textContent = String(visibleCards);
+				});
+			});
+		</script>
 	</body>
 </html>
