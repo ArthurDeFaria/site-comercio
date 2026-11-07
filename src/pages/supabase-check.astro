@@ -1,0 +1,43 @@
+---
+import { supabase } from '../lib/supabase';
+
+const [{ data: produtos, error: produtosError }, { data: precos, error: precosError }] =
+	await Promise.all([
+		supabase.from('produtos').select('id, nome, preco_peca_branca').limit(1),
+		supabase.from('precos_decoracao').select('quantidade, cores, valor').limit(1),
+	]);
+
+const errors = [produtosError, precosError].filter(Boolean);
+const isValid = errors.length === 0;
+---
+
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<title>Verificação do Supabase</title>
+	</head>
+	<body>
+		<main>
+			<h1>Verificação do Supabase</h1>
+			<p>
+				<strong>Status:</strong>
+				{isValid ? 'Conexão e consultas realizadas com sucesso.' : 'Falha nas consultas.'}
+			</p>
+			<ul>
+				<li>Produtos: {isValid ? `${produtos?.length ?? 0} registro(s) na amostra` : 'erro'}</li>
+				<li>
+					Preços de decoração: {isValid ? `${precos?.length ?? 0} registro(s) na amostra` : 'erro'}
+				</li>
+			</ul>
+			{errors.length > 0 && (
+				<section aria-labelledby="errors-title">
+					<h2 id="errors-title">Erros</h2>
+					<ul>
+						{errors.map((error) => <li>{error?.message}</li>)}
+					</ul>
+				</section>
+			)}
+		</main>
+	</body>
+</html>
