@@ -1,0 +1,167 @@
+---
+import '../styles/global.css';
+---
+
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content="Painel administrativo da Art Brasil Presentes." />
+		<title>Painel administrativo | Art Brasil Presentes</title>
+	</head>
+	<body>
+		<main class="min-h-screen px-5 py-10 sm:px-8 sm:py-16">
+			<section class="mx-auto max-w-xl">
+				<a href="/" class="brand-display text-2xl font-bold text-[#18324a]">
+					Art Brasil <span class="font-normal italic text-[#c96f4a]">Presentes</span>
+				</a>
+
+				<div id="login-panel" class="mt-10 rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-sm sm:p-8">
+					<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Área restrita</p>
+					<h1 class="brand-display mt-3 text-4xl font-bold text-[#18324a]">Entrar no painel</h1>
+					<p class="mt-3 text-[#486174]">Use seu acesso administrativo para gerenciar o catálogo.</p>
+
+					<form id="login-form" class="mt-8 space-y-5">
+						<div>
+							<label for="email" class="block text-sm font-bold text-[#18324a]">E-mail</label>
+							<input
+								id="email"
+								name="email"
+								type="email"
+								required
+								autocomplete="email"
+								class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20"
+							/>
+						</div>
+						<div>
+							<label for="password" class="block text-sm font-bold text-[#18324a]">Senha</label>
+							<input
+								id="password"
+								name="password"
+								type="password"
+								required
+								autocomplete="current-password"
+								class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20"
+							/>
+						</div>
+						<p id="login-error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
+						<button
+							type="submit"
+							class="mt-3 w-full rounded-full bg-[#18324a] px-5 py-3.5 font-bold text-white hover:bg-[#274c69] disabled:cursor-wait disabled:opacity-60"
+						>
+							Entrar
+						</button>
+					</form>
+				</div>
+
+				<div id="admin-panel" class="mt-10 hidden rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-sm sm:p-8">
+					<div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+						<div>
+							<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Painel</p>
+							<h1 class="brand-display mt-3 text-4xl font-bold text-[#18324a]">Catálogo</h1>
+						</div>
+						<button id="logout-button" type="button" class="rounded-full border border-[#18324a] px-4 py-2 text-sm font-bold text-[#18324a] hover:bg-[#e8eef0]">
+							Sair
+						</button>
+					</div>
+					<p id="admin-email" class="mt-6 text-sm text-[#486174]"></p>
+					<div class="mt-6 rounded-2xl border border-dashed border-[#d8cfc2] p-5 text-[#486174]">
+						<p class="font-bold text-[#18324a]">Próximo passo</p>
+						<p class="mt-2 text-sm">A gestão de produtos, imagens, tags e preços será adicionada aqui.</p>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<script>
+			import { supabase } from '../lib/supabase';
+
+			const loginPanel = document.querySelector<HTMLElement>('#login-panel');
+			const adminPanel = document.querySelector<HTMLElement>('#admin-panel');
+			const loginForm = document.querySelector<HTMLFormElement>('#login-form');
+			const loginError = document.querySelector<HTMLElement>('#login-error');
+			const adminEmail = document.querySelector<HTMLElement>('#admin-email');
+			const logoutButton = document.querySelector<HTMLButtonElement>('#logout-button');
+			const submitButton = loginForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
+
+			const showError = (message: string) => {
+				if (loginError) {
+					loginError.textContent = message;
+					loginError.classList.remove('hidden');
+				}
+			};
+
+			const showLogin = () => {
+				loginPanel?.classList.remove('hidden');
+				adminPanel?.classList.add('hidden');
+			};
+
+			const showAdmin = (email: string) => {
+				loginPanel?.classList.add('hidden');
+				adminPanel?.classList.remove('hidden');
+				if (adminEmail) adminEmail.textContent = `Sessão ativa: ${email}`;
+			};
+
+			const checkAdmin = async (userId: string) => {
+				const { data, error } = await supabase
+					.from('perfis_admin')
+					.select('ativo')
+					.eq('user_id', userId)
+					.eq('ativo', true)
+					.maybeSingle();
+
+				if (error) throw error;
+				return Boolean(data);
+			};
+
+			const loadSession = async () => {
+				const { data, error } = await supabase.auth.getSession();
+				if (error) throw error;
+
+				if (!data.session?.user) {
+					showLogin();
+					return;
+				}
+
+				if (!(await checkAdmin(data.session.user.id))) {
+					await supabase.auth.signOut();
+					showError('Este usuário não possui permissão para acessar o painel.');
+					return;
+				}
+
+				showAdmin(data.session.user.email ?? 'usuário autenticado');
+			};
+
+			loginForm?.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				if (loginError) loginError.classList.add('hidden');
+				if (submitButton) submitButton.disabled = true;
+
+				const formData = new FormData(loginForm);
+				const { error } = await supabase.auth.signInWithPassword({
+					email: String(formData.get('email') ?? ''),
+					password: String(formData.get('password') ?? ''),
+				});
+
+				if (error) showError('Não foi possível entrar. Verifique o e-mail e a senha.');
+				else await loadSession();
+				if (submitButton) submitButton.disabled = false;
+			});
+
+			logoutButton?.addEventListener('click', async () => {
+				const { error } = await supabase.auth.signOut();
+				if (error) {
+					showError('Não foi possível encerrar a sessão. Tente novamente.');
+					return;
+				}
+				showLogin();
+			});
+
+			supabase.auth.onAuthStateChange((_event, session) => {
+				if (!session) showLogin();
+			});
+
+			loadSession().catch(() => showError('Não foi possível verificar o acesso. Tente novamente.'));
+		</script>
+	</body>
+</html>
