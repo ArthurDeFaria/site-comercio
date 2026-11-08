@@ -82,6 +82,40 @@ button:focus-visible {
 	color: white;
 }
 
+.gallery-loading {
+	align-items: center;
+	background: #e8eef0;
+	color: var(--ink-soft);
+	display: flex;
+	flex-direction: column;
+	font-size: 0.75rem;
+	gap: 0.5rem;
+	inset: 0;
+	justify-content: center;
+	position: absolute;
+	z-index: 20;
+}
+
+.product-gallery:not([data-image-loading]) .gallery-loading,
+.product-gallery[data-image-error] .gallery-loading {
+	display: none;
+}
+
+.loading-spinner {
+	border: 3px solid rgb(72 97 116 / 0.2);
+	border-radius: 999px;
+	border-top-color: var(--terracotta);
+	height: 1.5rem;
+	width: 1.5rem;
+	animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 .gallery-control {
 	align-items: center;
 	display: flex;

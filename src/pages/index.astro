@@ -177,8 +177,12 @@ const whatsappLink = (produto: Produto) =>
 								data-search={`${produto.nome} ${produto.codigo} ${produto.tags.join(' ')} ${produto.fotos.join(' ')}`}
 							>
 								{produto.fotos.length > 0 ? (
-									<div class="product-gallery" data-gallery>
+									<div class="product-gallery" data-gallery data-image-loading>
 										<div class="relative">
+											<div class="gallery-loading" aria-hidden="true">
+												<span class="loading-spinner"></span>
+												<span>Carregando imagem...</span>
+											</div>
 											{produto.destaque && (
 												<span class="featured-badge absolute left-4 top-4 z-10 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em]">
 													Destaque
@@ -316,6 +320,14 @@ const whatsappLink = (produto: Produto) =>
 
 				previous?.addEventListener('click', () => showImage(currentIndex - 1));
 				next?.addEventListener('click', () => showImage(currentIndex + 1));
+				images.forEach((image) => {
+					image.addEventListener('load', () => gallery.removeAttribute('data-image-loading'), { once: true });
+					image.addEventListener('error', () => gallery.setAttribute('data-image-error', ''), { once: true });
+					if (image.complete) {
+						if (image.naturalWidth > 0) gallery.removeAttribute('data-image-loading');
+						else gallery.setAttribute('data-image-error', '');
+					}
+				});
 
 				if (images.length > 1) {
 					window.setInterval(() => showImage(currentIndex + 1), 10000);
