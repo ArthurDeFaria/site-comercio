@@ -1,6 +1,7 @@
 ---
 import { supabase } from '../lib/supabase';
 import type { Produto } from '../types/catalog';
+import '../styles/global.css';
 
 const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
 const { data, error } = await supabase
@@ -12,6 +13,7 @@ const { data, error } = await supabase
 const produtos = (data ?? []) as Produto[];
 const tags = [...new Set(produtos.flatMap((produto) => produto.tags))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 const storageUrl = import.meta.env.PUBLIC_SUPABASE_URL + '/storage/v1/object/public/produtos/';
+const logoUrl = `${storageUrl}logo/logo.jpeg`;
 const formatPrice = (value: number | string) =>
 	Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const productImage = (path: string) =>
@@ -35,45 +37,65 @@ const whatsappLink = (produto: Produto) =>
 		/>
 		<title>Art Brasil Presentes | Porcelanas personalizadas</title>
 	</head>
-	<body class="bg-stone-50 text-slate-900">
-		<header class="border-b border-slate-200 bg-white">
-			<div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-				<a href="/" class="text-xl font-semibold tracking-tight text-slate-900">
-					Art Brasil <span class="font-normal text-amber-700">Presentes</span>
-				</a>
-				<a
-					href={`https://wa.me/${whatsappNumber}`}
-					class="rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700 focus:outline-2 focus:outline-offset-2 focus:outline-amber-600"
-				>
-					Falar no WhatsApp
+	<body>
+		<header class="border-b border-[#e4ddd2] bg-[#fffdf9]">
+			<div class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-4 sm:gap-4 sm:px-8 sm:py-5">
+				<a href="/" class="brand-display min-w-0 text-2xl font-bold text-[#18324a] sm:text-3xl">
+					Art Brasil <span class="font-normal italic text-[#c96f4a]">Presentes</span>
 				</a>
 			</div>
 		</header>
 
-		<main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
-			<section class="max-w-2xl">
-				<p class="text-sm font-semibold uppercase tracking-[0.2em] text-amber-700">Art Brasil Presentes</p>
-				<h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-					Porcelanas para marcar momentos especiais
-				</h1>
-				<p class="mt-4 text-lg leading-8 text-slate-600">
-					Encontre a peça ideal e fale diretamente com nossa equipe para receber um orçamento.
-				</p>
+		<main>
+			<section class="hero-wash border-b border-[#e4ddd2]">
+				<div class="mx-auto grid max-w-6xl gap-10 px-5 py-14 sm:px-8 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+					<div class="max-w-2xl">
+						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Peças que contam histórias</p>
+						<h1 class="brand-display mt-4 text-5xl font-bold leading-[0.98] text-[#18324a] sm:text-7xl">
+							Porcelana feita para <span class="italic text-[#c96f4a]">ficar na memória.</span>
+						</h1>
+						<p class="mt-6 max-w-xl text-lg leading-8 text-[#486174]">
+							Peças personalizadas para presentear, celebrar e levar a sua marca para momentos especiais.
+						</p>
+						<a
+							href="#catalogo"
+							class="mt-8 inline-flex rounded-full bg-[#18324a] px-6 py-3.5 font-bold text-white hover:bg-[#274c69]"
+						>
+							Conhecer o catálogo <span class="ml-2" aria-hidden="true">↓</span>
+						</a>
+					</div>
+					<div class="relative hidden min-h-64 lg:block">
+						<div class="absolute inset-8 rotate-3 rounded-[3rem] bg-[#dce8e8]"></div>
+						<div class="relative flex min-h-64 items-center justify-center rounded-[3rem] border border-[#e4ddd2] bg-[#fffdf9] p-10 shadow-xl">
+							<img
+								src={logoUrl}
+								alt="Logo Art Brasil Presentes Finos"
+								class="max-h-56 w-full max-w-sm object-contain lg:max-h-[26rem] lg:max-w-[36rem]"
+							/>
+						</div>
+					</div>
+				</div>
 			</section>
 
-			<section class="mt-12" aria-labelledby="catalog-title">
-				<div class="flex items-end justify-between gap-4">
-					<h2 id="catalog-title" class="text-2xl font-semibold text-slate-950">Catálogo</h2>
-					{produtos.length > 0 && <p class="text-sm text-slate-600">{produtos.length} produto(s)</p>}
+			<section id="catalogo" class="mx-auto max-w-6xl px-5 py-12 sm:px-8 sm:py-16">
+				<div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+					<div>
+						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Escolha com calma</p>
+						<h2 id="catalog-title" class="brand-display mt-2 text-4xl font-bold text-[#18324a]">Nosso catálogo</h2>
+					</div>
+					{produtos.length > 0 && <p class="text-sm text-[#486174]">{produtos.length} produto(s)</p>}
 				</div>
+				<p class="mt-5 rounded-2xl border border-[#e8c9a5] bg-[#fff4e8] px-5 py-3 text-center text-sm text-[#7b4a2d]">
+					<strong>Importante:</strong> o valor dos produtos não inclui o frete, e o prazo de entrega deve ser consultado.
+				</p>
 
 				{error ? (
-					<div class="mt-6 rounded-2xl border border-red-200 bg-red-50 p-6 text-red-900" role="alert">
+					<div class="mt-8 rounded-3xl border border-red-200 bg-red-50 p-6 text-red-900" role="alert">
 						<h3 class="font-semibold">Não foi possível carregar o catálogo.</h3>
 						<p class="mt-2 text-sm">Tente novamente em alguns instantes ou fale conosco pelo WhatsApp.</p>
 					</div>
 				) : produtos.length === 0 ? (
-					<div class="mt-6 rounded-2xl border border-slate-200 bg-white p-8 text-center">
+					<div class="mt-8 rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center">
 						<h3 class="text-lg font-semibold">Estamos preparando nosso catálogo</h3>
 						<p class="mx-auto mt-2 max-w-xl text-slate-600">
 							Enquanto isso, fale com nossa equipe para consultar produtos e condições especiais.
@@ -82,18 +104,48 @@ const whatsappLink = (produto: Produto) =>
 							href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
 								'Olá! Vim pelo site da Art Brasil e gostaria de conhecer os produtos.',
 							)}`}
-							class="mt-5 inline-flex rounded-full bg-amber-600 px-5 py-3 font-semibold text-white hover:bg-amber-700 focus:outline-2 focus:outline-offset-2 focus:outline-amber-600"
+							class="mt-5 inline-flex rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]"
 						>
 							Pedir informações pelo WhatsApp
 						</a>
 					</div>
 				) : (
 					<>
+						<div class="catalog-search mt-8">
+							<label for="product-search" class="block text-sm font-bold text-[#18324a]">
+								Encontre seu produto
+							</label>
+							<div class="relative mt-2">
+								<span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-[#c96f4a]" aria-hidden="true">
+									<svg viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current stroke-2">
+										<circle cx="11" cy="11" r="7"></circle>
+										<path d="m20 20-4-4"></path>
+									</svg>
+								</span>
+								<input
+									id="product-search"
+									type="search"
+									class="w-full rounded-2xl border border-[#d8cfc2] bg-[#fffdf9] py-3.5 pl-12 pr-12 text-[#18324a] shadow-sm placeholder:text-[#7b8b95] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20"
+									placeholder="Busque por nome, tag, capacidade ou código"
+									autocomplete="off"
+								/>
+								<button
+									id="clear-product-search"
+									type="button"
+									class="absolute right-4 top-1/2 hidden h-10 -translate-y-1/2 items-center rounded-lg px-2 text-sm font-bold text-[#486174] hover:bg-[#f1e8dc] hover:text-[#18324a]"
+									aria-label="Limpar busca"
+								>
+									Limpar
+								</button>
+							</div>
+							<p class="mt-2 text-xs text-[#486174]">Você pode digitar apenas parte do nome, como “300”, “can” ou “café”.</p>
+						</div>
+
 						{tags.length > 0 && (
-							<nav class="mt-6 flex flex-wrap gap-2" aria-label="Filtrar produtos por categoria">
+							<nav class="mt-8 flex flex-wrap gap-2" aria-label="Filtrar produtos por categoria">
 								<button
 									type="button"
-									class="filter-button rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+									class="filter-button is-active rounded-full border border-[#18324a] bg-[#18324a] px-4 py-3 text-sm font-bold text-white"
 									data-filter="todos"
 								>
 									Todos
@@ -101,7 +153,7 @@ const whatsappLink = (produto: Produto) =>
 								{tags.map((tag) => (
 									<button
 										type="button"
-										class="filter-button rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:border-slate-500 focus:outline-2 focus:outline-offset-2 focus:outline-slate-900"
+										class="filter-button rounded-full border border-[#c8d0d2] bg-[#fffdf9] px-4 py-3 text-sm font-bold text-[#486174] hover:border-[#18324a]"
 										data-filter={tag}
 									>
 										{tag}
@@ -117,33 +169,79 @@ const whatsappLink = (produto: Produto) =>
 					<div id="product-grid" class="mt-2 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 						{produtos.map((produto) => (
 							<article
-								class="product-card overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+								class:list={[
+									'product-card overflow-hidden rounded-3xl border shadow-sm',
+									{ 'is-featured': produto.destaque },
+								]}
 								data-tags={produto.tags.join('|')}
+								data-search={`${produto.nome} ${produto.codigo} ${produto.tags.join(' ')} ${produto.fotos.join(' ')}`}
 							>
-								{produto.fotos[0] ? (
-									<img
-										src={productImage(produto.fotos[0])}
-										alt={produto.nome}
-										class="aspect-square w-full object-cover"
-										loading="lazy"
-									/>
+								{produto.fotos.length > 0 ? (
+									<div class="product-gallery" data-gallery>
+										<div class="relative">
+											{produto.destaque && (
+												<span class="featured-badge absolute left-4 top-4 z-10 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em]">
+													Destaque
+												</span>
+											)}
+											{produto.fotos.map((foto, index) => (
+												<img
+													src={productImage(foto)}
+													alt={`${produto.nome} - imagem ${index + 1} de ${produto.fotos.length}`}
+													class:list={[
+														'aspect-square w-full object-cover',
+														{ hidden: index !== 0 },
+													]}
+													data-gallery-image
+													data-image-index={index}
+													loading={index === 0 ? 'eager' : 'lazy'}
+												/>
+											))}
+											{produto.fotos.length > 1 && (
+												<>
+													<button
+														type="button"
+														class="gallery-control gallery-previous absolute left-3 top-1/2 -translate-y-1/2 rounded-full border-2 border-[#18324a] bg-[#fffdf9]/95 text-xl font-bold text-[#18324a] shadow-lg hover:bg-white"
+														aria-label={`Ver imagem anterior de ${produto.nome}`}
+													>
+														<span class="flex h-full items-center justify-center text-4xl leading-none -translate-y-px" aria-hidden="true">‹</span>
+													</button>
+													<button
+														type="button"
+														class="gallery-control gallery-next absolute right-3 top-1/2 -translate-y-1/2 rounded-full border-2 border-[#18324a] bg-[#fffdf9]/95 text-xl font-bold text-[#18324a] shadow-lg hover:bg-white"
+														aria-label={`Ver próxima imagem de ${produto.nome}`}
+													>
+														<span class="flex h-full items-center justify-center text-4xl leading-none -translate-y-px" aria-hidden="true">›</span>
+													</button>
+													<p
+														class="gallery-counter absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-[#18324a]/85 px-3 py-1 text-xs font-bold text-white"
+														aria-live="polite"
+													>
+														1 / {produto.fotos.length}
+													</p>
+												</>
+											)}
+										</div>
+									</div>
 								) : (
-									<div class="flex aspect-square items-center justify-center bg-slate-100 text-sm text-slate-500">
+									<div class="relative flex aspect-square items-center justify-center bg-[#e8eef0] text-sm text-[#486174]">
+										{produto.destaque && (
+											<span class="featured-badge absolute left-4 top-4 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em]">
+												Destaque
+											</span>
+										)}
 										Foto em breve
 									</div>
 								)}
 								<div class="p-5">
-									{produto.destaque && (
-										<p class="text-xs font-semibold uppercase tracking-wider text-amber-700">Destaque</p>
-									)}
-									<h3 class="mt-1 text-lg font-semibold">{produto.nome}</h3>
-									<p class="mt-3 text-xl font-semibold text-slate-950">
+									<h3 class="text-center text-lg font-bold text-[#18324a]">{produto.nome}</h3>
+									<p class="mt-3 flex items-baseline justify-end gap-2 text-right text-2xl font-bold text-[#c96f4a] sm:text-3xl">
 										{formatPrice(produto.preco_peca_branca)}
-										<span class="text-sm font-normal text-slate-500"> por peça branca</span>
+										<span class="text-sm font-normal text-[#486174]">por pç</span>
 									</p>
 									<a
 										href={whatsappLink(produto)}
-										class="mt-5 inline-flex w-full justify-center rounded-full bg-amber-600 px-4 py-3 text-center font-semibold text-white hover:bg-amber-700 focus:outline-2 focus:outline-offset-2 focus:outline-amber-600"
+										class="mt-5 inline-flex w-full justify-center rounded-full bg-[#c96f4a] px-4 py-3 text-center font-bold text-white hover:bg-[#a95235]"
 									>
 										Pedir orçamento pelo WhatsApp
 									</a>
@@ -151,38 +249,103 @@ const whatsappLink = (produto: Produto) =>
 							</article>
 						))}
 					</div>
+					<div id="no-search-results" class="mt-8 hidden rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center" role="status">
+						<h3 class="text-lg font-semibold text-[#18324a]">Nenhum produto encontrado</h3>
+						<p class="mt-2 text-sm text-[#486174]">Tente outro nome, capacidade, código ou tag.</p>
+					</div>
 					</>
 				)}
 			</section>
 		</main>
+		<a
+			href={`https://wa.me/${whatsappNumber}`}
+			class="fixed bottom-5 right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#25d366] text-white shadow-xl hover:bg-[#1daa50] sm:bottom-7 sm:right-7"
+			aria-label="Falar com a Art Brasil pelo WhatsApp"
+			title="Falar pelo WhatsApp"
+		>
+			<svg viewBox="0 0 24 24" class="h-8 w-8 fill-current" aria-hidden="true">
+				<path d="M20.5 3.5A11.8 11.8 0 0 0 12.06 0C5.52 0 .2 5.32.2 11.86c0 2.09.55 4.13 1.59 5.93L.1 24l6.36-1.67a11.85 11.85 0 0 0 5.6 1.42h.01c6.54 0 11.86-5.32 11.86-11.86 0-3.17-1.23-6.15-3.43-8.39Zm-8.44 18.2h-.01a9.84 9.84 0 0 1-5.01-1.37l-.36-.21-3.77.99 1.01-3.68-.23-.38a9.82 9.82 0 0 1-1.5-5.19C2.19 6.43 6.62 2 12.06 2c2.64 0 5.12 1.03 6.98 2.9a9.8 9.8 0 0 1 2.88 6.99c0 5.44-4.43 9.81-9.86 9.81Zm5.4-7.35c-.3-.15-1.78-.88-2.05-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.17.2-.35.23-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.67-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.08-.15-.68-1.64-.93-2.25-.24-.59-.49-.51-.68-.52h-.58c-.2 0-.53.08-.8.38-.28.3-1.06 1.03-1.06 2.52s1.08 2.92 1.23 3.12c.15.2 2.12 3.24 5.13 4.54.72.31 1.28.49 1.72.63.72.23 1.37.2 1.89.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.18-1.43-.08-.13-.28-.2-.58-.35Z" />
+			</svg>
+		</a>
 		<script>
 			const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-button');
 			const cards = document.querySelectorAll<HTMLElement>('.product-card');
 			const count = document.querySelector<HTMLElement>('#visible-product-count');
+			const searchInput = document.querySelector<HTMLInputElement>('#product-search');
+			const clearSearch = document.querySelector<HTMLButtonElement>('#clear-product-search');
+			const noSearchResults = document.querySelector<HTMLElement>('#no-search-results');
+			let selectedFilter = 'todos';
+
+			const normalizeText = (value: string) =>
+				value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
+
+			const updateResults = () => {
+				const searchTerms = normalizeText(searchInput?.value.trim() ?? '').split(/\s+/).filter(Boolean);
+				let visibleCards = 0;
+
+				cards.forEach((card) => {
+					const productTags = (card.dataset.tags ?? '').split('|').map(normalizeText);
+					const searchableText = normalizeText(card.dataset.search ?? '');
+					const matchesFilter = selectedFilter === 'todos' || productTags.includes(normalizeText(selectedFilter));
+					const matchesSearch = searchTerms.every((term) => searchableText.includes(term));
+					const isVisible = matchesFilter && matchesSearch;
+					card.hidden = !isVisible;
+					if (isVisible) visibleCards += 1;
+				});
+
+				if (count) count.textContent = String(visibleCards);
+				noSearchResults?.classList.toggle('hidden', visibleCards > 0);
+				clearSearch?.classList.toggle('hidden', !searchInput?.value);
+				clearSearch?.classList.toggle('inline-flex', Boolean(searchInput?.value));
+			};
+
+			document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+				const images = Array.from(gallery.querySelectorAll<HTMLImageElement>('[data-gallery-image]'));
+				const previous = gallery.querySelector<HTMLButtonElement>('.gallery-previous');
+				const next = gallery.querySelector<HTMLButtonElement>('.gallery-next');
+				const counter = gallery.querySelector<HTMLElement>('.gallery-counter');
+				let currentIndex = 0;
+
+				const showImage = (index: number) => {
+					currentIndex = (index + images.length) % images.length;
+					images.forEach((image, imageIndex) => {
+						image.classList.toggle('hidden', imageIndex !== currentIndex);
+					});
+					if (counter) counter.textContent = `${currentIndex + 1} / ${images.length}`;
+				};
+
+				previous?.addEventListener('click', () => showImage(currentIndex - 1));
+				next?.addEventListener('click', () => showImage(currentIndex + 1));
+
+				if (images.length > 1) {
+					window.setInterval(() => showImage(currentIndex + 1), 10000);
+				}
+			});
 
 			buttons.forEach((button) => {
 				button.addEventListener('click', () => {
-					const selectedFilter = button.dataset.filter ?? 'todos';
-					let visibleCards = 0;
+					selectedFilter = button.dataset.filter ?? 'todos';
 
 					buttons.forEach((currentButton) => {
 						const isSelected = currentButton === button;
-						currentButton.classList.toggle('bg-slate-900', isSelected);
+						currentButton.classList.toggle('is-active', isSelected);
 						currentButton.classList.toggle('text-white', isSelected);
-						currentButton.classList.toggle('border-slate-300', !isSelected);
-						currentButton.classList.toggle('bg-white', !isSelected);
-						currentButton.classList.toggle('text-slate-700', !isSelected);
+						currentButton.classList.toggle('border-[#c8d0d2]', !isSelected);
+						currentButton.classList.toggle('bg-[#fffdf9]', !isSelected);
+						currentButton.classList.toggle('text-[#486174]', !isSelected);
 					});
 
-					cards.forEach((card) => {
-						const productTags = card.dataset.tags?.split('|') ?? [];
-						const isVisible = selectedFilter === 'todos' || productTags.includes(selectedFilter);
-						card.hidden = !isVisible;
-						if (isVisible) visibleCards += 1;
-					});
-
-					if (count) count.textContent = String(visibleCards);
+					updateResults();
 				});
+			});
+
+			searchInput?.addEventListener('input', updateResults);
+			clearSearch?.addEventListener('click', () => {
+				if (searchInput) {
+					searchInput.value = '';
+					searchInput.focus();
+				}
+				updateResults();
 			});
 		</script>
 	</body>
