@@ -131,6 +131,125 @@ button:focus-visible {
 	color: white;
 }
 
+.admin-text-field {
+	caret-color: var(--ink);
+	cursor: text;
+}
+
+.admin-action-button,
+.admin-outline-button,
+.admin-icon-button {
+	transition:
+		background-color 180ms ease,
+		border-color 180ms ease,
+		box-shadow 180ms ease,
+		color 180ms ease,
+		transform 180ms ease;
+}
+
+.admin-action-button:hover,
+.admin-outline-button:hover,
+.admin-icon-button:hover {
+	transform: translateY(-2px);
+}
+
+.admin-outline-button:hover {
+	background: var(--ink);
+	border-color: var(--ink);
+	color: white;
+}
+
+.tag-product-card,
+.tag-drop-target {
+	transition:
+		background-color 180ms ease,
+		border-color 180ms ease,
+		box-shadow 180ms ease,
+		transform 180ms ease;
+}
+
+.tag-product-card:hover,
+.tag-drop-target:hover {
+	border-color: var(--terracotta);
+	transform: translateY(-2px);
+}
+
+.tag-product-card.is-selected,
+.tag-drop-target.is-selected {
+	background: #fff1e9;
+	border-color: var(--terracotta);
+	box-shadow: 0 0 0 2px rgb(201 111 74 / 0.15);
+}
+
+.tag-drop-target.is-assigned:not(.is-selected) {
+	background: #fff8f2;
+	border-color: #e4b08f;
+}
+
+.tag-delete-button {
+	transition:
+		background-color 160ms ease,
+		color 160ms ease,
+		transform 160ms ease;
+}
+
+.tag-delete-button:hover {
+	transform: scale(1.08);
+}
+
+.tag-drop-target {
+	border-color: var(--line);
+	background: var(--paper);
+}
+
+.admin-icon-button:hover {
+	background: #f1e8dc;
+	color: var(--ink);
+}
+
+.admin-modal {
+	align-items: center;
+	display: flex;
+	inset: 0;
+	justify-content: center;
+	padding: 1rem;
+	position: fixed;
+	z-index: 50;
+}
+
+.admin-modal.hidden {
+	display: none;
+}
+
+.admin-modal-backdrop {
+	background: rgb(24 50 74 / 0.58);
+	inset: 0;
+	position: absolute;
+}
+
+.admin-modal-card {
+	max-height: calc(100vh - 2rem);
+	overflow-y: auto;
+	position: relative;
+	width: min(100%, 48rem);
+	animation: modal-enter 180ms ease-out;
+}
+
+body.modal-is-open {
+	overflow: hidden;
+}
+
+@keyframes modal-enter {
+	from {
+		opacity: 0;
+		transform: translateY(0.75rem) scale(0.98);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0) scale(1);
+	}
+}
+
 .catalog-search input[type="search"]::-webkit-search-cancel-button {
 	display: none;
 }

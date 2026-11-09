@@ -11,70 +11,148 @@ import '../styles/global.css';
 	</head>
 	<body>
 		<main class="min-h-screen px-5 py-10 sm:px-8 sm:py-16">
-			<section class="mx-auto max-w-xl">
+			<section class="mx-auto max-w-6xl">
 				<a href="/" class="brand-display text-2xl font-bold text-[#18324a]">
 					Art Brasil <span class="font-normal italic text-[#c96f4a]">Presentes</span>
 				</a>
 
-				<div id="login-panel" class="mt-10 rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-sm sm:p-8">
+				<div id="login-panel" class="mx-auto mt-10 max-w-xl rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-sm sm:p-8">
 					<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Área restrita</p>
 					<h1 class="brand-display mt-3 text-4xl font-bold text-[#18324a]">Entrar no painel</h1>
 					<p class="mt-3 text-[#486174]">Use seu acesso administrativo para gerenciar o catálogo.</p>
-
 					<form id="login-form" class="mt-8 space-y-5">
 						<div>
 							<label for="email" class="block text-sm font-bold text-[#18324a]">E-mail</label>
-							<input
-								id="email"
-								name="email"
-								type="email"
-								required
-								autocomplete="email"
-								class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20"
-							/>
+							<input id="email" name="email" type="email" required autocomplete="email" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20" />
 						</div>
 						<div>
 							<label for="password" class="block text-sm font-bold text-[#18324a]">Senha</label>
-							<input
-								id="password"
-								name="password"
-								type="password"
-								required
-								autocomplete="current-password"
-								class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20"
-							/>
+							<input id="password" name="password" type="password" required autocomplete="current-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20" />
 						</div>
 						<p id="login-error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
-						<button
-							type="submit"
-							class="mt-3 w-full rounded-full bg-[#18324a] px-5 py-3.5 font-bold text-white hover:bg-[#274c69] disabled:cursor-wait disabled:opacity-60"
-						>
-							Entrar
-						</button>
+						<button type="submit" class="mt-3 w-full rounded-full bg-[#18324a] px-5 py-3.5 font-bold text-white hover:bg-[#274c69] disabled:cursor-wait disabled:opacity-60">Entrar</button>
 					</form>
 				</div>
 
-				<div id="admin-panel" class="mt-10 hidden rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-sm sm:p-8">
-					<div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+				<div id="admin-panel" class="mt-10 hidden">
+					<header class="flex flex-col gap-4 border-b border-[#e4ddd2] pb-6 sm:flex-row sm:items-end sm:justify-between">
 						<div>
-							<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Painel</p>
+							<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Painel administrativo</p>
 							<h1 class="brand-display mt-3 text-4xl font-bold text-[#18324a]">Catálogo</h1>
+							<p id="admin-email" class="mt-2 text-sm text-[#486174]"></p>
 						</div>
-						<button id="logout-button" type="button" class="rounded-full border border-[#18324a] px-4 py-2 text-sm font-bold text-[#18324a] hover:bg-[#e8eef0]">
-							Sair
-						</button>
-					</div>
-					<p id="admin-email" class="mt-6 text-sm text-[#486174]"></p>
-					<div class="mt-6 rounded-2xl border border-dashed border-[#d8cfc2] p-5 text-[#486174]">
-						<p class="font-bold text-[#18324a]">Próximo passo</p>
-						<p class="mt-2 text-sm">A gestão de produtos, imagens, tags e preços será adicionada aqui.</p>
+						<button id="logout-button" type="button" class="rounded-full border border-[#18324a] px-5 py-2.5 text-sm font-bold text-[#18324a] hover:bg-[#e8eef0]">Sair</button>
+					</header>
+
+					<div class="mt-8">
+						<section>
+							<div class="flex flex-wrap items-center justify-between gap-3">
+								<div>
+									<h2 class="brand-display text-3xl font-bold text-[#18324a]">Produtos cadastrados</h2>
+									<p id="product-count" class="mt-1 text-sm text-[#486174]"></p>
+								</div>
+								<div class="flex flex-wrap gap-2">
+									<a href="/admin/tags" class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 text-center font-bold text-[#18324a]">Gerenciar tags</a>
+									<a id="users-link" href="/admin/users" class="admin-outline-button hidden rounded-full border border-[#18324a] px-5 py-3 text-center font-bold text-[#18324a]">Gerenciar usuários</a>
+									<button id="new-product-button" type="button" class="admin-action-button rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]">Novo produto</button>
+								</div>
+							</div>
+							<label for="product-search" class="sr-only">Procurar produto</label>
+							<input id="product-search" type="search" placeholder="Procurar produto por nome, código ou tag" class="admin-text-field mt-5 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20" />
+							<p id="admin-message" class="mt-5 hidden rounded-2xl p-4 text-sm" role="status"></p>
+							<div id="product-list" class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+								<p class="w-full rounded-3xl border border-dashed border-[#d8cfc2] p-8 text-center text-[#486174]">Carregando produtos...</p>
+							</div>
+						</section>
+
+						<div id="product-editor" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="editor-title">
+							<div class="admin-modal-backdrop" data-close-editor></div>
+							<section class="admin-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-xl sm:p-7">
+							<div class="flex items-start justify-between gap-3">
+								<div>
+									<p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Editor</p>
+									<h2 id="editor-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Novo produto</h2>
+								</div>
+								<button id="close-editor-button" type="button" class="admin-icon-button rounded-lg px-2 py-1 text-xl text-[#486174]" aria-label="Fechar editor">×</button>
+							</div>
+							<form id="product-form" class="mt-6 space-y-4">
+								<input id="product-id" type="hidden" />
+								<div>
+									<label for="product-name" class="block text-sm font-bold text-[#18324a]">Nome</label>
+									<input id="product-name" required class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+								</div>
+								<div>
+									<label for="product-code" class="block text-sm font-bold text-[#18324a]">Código</label>
+									<input id="product-code" required pattern="[A-Za-z0-9_-]+" title="Use apenas letras sem acento, números, hífen ou sublinhado." class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+									<p class="mt-1 text-xs text-[#486174]">Use apenas letras sem acento, números, hífen ou sublinhado. Não use espaços ou caracteres especiais.</p>
+								</div>
+								<div>
+									<label for="product-price" class="block text-sm font-bold text-[#18324a]">Preço por peça</label>
+									<input id="product-price" required min="0" step="0.01" type="number" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+								</div>
+								<div>
+									<label for="product-tags" class="block text-sm font-bold text-[#18324a]">Tags</label>
+									<div id="product-tags" class="relative mt-2">
+										<div id="product-tags-trigger" class="admin-text-field flex min-h-12 w-full flex-wrap items-center gap-2 rounded-2xl border border-[#d8cfc2] bg-white px-4 py-2 text-left text-[#18324a]" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+											<span id="product-tags-chips" class="flex flex-1 flex-wrap gap-2"></span>
+											<span class="text-[#486174]" aria-hidden="true">▾</span>
+										</div>
+										<div id="product-tags-dropdown" class="absolute inset-x-0 top-full z-10 mt-2 hidden max-h-52 overflow-y-auto rounded-2xl border border-[#d8cfc2] bg-white p-2 shadow-lg" role="listbox"></div>
+									</div>
+									<p class="mt-1 text-xs text-[#486174]">Clique para escolher entre as tags já cadastradas. Clique no × para remover.</p>
+								</div>
+								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
+									<input id="product-featured" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
+									Produto em destaque
+								</label>
+								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
+									<input id="product-active" type="checkbox" checked class="h-5 w-5 accent-[#c96f4a]" />
+									Produto ativo no catálogo
+								</label>
+								<div>
+									<label for="product-images" class="block text-sm font-bold text-[#18324a]">Adicionar imagens</label>
+									<input id="product-images" type="file" accept="image/*" multiple class="mt-2 block w-full text-sm text-[#486174]" />
+									<div id="current-images" class="mt-3 grid grid-cols-3 gap-2"></div>
+								</div>
+								<p id="editor-error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
+								<div class="flex gap-3">
+									<button type="submit" class="admin-action-button flex-1 rounded-full bg-[#18324a] px-4 py-3 font-bold text-white hover:bg-[#274c69] disabled:cursor-wait disabled:opacity-60">Salvar</button>
+									<button id="cancel-editor-button" type="button" class="admin-outline-button rounded-full border border-[#18324a] px-4 py-3 font-bold text-[#18324a]">Cancelar</button>
+								</div>
+							</form>
+							</section>
+						</div>
 					</div>
 				</div>
 			</section>
 		</main>
 
+		<div id="product-confirm-modal" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="product-confirm-title">
+			<div class="admin-modal-backdrop" data-close-product-confirm></div>
+			<section class="admin-modal-card max-w-lg rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-2xl sm:p-8">
+				<p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Confirmar ação</p>
+				<h2 id="product-confirm-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]"></h2>
+				<p id="product-confirm-message" class="mt-3 leading-6 text-[#486174]"></p>
+				<div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+					<button id="cancel-product-confirm" type="button" class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Cancelar</button>
+					<button id="confirm-product-action" type="button" class="admin-action-button rounded-full bg-[#18324a] px-5 py-3 font-bold text-white hover:bg-[#274c69]">Confirmar</button>
+				</div>
+			</section>
+		</div>
+
 		<script>
 			import { supabase } from '../lib/supabase';
+
+			type Product = {
+				id: string;
+				nome: string;
+				codigo: string;
+				preco_peca_branca: number | string;
+				fotos: string[];
+				tags: string[];
+				destaque: boolean;
+				ativo: boolean;
+			};
 
 			const loginPanel = document.querySelector<HTMLElement>('#login-panel');
 			const adminPanel = document.querySelector<HTMLElement>('#admin-panel');
@@ -83,85 +161,499 @@ import '../styles/global.css';
 			const adminEmail = document.querySelector<HTMLElement>('#admin-email');
 			const logoutButton = document.querySelector<HTMLButtonElement>('#logout-button');
 			const submitButton = loginForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
+			const productList = document.querySelector<HTMLElement>('#product-list');
+			const productCount = document.querySelector<HTMLElement>('#product-count');
+			const productSearch = document.querySelector<HTMLInputElement>('#product-search');
+			const usersLink = document.querySelector<HTMLElement>('#users-link');
+			const editor = document.querySelector<HTMLElement>('#product-editor');
+			const editorTitle = document.querySelector<HTMLElement>('#editor-title');
+			const productForm = document.querySelector<HTMLFormElement>('#product-form');
+			const editorError = document.querySelector<HTMLElement>('#editor-error');
+			const adminMessage = document.querySelector<HTMLElement>('#admin-message');
+			const imagePreview = document.querySelector<HTMLElement>('#current-images');
+			const productConfirmModal = document.querySelector<HTMLElement>('#product-confirm-modal');
+			const productConfirmTitle = document.querySelector<HTMLElement>('#product-confirm-title');
+			const productConfirmMessage = document.querySelector<HTMLElement>('#product-confirm-message');
+			const confirmProductAction = document.querySelector<HTMLButtonElement>('#confirm-product-action');
+			const productInputs = {
+				id: document.querySelector<HTMLInputElement>('#product-id'),
+				name: document.querySelector<HTMLInputElement>('#product-name'),
+				code: document.querySelector<HTMLInputElement>('#product-code'),
+				price: document.querySelector<HTMLInputElement>('#product-price'),
+				tags: document.querySelector<HTMLElement>('#product-tags'),
+				tagsTrigger: document.querySelector<HTMLElement>('#product-tags-trigger'),
+				tagsChips: document.querySelector<HTMLElement>('#product-tags-chips'),
+				tagsDropdown: document.querySelector<HTMLElement>('#product-tags-dropdown'),
+				featured: document.querySelector<HTMLInputElement>('#product-featured'),
+				active: document.querySelector<HTMLInputElement>('#product-active'),
+				images: document.querySelector<HTMLInputElement>('#product-images'),
+			};
+			let products: Product[] = [];
+			let availableTags: { id: string; nome: string }[] = [];
+			let productTagIds = new Map<string, string[]>();
+			const selectedTagIds = new Set<string>();
+			let pendingProductAction: { product: Product; action: 'toggle' | 'delete' } | null = null;
 
-			const showError = (message: string) => {
+			const showLoginError = (message: string) => {
 				if (loginError) {
 					loginError.textContent = message;
 					loginError.classList.remove('hidden');
 				}
 			};
-
+			const showMessage = (message: string, error = false) => {
+				if (adminMessage) {
+					adminMessage.textContent = message;
+					adminMessage.className = `mt-5 rounded-2xl border p-4 text-sm ${error ? 'border-red-200 bg-red-50 text-red-900' : 'border-green-200 bg-green-50 text-green-900'}`;
+				}
+			};
+			const showEditorError = (message: string) => {
+				if (editorError) {
+					editorError.textContent = message;
+					editorError.classList.remove('hidden');
+				}
+			};
+			const clearEditorError = () => editorError?.classList.add('hidden');
 			const showLogin = () => {
 				loginPanel?.classList.remove('hidden');
 				adminPanel?.classList.add('hidden');
 			};
-
 			const showAdmin = (email: string) => {
 				loginPanel?.classList.add('hidden');
 				adminPanel?.classList.remove('hidden');
 				if (adminEmail) adminEmail.textContent = `Sessão ativa: ${email}`;
 			};
+			const formatPrice = (value: number | string) =>
+				Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+			const storageUrl = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/produtos/`;
+			const imageUrl = (path: string) => (path.startsWith('http') ? path : `${storageUrl}${path}`);
+			const escapeHtml = (value: string) =>
+				value.replace(/[&<>"']/g, (character) => ({
+					'&': '&amp;',
+					'<': '&lt;',
+					'>': '&gt;',
+					'"': '&quot;',
+					"'": '&#039;',
+				})[character] ?? character);
+
+			const loadProducts = async () => {
+				const [{ data, error }, { data: tagData, error: tagError }, { data: relationData, error: relationError }] = await Promise.all([
+					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,fotos,tags,destaque,ativo').order('destaque', { ascending: false }).order('nome'),
+					supabase.from('tags').select('id,nome').order('nome'),
+					supabase.from('produto_tags').select('produto_id,tag_id'),
+				]);
+				if (error) throw error;
+				if (tagError) throw tagError;
+				if (relationError) throw relationError;
+				products = (data ?? []) as Product[];
+				availableTags = (tagData ?? []) as { id: string; nome: string }[];
+				productTagIds = new Map<string, string[]>();
+				for (const relation of relationData ?? []) {
+					const current = productTagIds.get(relation.produto_id) ?? [];
+					current.push(relation.tag_id);
+					productTagIds.set(relation.produto_id, current);
+				}
+				renderTagSelector();
+				renderProducts();
+			};
+
+			const renderTagSelector = () => {
+				if (!productInputs.tagsChips || !productInputs.tagsDropdown) return;
+				const selectedTags = availableTags.filter((tag) => selectedTagIds.has(tag.id));
+				productInputs.tagsChips.innerHTML = selectedTags.length
+					? selectedTags.map((tag) => `
+						<span class="inline-flex items-center gap-1 rounded-full bg-[#e8eef0] px-2.5 py-1 text-xs font-bold text-[#18324a]">
+							${escapeHtml(tag.nome)}
+							<button type="button" data-remove-product-tag="${escapeHtml(tag.id)}" class="rounded-full px-1 text-[#486174] hover:bg-white hover:text-[#a95235]" aria-label="Remover tag ${escapeHtml(tag.nome)}">×</button>
+						</span>
+					`).join('')
+					: '<span class="text-sm text-[#486174]">Nenhuma tag selecionada</span>';
+				productInputs.tagsDropdown.innerHTML = availableTags.length
+					? availableTags.map((tag) => `
+						<button type="button" role="option" aria-selected="${selectedTagIds.has(tag.id)}" data-product-tag-option="${escapeHtml(tag.id)}" class="flex w-full items-center justify-between rounded-xl px-3 py-2 text-left text-sm hover:bg-[#f7f3ec] ${selectedTagIds.has(tag.id) ? 'bg-[#fff1e9] font-bold text-[#a95235]' : 'text-[#18324a]'}">
+							<span>${escapeHtml(tag.nome)}</span>
+							${selectedTagIds.has(tag.id) ? '<span aria-hidden="true">✓</span>' : ''}
+						</button>
+					`).join('')
+					: '<p class="p-3 text-sm text-[#486174]">Nenhuma tag cadastrada.</p>';
+			};
+
+			const renderProducts = () => {
+				const searchTerm = productSearch?.value.trim().toLocaleLowerCase('pt-BR') ?? '';
+				const filteredProducts = products.filter((product) =>
+					`${product.nome} ${product.codigo} ${product.tags.join(' ')}`
+						.toLocaleLowerCase('pt-BR')
+						.includes(searchTerm),
+				);
+				if (productCount) {
+					productCount.textContent = searchTerm
+						? `${filteredProducts.length} de ${products.length} produto(s)`
+						: `${products.length} produto(s)`;
+				}
+				if (productList) {
+					if (products.length === 0) {
+						productList.innerHTML = '<div class="w-full rounded-3xl border border-dashed border-[#d8cfc2] p-8 text-center text-[#486174]">Nenhum produto cadastrado. Crie o primeiro produto.</div>';
+						return;
+					}
+					if (filteredProducts.length === 0) {
+						productList.innerHTML = '<div class="w-full rounded-3xl border border-dashed border-[#d8cfc2] p-8 text-center text-[#486174]">Nenhum produto encontrado para essa busca.</div>';
+						return;
+					}
+					productList.innerHTML = filteredProducts.map((product) => `
+						<article class="w-full rounded-3xl border ${product.ativo ? 'border-[#e4ddd2]' : 'border-dashed border-[#c8d0d2] opacity-70'} bg-[#fffdf9] p-4 text-center shadow-sm">
+							<div class="flex justify-center gap-4 text-left">
+								<div class="w-24 shrink-0">
+									${product.fotos[0]
+										? `
+											<img data-gallery-main="${product.id}" src="${escapeHtml(imageUrl(product.fotos[0]))}" alt="Foto de ${escapeHtml(product.nome)}" class="h-24 w-24 rounded-2xl object-cover">
+											<div class="mt-2 flex h-8 max-w-24 gap-1 overflow-x-auto pb-1">
+												${product.fotos.length > 1
+													? `
+													${product.fotos.map((foto, index) => `
+														<button type="button" data-gallery-product="${product.id}" data-gallery-index="${index}" class="shrink-0 rounded-lg border-2 ${index === 0 ? 'border-[#c96f4a]' : 'border-transparent'}" aria-label="Ver foto ${index + 1} de ${escapeHtml(product.nome)}">
+															<img src="${escapeHtml(imageUrl(foto))}" alt="" class="h-7 w-7 rounded-md object-cover">
+														</button>
+													`).join('')}
+												`
+													: ''}
+											</div>
+										`
+										: '<div class="flex h-24 w-24 items-center justify-center rounded-2xl bg-[#e8eef0] text-xs text-[#486174]">Sem foto</div>'}
+								</div>
+								<div class="min-w-0 flex-1">
+									<div class="flex items-start justify-between gap-2">
+										<h3 class="font-bold text-[#18324a]">${escapeHtml(product.nome)}</h3>
+										${product.destaque ? '<span class="rounded-full bg-[#c96f4a] px-2 py-1 text-[10px] font-bold uppercase text-white">Destaque</span>' : ''}
+									</div>
+									<p class="mt-1 text-sm text-[#486174]">${escapeHtml(product.codigo)}</p>
+									<p class="mt-1 font-bold text-[#c96f4a]">${formatPrice(product.preco_peca_branca)} <span class="text-xs font-normal text-[#486174]">por pç</span></p>
+								</div>
+							</div>
+							<div class="mt-3 flex flex-wrap gap-2">
+								${product.tags.map((tag) => `<span class="rounded-full bg-[#e8eef0] px-2 py-1 text-xs text-[#486174]">${escapeHtml(tag)}</span>`).join('')}
+							</div>
+							<div class="mt-4 flex flex-wrap justify-center gap-2">
+								<button type="button" data-action="edit" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#18324a] px-3 py-2 text-sm font-bold text-[#18324a]">Editar</button>
+								<button type="button" data-action="toggle" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#c96f4a] px-3 py-2 text-sm font-bold text-[#a95235]">${product.ativo ? 'Desativar' : 'Ativar'}</button>
+								<button type="button" data-action="delete" data-id="${product.id}" class="admin-outline-button rounded-full border border-red-300 px-3 py-2 text-sm font-bold text-red-700">Excluir</button>
+							</div>
+						</article>
+					`).join('');
+				}
+			};
+
+			const resetEditor = () => {
+				productForm?.reset();
+				if (productInputs.id) productInputs.id.value = '';
+				selectedTagIds.clear();
+				renderTagSelector();
+				if (productInputs.active) productInputs.active.checked = true;
+				if (imagePreview) imagePreview.innerHTML = '';
+				if (editorTitle) editorTitle.textContent = 'Novo produto';
+				clearEditorError();
+			};
+			const openEditor = (product?: Product) => {
+				clearEditorError();
+				if (!product) resetEditor();
+				else {
+					if (productInputs.id) productInputs.id.value = product.id;
+					if (productInputs.name) productInputs.name.value = product.nome;
+					if (productInputs.code) productInputs.code.value = product.codigo;
+					if (productInputs.price) productInputs.price.value = String(product.preco_peca_branca);
+					selectedTagIds.clear();
+					for (const tagId of productTagIds.get(product.id) ?? []) selectedTagIds.add(tagId);
+					renderTagSelector();
+					if (productInputs.featured) productInputs.featured.checked = product.destaque;
+					if (productInputs.active) productInputs.active.checked = product.ativo;
+					renderImagePreview(product);
+					if (editorTitle) editorTitle.textContent = 'Editar produto';
+				}
+				editor?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				productInputs.name?.focus();
+			};
+			const closeEditor = () => {
+				editor?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+				resetEditor();
+			};
+			const closeProductConfirm = () => {
+				productConfirmModal?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+				pendingProductAction = null;
+			};
+			const openProductConfirm = (product: Product, action: 'toggle' | 'delete') => {
+				pendingProductAction = { product, action };
+				const activating = action === 'toggle' && !product.ativo;
+				if (productConfirmTitle) productConfirmTitle.textContent = action === 'delete'
+					? 'Excluir produto'
+					: activating ? 'Ativar produto' : 'Desativar produto';
+				if (productConfirmMessage) productConfirmMessage.textContent = action === 'delete'
+					? `Tem certeza que deseja excluir "${product.nome}"? As imagens e os dados do produto serão removidos.`
+					: `Tem certeza que deseja ${activating ? 'ativar' : 'desativar'} "${product.nome}"?`;
+				if (confirmProductAction) {
+					confirmProductAction.textContent = action === 'delete' ? 'Excluir' : activating ? 'Ativar' : 'Desativar';
+					confirmProductAction.classList.toggle('bg-red-700', action === 'delete');
+					confirmProductAction.classList.toggle('hover:bg-red-800', action === 'delete');
+					confirmProductAction.classList.toggle('bg-[#18324a]', action !== 'delete');
+					confirmProductAction.classList.toggle('hover:bg-[#274c69]', action !== 'delete');
+				}
+				productConfirmModal?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				confirmProductAction?.focus();
+			};
+			const renderImagePreview = (product: Product) => {
+				if (imagePreview) {
+					imagePreview.innerHTML = product.fotos
+						.map(
+							(foto) => `
+								<div class="relative">
+									<img src="${escapeHtml(imageUrl(foto))}" alt="Imagem atual" class="aspect-square w-full rounded-xl object-cover">
+									<button type="button" data-remove-image="${escapeHtml(foto)}" class="admin-icon-button absolute right-1 top-1 rounded-full bg-[#fffdf9]/95 px-2 py-1 text-sm font-bold text-red-700 shadow" aria-label="Remover imagem">×</button>
+								</div>
+							`,
+						)
+						.join('');
+				}
+			};
+
+			const syncTags = async (productId: string, tagIds: string[]) => {
+				const selectedTags = availableTags.filter((tag) => tagIds.includes(tag.id));
+				const names = selectedTags.map((tag) => tag.nome);
+				const { error: deleteError } = await supabase.from('produto_tags').delete().eq('produto_id', productId);
+				if (deleteError) throw deleteError;
+				if (tagIds.length) {
+					const { error: relationError } = await supabase.from('produto_tags').insert(tagIds.map((tag_id) => ({ produto_id: productId, tag_id })));
+					if (relationError) throw relationError;
+				}
+				const { error: legacyError } = await supabase.from('produtos').update({ tags: names }).eq('id', productId);
+				if (legacyError) throw legacyError;
+			};
+
+			const uploadImages = async (productCode: string, files: FileList | null) => {
+				const paths: string[] = [];
+				if (!files) return paths;
+				for (const file of Array.from(files)) {
+					const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, '-');
+					const path = `${productCode}/${Date.now()}-${safeName}`;
+					const { error } = await supabase.storage.from('produtos').upload(path, file, { upsert: false, contentType: file.type });
+					if (error) throw error;
+					paths.push(path);
+				}
+				return paths;
+			};
+
+			productList?.addEventListener('click', async (event) => {
+				const galleryButton = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-gallery-product]');
+				if (galleryButton) {
+					const productId = galleryButton.dataset.galleryProduct;
+					const imageIndex = Number(galleryButton.dataset.galleryIndex);
+					const product = products.find((item) => item.id === productId);
+					const mainImage = productId ? productList.querySelector<HTMLImageElement>(`[data-gallery-main="${productId}"]`) : null;
+					if (product && mainImage && product.fotos[imageIndex]) {
+						mainImage.src = imageUrl(product.fotos[imageIndex]);
+						mainImage.alt = `Foto de ${product.nome}`;
+						productList.querySelectorAll<HTMLButtonElement>(`[data-gallery-product="${productId}"]`).forEach((button) => {
+							button.classList.toggle('border-[#c96f4a]', button === galleryButton);
+							button.classList.toggle('border-transparent', button !== galleryButton);
+						});
+					}
+					return;
+				}
+				const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button[data-action]');
+				if (!button) return;
+				const product = products.find((item) => item.id === button.dataset.id);
+				if (!product) return;
+				try {
+					if (button.dataset.action === 'edit') openEditor(product);
+					if (button.dataset.action === 'toggle') {
+						openProductConfirm(product, 'toggle');
+					}
+					if (button.dataset.action === 'delete') openProductConfirm(product, 'delete');
+				} catch (error) {
+					showMessage(error instanceof Error ? error.message : 'Não foi possível concluir a operação.', true);
+				}
+			});
+			productSearch?.addEventListener('input', renderProducts);
+
+			const setTagsDropdownOpen = (open: boolean) => {
+				productInputs.tagsDropdown?.classList.toggle('hidden', !open);
+				productInputs.tagsTrigger?.setAttribute('aria-expanded', String(open));
+			};
+			productInputs.tagsTrigger?.addEventListener('click', () => {
+				setTagsDropdownOpen(productInputs.tagsDropdown?.classList.contains('hidden') ?? true);
+			});
+			productInputs.tagsTrigger?.addEventListener('keydown', (event) => {
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+					setTagsDropdownOpen(productInputs.tagsDropdown?.classList.contains('hidden') ?? true);
+				}
+			});
+			productInputs.tags?.addEventListener('click', (event) => {
+				const removeButton = (event.target as HTMLElement).closest<HTMLElement>('[data-remove-product-tag]');
+				if (removeButton) {
+					selectedTagIds.delete(removeButton.dataset.removeProductTag ?? '');
+					renderTagSelector();
+					return;
+				}
+				const option = (event.target as HTMLElement).closest<HTMLElement>('[data-product-tag-option]');
+				if (!option?.dataset.productTagOption) return;
+				const tagId = option.dataset.productTagOption;
+				selectedTagIds.has(tagId) ? selectedTagIds.delete(tagId) : selectedTagIds.add(tagId);
+				renderTagSelector();
+			});
+			document.addEventListener('click', (event) => {
+				if (!productInputs.tags?.contains(event.target as Node)) setTagsDropdownOpen(false);
+			});
+
+			imagePreview?.addEventListener('click', async (event) => {
+				const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-remove-image]');
+				const productId = productInputs.id?.value;
+				const path = button?.dataset.removeImage;
+				if (!button || !productId || !path) return;
+				if (!confirm('Remover esta imagem do produto?')) return;
+				button.disabled = true;
+				try {
+					const product = products.find((item) => item.id === productId);
+					if (!product) throw new Error('Produto não encontrado.');
+					const { error: storageError } = await supabase.storage.from('produtos').remove([path]);
+					if (storageError) throw storageError;
+					const fotos = product.fotos.filter((foto) => foto !== path);
+					const { error } = await supabase.from('produtos').update({ fotos }).eq('id', productId);
+					if (error) throw error;
+					const updatedProduct = { ...product, fotos };
+					products = products.map((item) => (item.id === productId ? updatedProduct : item));
+					renderImagePreview(updatedProduct);
+					renderProducts();
+					showMessage('Imagem removida com sucesso.');
+				} catch (error) {
+					showEditorError(error instanceof Error ? error.message : 'Não foi possível remover a imagem.');
+					button.disabled = false;
+				}
+			});
+
+			productForm?.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				clearEditorError();
+				const saveButton = productForm.querySelector<HTMLButtonElement>('button[type="submit"]');
+				if (saveButton) saveButton.disabled = true;
+				try {
+					const id = productInputs.id?.value;
+					const nome = productInputs.name?.value.trim() ?? '';
+					const codigo = productInputs.code?.value.trim() ?? '';
+					const preco_peca_branca = Number(productInputs.price?.value);
+					const tagIds = [...selectedTagIds];
+					if (!nome || !codigo || !Number.isFinite(preco_peca_branca)) throw new Error('Preencha nome, código e preço corretamente.');
+					if (!/^[A-Za-z0-9_-]+$/.test(codigo)) throw new Error('O código deve conter apenas letras sem acento, números, hífen ou sublinhado.');
+					const payload = { nome, codigo, preco_peca_branca, destaque: Boolean(productInputs.featured?.checked), ativo: Boolean(productInputs.active?.checked) };
+					let productId = id;
+					if (id) {
+						const { error } = await supabase.from('produtos').update(payload).eq('id', id);
+						if (error) throw error;
+					} else {
+						const { data, error } = await supabase.from('produtos').insert({ ...payload, fotos: [], tags: [] }).select('id').single();
+						if (error) throw error;
+						productId = data.id;
+					}
+					if (!productId) throw new Error('Não foi possível identificar o produto salvo.');
+					await syncTags(productId, tagIds);
+					const uploaded = await uploadImages(codigo, productInputs.images?.files ?? null);
+					if (uploaded.length) {
+						const current = products.find((product) => product.id === productId)?.fotos ?? [];
+						const { error } = await supabase.from('produtos').update({ fotos: [...current, ...uploaded] }).eq('id', productId);
+						if (error) throw error;
+					}
+					await loadProducts();
+					closeEditor();
+					showMessage(id ? 'Produto atualizado com sucesso.' : 'Produto criado com sucesso.');
+				} catch (error) {
+					showEditorError(error instanceof Error ? error.message : 'Não foi possível salvar o produto.');
+				} finally {
+					if (saveButton) saveButton.disabled = false;
+				}
+			});
+
+			document.querySelector('#new-product-button')?.addEventListener('click', () => openEditor());
+			document.querySelector('#close-editor-button')?.addEventListener('click', closeEditor);
+			document.querySelector('#cancel-editor-button')?.addEventListener('click', closeEditor);
+			document.querySelector('[data-close-editor]')?.addEventListener('click', closeEditor);
+			document.querySelector('#cancel-product-confirm')?.addEventListener('click', closeProductConfirm);
+			document.querySelector('[data-close-product-confirm]')?.addEventListener('click', closeProductConfirm);
+			confirmProductAction?.addEventListener('click', async () => {
+				if (!pendingProductAction || !confirmProductAction) return;
+				const { product, action } = pendingProductAction;
+				confirmProductAction.disabled = true;
+				try {
+					if (action === 'toggle') {
+						const { error } = await supabase.from('produtos').update({ ativo: !product.ativo }).eq('id', product.id);
+						if (error) throw error;
+						await loadProducts();
+						closeProductConfirm();
+						showMessage(`Produto ${product.ativo ? 'desativado' : 'ativado'} com sucesso.`);
+					} else {
+						if (product.fotos.length) {
+							const { error: storageError } = await supabase.storage.from('produtos').remove(product.fotos);
+							if (storageError) throw storageError;
+						}
+						const { error } = await supabase.from('produtos').delete().eq('id', product.id);
+						if (error) throw error;
+						closeEditor();
+						await loadProducts();
+						closeProductConfirm();
+						showMessage('Produto excluído com sucesso.');
+					}
+				} catch (error) {
+					closeProductConfirm();
+					showMessage(error instanceof Error ? error.message : 'Não foi possível concluir a operação.', true);
+				} finally {
+					confirmProductAction.disabled = false;
+				}
+			});
+			document.addEventListener('keydown', (event) => {
+				if (event.key === 'Escape' && !editor?.classList.contains('hidden')) closeEditor();
+				if (event.key === 'Escape' && !productConfirmModal?.classList.contains('hidden')) closeProductConfirm();
+			});
 
 			const checkAdmin = async (userId: string) => {
-				const { data, error } = await supabase
-					.from('perfis_admin')
-					.select('ativo')
-					.eq('user_id', userId)
-					.eq('ativo', true)
-					.maybeSingle();
-
+				const { data, error } = await supabase.from('perfis_admin').select('ativo').eq('user_id', userId).eq('ativo', true).maybeSingle();
 				if (error) throw error;
 				return Boolean(data);
 			};
-
 			const loadSession = async () => {
 				const { data, error } = await supabase.auth.getSession();
 				if (error) throw error;
-
 				if (!data.session?.user) {
 					showLogin();
 					return;
 				}
-
 				if (!(await checkAdmin(data.session.user.id))) {
 					await supabase.auth.signOut();
-					showError('Este usuário não possui permissão para acessar o painel.');
+					showLoginError('Este usuário não possui permissão para acessar o painel.');
 					return;
 				}
-
 				showAdmin(data.session.user.email ?? 'usuário autenticado');
+				await loadProducts();
+				const { data: profile } = await supabase.from('perfis_admin').select('administrador_principal').eq('user_id', data.session.user.id).eq('ativo', true).maybeSingle();
+				if (profile?.administrador_principal) usersLink?.classList.remove('hidden');
 			};
-
 			loginForm?.addEventListener('submit', async (event) => {
 				event.preventDefault();
-				if (loginError) loginError.classList.add('hidden');
+				loginError?.classList.add('hidden');
 				if (submitButton) submitButton.disabled = true;
-
 				const formData = new FormData(loginForm);
-				const { error } = await supabase.auth.signInWithPassword({
-					email: String(formData.get('email') ?? ''),
-					password: String(formData.get('password') ?? ''),
-				});
-
-				if (error) showError('Não foi possível entrar. Verifique o e-mail e a senha.');
-				else await loadSession();
+				const { error } = await supabase.auth.signInWithPassword({ email: String(formData.get('email') ?? ''), password: String(formData.get('password') ?? '') });
+				if (error) showLoginError('Não foi possível entrar. Verifique o e-mail e a senha.');
+				else await loadSession().catch(() => showLoginError('Não foi possível carregar o painel.'));
 				if (submitButton) submitButton.disabled = false;
 			});
-
 			logoutButton?.addEventListener('click', async () => {
 				const { error } = await supabase.auth.signOut();
-				if (error) {
-					showError('Não foi possível encerrar a sessão. Tente novamente.');
-					return;
-				}
-				showLogin();
+				if (error) showLoginError('Não foi possível encerrar a sessão. Tente novamente.');
+				else showLogin();
 			});
-
 			supabase.auth.onAuthStateChange((_event, session) => {
 				if (!session) showLogin();
 			});
-
-			loadSession().catch(() => showError('Não foi possível verificar o acesso. Tente novamente.'));
+			loadSession().catch(() => showLoginError('Não foi possível verificar o acesso. Tente novamente.'));
 		</script>
 	</body>
 </html>

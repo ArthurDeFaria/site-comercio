@@ -38,6 +38,22 @@ All commands are run from the root of the project, from a terminal:
 | `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
 | `npm run astro -- --help` | Get help using the Astro CLI                     |
 
+## Gestão de usuários administrativos
+
+O administrador principal pode convidar, criar diretamente com senha, desativar, reativar e excluir
+usuários pela seção **Usuários administrativos** do painel. As operações usam a Edge Function
+`admin-users`, mantendo a chave `SUPABASE_SERVICE_ROLE_KEY` somente no ambiente do Supabase.
+
+Publique a função antes de usar esses controles:
+
+```sh
+supabase functions deploy admin-users
+```
+
+Configure `SUPABASE_URL`, `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY` como secrets da
+Edge Function. Desativar um usuário preserva sua conta no Auth; excluir remove definitivamente
+a conta e o perfil administrativo.
+
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

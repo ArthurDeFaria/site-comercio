@@ -1,0 +1,412 @@
+---
+import '../../styles/global.css';
+---
+
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content="Gerenciamento de usuários administrativos da Art Brasil Presentes." />
+		<title>Usuários administrativos | Art Brasil Presentes</title>
+	</head>
+	<body>
+		<main class="min-h-screen px-5 py-10 sm:px-8 sm:py-16">
+			<section class="mx-auto max-w-6xl">
+				<div class="flex flex-wrap items-center justify-between gap-4">
+					<div>
+						<a href="/admin" class="brand-display text-2xl font-bold text-[#18324a]">
+							Art Brasil <span class="font-normal italic text-[#c96f4a]">Presentes</span>
+						</a>
+						<p class="mt-6 text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Painel administrativo</p>
+						<h1 class="brand-display mt-2 text-4xl font-bold text-[#18324a]">Usuários</h1>
+					</div>
+					<a href="/admin" class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Voltar ao catálogo</a>
+				</div>
+
+				<p id="login-error" class="mt-8 hidden rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
+				<section id="users-panel" class="mt-8 hidden rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-sm sm:p-7">
+					<div class="flex flex-wrap items-center justify-between gap-3">
+						<div>
+							<h2 class="brand-display text-3xl font-bold text-[#18324a]">Usuários administrativos</h2>
+							<p class="mt-1 text-sm text-[#486174]">Adicione, desative, reative ou exclua acessos ao painel.</p>
+						</div>
+						<button id="new-user-button" type="button" class="admin-action-button rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]">Adicionar usuário</button>
+					</div>
+					<p id="users-message" class="mt-5 hidden rounded-2xl p-4 text-sm" role="status"></p>
+					<div id="users-list" class="mt-5 grid gap-3"></div>
+				</section>
+			</section>
+		</main>
+
+		<div id="new-user-modal" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="new-user-title">
+			<div class="admin-modal-backdrop" data-close-user-modal></div>
+			<form id="new-user-form" class="admin-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-2xl sm:p-8">
+				<div class="flex items-start justify-between gap-4">
+					<div>
+						<p class="text-xs font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Acesso administrativo</p>
+						<h2 id="new-user-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Adicionar usuário</h2>
+					</div>
+					<button type="button" class="admin-icon-button rounded-full p-2 text-2xl leading-none text-[#486174]" data-close-user-modal aria-label="Fechar">×</button>
+				</div>
+				<label for="new-user-mode" class="mt-6 block text-sm font-bold text-[#18324a]">Forma de acesso</label>
+				<select id="new-user-mode" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]">
+					<option value="invite">Convidar por e-mail</option>
+					<option value="direct">Criar diretamente</option>
+				</select>
+				<label for="new-user-email" class="mt-6 block text-sm font-bold text-[#18324a]">E-mail</label>
+				<input id="new-user-email" type="email" required autocomplete="email" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" placeholder="usuario@empresa.com" />
+				<div id="direct-user-fields" class="hidden">
+					<label for="new-user-password" class="mt-5 block text-sm font-bold text-[#18324a]">Senha inicial</label>
+					<input id="new-user-password" type="password" minlength="6" autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+					<label class="mt-4 flex items-center gap-3 text-sm text-[#18324a]">
+						<input id="new-user-must-change-password" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
+						Exigir troca de senha no primeiro acesso
+					</label>
+				</div>
+				<p id="new-user-help" class="mt-2 text-xs leading-5 text-[#486174]">O usuário receberá um convite para criar a própria senha.</p>
+				<div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+					<button type="button" data-close-user-modal class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Cancelar</button>
+					<button type="submit" class="admin-action-button rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]">Enviar convite</button>
+				</div>
+			</form>
+		</div>
+
+		<div id="confirm-user-modal" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-user-title">
+			<div class="admin-modal-backdrop" data-close-confirm-user></div>
+			<section class="admin-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-2xl sm:p-8">
+				<div class="flex items-start justify-between gap-4">
+					<div>
+						<p class="text-xs font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Confirmação</p>
+						<h2 id="confirm-user-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Confirmar ação</h2>
+					</div>
+					<button type="button" class="admin-icon-button rounded-full p-2 text-2xl leading-none text-[#486174]" data-close-confirm-user aria-label="Fechar">×</button>
+				</div>
+				<p id="confirm-user-message" class="mt-5 text-sm leading-6 text-[#486174]"></p>
+				<div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+					<button type="button" data-close-confirm-user class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Cancelar</button>
+					<button id="confirm-user-button" type="button" class="rounded-full bg-[#a95235] px-5 py-3 font-bold text-white hover:bg-[#8f422c]">Confirmar</button>
+				</div>
+			</section>
+		</div>
+
+		<div id="reset-password-modal" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="reset-password-title">
+			<div class="admin-modal-backdrop" data-close-reset-password></div>
+			<form id="reset-password-form" class="admin-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-2xl sm:p-8">
+				<div class="flex items-start justify-between gap-4">
+					<div>
+						<p class="text-xs font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Acesso administrativo</p>
+						<h2 id="reset-password-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Redefinir senha</h2>
+						<p id="reset-password-email" class="mt-2 text-sm text-[#486174]"></p>
+					</div>
+					<button type="button" class="admin-icon-button rounded-full p-2 text-2xl leading-none text-[#486174]" data-close-reset-password aria-label="Fechar">×</button>
+				</div>
+				<input id="reset-password-user-id" type="hidden" />
+				<label for="reset-password-value" class="mt-6 block text-sm font-bold text-[#18324a]">Nova senha</label>
+				<input id="reset-password-value" type="password" minlength="6" required autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+				<label class="mt-4 flex items-center gap-3 text-sm text-[#18324a]">
+					<input id="reset-password-must-change" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
+					Exigir troca de senha no próximo acesso
+				</label>
+				<div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+					<button type="button" data-close-reset-password class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Cancelar</button>
+					<button type="submit" class="admin-action-button rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]">Salvar nova senha</button>
+				</div>
+			</form>
+		</div>
+
+		<script>
+			import { supabase } from '../../lib/supabase';
+
+			type AdminUser = {
+				user_id: string;
+				email: string;
+				administrador_principal: boolean;
+				ativo: boolean;
+			};
+			const closeResetPasswordModal = () => {
+				resetPasswordModal?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+				resetPasswordForm?.reset();
+			};
+			const openResetPasswordModal = (userId: string, email: string) => {
+				if (resetPasswordUserId) resetPasswordUserId.value = userId;
+				if (resetPasswordEmail) resetPasswordEmail.textContent = email;
+				resetPasswordModal?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				window.setTimeout(() => resetPasswordValue?.focus(), 0);
+			};
+			const closeConfirmUserModal = () => {
+				confirmUserModal?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+				pendingUserConfirmation = null;
+			};
+			const openConfirmUserModal = (message: string, action: () => Promise<void>) => {
+				if (confirmUserMessage) confirmUserMessage.textContent = message;
+				pendingUserConfirmation = action;
+				confirmUserModal?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				window.setTimeout(() => confirmUserButton?.focus(), 0);
+			};
+
+			const panel = document.querySelector<HTMLElement>('#users-panel');
+			const loginError = document.querySelector<HTMLElement>('#login-error');
+			const usersList = document.querySelector<HTMLElement>('#users-list');
+			const usersMessage = document.querySelector<HTMLElement>('#users-message');
+			const newUserModal = document.querySelector<HTMLElement>('#new-user-modal');
+			const newUserForm = document.querySelector<HTMLFormElement>('#new-user-form');
+			const newUserEmail = document.querySelector<HTMLInputElement>('#new-user-email');
+			const newUserMode = document.querySelector<HTMLSelectElement>('#new-user-mode');
+			const directUserFields = document.querySelector<HTMLElement>('#direct-user-fields');
+			const newUserPassword = document.querySelector<HTMLInputElement>('#new-user-password');
+			const newUserMustChangePassword = document.querySelector<HTMLInputElement>('#new-user-must-change-password');
+			const newUserHelp = document.querySelector<HTMLElement>('#new-user-help');
+			const newUserSubmit = newUserForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
+			const resetPasswordModal = document.querySelector<HTMLElement>('#reset-password-modal');
+			const resetPasswordForm = document.querySelector<HTMLFormElement>('#reset-password-form');
+			const resetPasswordUserId = document.querySelector<HTMLInputElement>('#reset-password-user-id');
+			const resetPasswordEmail = document.querySelector<HTMLElement>('#reset-password-email');
+			const resetPasswordValue = document.querySelector<HTMLInputElement>('#reset-password-value');
+			const resetPasswordMustChange = document.querySelector<HTMLInputElement>('#reset-password-must-change');
+			const resetPasswordSubmit = resetPasswordForm?.querySelector<HTMLButtonElement>('button[type="submit"]');
+			const confirmUserModal = document.querySelector<HTMLElement>('#confirm-user-modal');
+			const confirmUserMessage = document.querySelector<HTMLElement>('#confirm-user-message');
+			const confirmUserButton = document.querySelector<HTMLButtonElement>('#confirm-user-button');
+			let adminUsers: AdminUser[] = [];
+			let pendingUserConfirmation: (() => Promise<void>) | null = null;
+
+			const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
+				'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
+			})[character] ?? character);
+			const showError = (message: string) => {
+				if (loginError) {
+					loginError.textContent = message;
+					loginError.classList.remove('hidden');
+				}
+			};
+			const showMessage = (message: string, error = false) => {
+				if (usersMessage) {
+					usersMessage.textContent = message;
+					usersMessage.className = `mt-5 rounded-2xl border p-4 text-sm ${error ? 'border-red-200 bg-red-50 text-red-900' : 'border-green-200 bg-green-50 text-green-900'}`;
+				}
+			};
+			const getFunctionError = async (error: unknown) => {
+				if (error && typeof error === 'object' && 'context' in error) {
+					const context = (error as { context?: Response }).context;
+					if (context) {
+						try {
+							const text = await context.clone().text();
+							if (text) {
+								try {
+									const body = JSON.parse(text) as { error?: string };
+									if (body.error) return body.error;
+								} catch {
+									return text;
+								}
+							}
+						} catch {
+							// Fall back to the SDK error when the response body is unavailable.
+						}
+					}
+				}
+				if (error instanceof Error && error.message !== 'Edge Function returned a non-2xx status code') return error.message;
+				return 'A Edge Function rejeitou a operação. Verifique se a versão publicada está atualizada.';
+			};
+			const closeUserModal = () => {
+				newUserModal?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+				newUserForm?.reset();
+				directUserFields?.classList.add('hidden');
+				if (newUserPassword) newUserPassword.required = false;
+				if (newUserHelp) newUserHelp.textContent = 'O usuário receberá um convite para criar a própria senha.';
+				if (newUserSubmit) newUserSubmit.textContent = 'Enviar convite';
+			};
+			const updateNewUserMode = () => {
+				const direct = newUserMode?.value === 'direct';
+				directUserFields?.classList.toggle('hidden', !direct);
+				if (newUserPassword) newUserPassword.required = Boolean(direct);
+				if (newUserHelp) newUserHelp.textContent = direct
+					? 'O usuário será criado imediatamente com a senha definida pelo administrador.'
+					: 'O usuário receberá um convite para criar a própria senha.';
+				if (newUserSubmit) newUserSubmit.textContent = direct ? 'Criar usuário' : 'Enviar convite';
+			};
+			const renderUsers = () => {
+				if (!usersList) return;
+				usersList.innerHTML = adminUsers.length
+					? adminUsers.map((user) => `
+						<div class="flex flex-col gap-3 rounded-2xl border border-[#e4ddd2] bg-white p-4 sm:flex-row sm:items-center sm:justify-between">
+							<div class="min-w-0">
+								<p class="truncate font-bold text-[#18324a]">${escapeHtml(user.email)}</p>
+								<p class="mt-1 text-xs text-[#486174]">${user.administrador_principal ? 'Administrador principal' : user.ativo ? 'Acesso ativo' : 'Acesso desativado'}</p>
+							</div>
+							${user.administrador_principal
+								? '<span class="rounded-full bg-[#e8eef0] px-3 py-1 text-center text-xs font-bold text-[#486174]">Protegido</span>'
+								: `<div class="flex flex-wrap gap-2">
+									<button type="button" data-user-action="reset-password" data-user-id="${user.user_id}" data-user-email="${escapeHtml(user.email)}" class="admin-outline-button rounded-full border border-[#18324a] px-3 py-2 text-sm font-bold text-[#18324a]">Redefinir senha</button>
+									<button type="button" data-user-action="${user.ativo ? 'deactivate' : 'activate'}" data-user-id="${user.user_id}" data-user-email="${escapeHtml(user.email)}" class="admin-outline-button rounded-full border border-[#c96f4a] px-3 py-2 text-sm font-bold text-[#a95235]">${user.ativo ? 'Desativar' : 'Ativar'}</button>
+									<button type="button" data-user-action="delete" data-user-id="${user.user_id}" data-user-email="${escapeHtml(user.email)}" class="admin-outline-button rounded-full border border-red-300 px-3 py-2 text-sm font-bold text-red-700">Excluir</button>
+								</div>`}
+						</div>
+					`).join('')
+					: '<p class="rounded-2xl border border-dashed border-[#d8cfc2] p-5 text-sm text-[#486174]">Nenhum usuário administrativo cadastrado.</p>';
+			};
+			const loadUsers = async () => {
+				const { data, error } = await supabase.functions.invoke('admin-users', { body: { action: 'list' } });
+				if (error) throw error;
+				if (data?.error) throw new Error(data.error);
+				adminUsers = (data?.users ?? []) as AdminUser[];
+				renderUsers();
+			};
+			const runUserAction = async (action: string, userId: string) => {
+				const { data, error } = await supabase.functions.invoke('admin-users', { body: { action, userId } });
+				if (error) throw error;
+				if (data?.error) throw new Error(data.error);
+				await loadUsers();
+				showMessage(data?.message ?? 'Operação concluída.');
+			};
+
+			usersList?.addEventListener('click', async (event) => {
+				const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-user-action]');
+				if (!button?.dataset.userAction || !button.dataset.userId) return;
+				if (button.dataset.userAction === 'reset-password') {
+					openResetPasswordModal(button.dataset.userId, button.dataset.userEmail ?? '');
+					return;
+				}
+				if (button.dataset.userAction === 'delete' || button.dataset.userAction === 'deactivate') {
+					const action = button.dataset.userAction;
+					const email = button.dataset.userEmail ?? 'este usuário';
+					openConfirmUserModal(
+						action === 'delete'
+							? `Excluir definitivamente ${email}? Esta ação não pode ser desfeita.`
+							: `Desativar o acesso de ${email}? O usuário poderá ser reativado depois.`,
+						async () => {
+							button.disabled = true;
+							try {
+								await runUserAction(action, button.dataset.userId as string);
+							} catch (error) {
+								showMessage(await getFunctionError(error), true);
+							} finally {
+								button.disabled = false;
+							}
+						},
+					);
+					return;
+				}
+				button.disabled = true;
+				try {
+					await runUserAction(button.dataset.userAction, button.dataset.userId);
+				} catch (error) {
+					showMessage(await getFunctionError(error), true);
+				} finally {
+					button.disabled = false;
+				}
+			});
+			document.querySelector('#new-user-button')?.addEventListener('click', () => {
+				newUserModal?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				window.setTimeout(() => newUserEmail?.focus(), 0);
+			});
+			newUserMode?.addEventListener('change', updateNewUserMode);
+			newUserModal?.querySelectorAll('[data-close-user-modal]').forEach((element) => element.addEventListener('click', closeUserModal));
+			resetPasswordModal?.querySelectorAll('[data-close-reset-password]').forEach((element) => element.addEventListener('click', closeResetPasswordModal));
+			confirmUserModal?.querySelectorAll('[data-close-confirm-user]').forEach((element) => element.addEventListener('click', closeConfirmUserModal));
+			confirmUserButton?.addEventListener('click', async () => {
+				const action = pendingUserConfirmation;
+				if (!action) return;
+				confirmUserButton.disabled = true;
+				closeConfirmUserModal();
+				try {
+					await action();
+				} finally {
+					confirmUserButton.disabled = false;
+				}
+			});
+			resetPasswordForm?.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				const userId = resetPasswordUserId?.value ?? '';
+				const password = resetPasswordValue?.value ?? '';
+				if (!userId || password.length < 6) {
+					resetPasswordValue?.focus();
+					return;
+				}
+				if (resetPasswordSubmit) resetPasswordSubmit.disabled = true;
+				try {
+					const { data, error } = await supabase.functions.invoke('admin-users', {
+						body: {
+							action: 'reset-password',
+							userId,
+							password,
+							mustChangePassword: Boolean(resetPasswordMustChange?.checked),
+						},
+					});
+					if (error) throw error;
+					if (data?.error) throw new Error(data.error);
+					closeResetPasswordModal();
+					showMessage(data?.message ?? 'Senha redefinida com sucesso.');
+				} catch (error) {
+					showMessage(await getFunctionError(error), true);
+				} finally {
+					if (resetPasswordSubmit) resetPasswordSubmit.disabled = false;
+				}
+			});
+			newUserForm?.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				const email = newUserEmail?.value.trim() ?? '';
+				const direct = newUserMode?.value === 'direct';
+				const password = newUserPassword?.value ?? '';
+				if (direct && password.length < 6) {
+					newUserPassword?.focus();
+					return;
+				}
+				if (newUserSubmit) newUserSubmit.disabled = true;
+				try {
+					const { data, error } = await supabase.functions.invoke('admin-users', {
+						body: {
+							action: direct ? 'create' : 'invite',
+							email,
+							password: direct ? password : undefined,
+							mustChangePassword: direct ? Boolean(newUserMustChangePassword?.checked) : false,
+						},
+					});
+					if (error) throw error;
+					if (data?.error) throw new Error(data.error);
+					closeUserModal();
+					await loadUsers();
+					showMessage(data?.message ?? 'Operação concluída.');
+				} catch (error) {
+					showMessage(await getFunctionError(error), true);
+				} finally {
+					if (newUserSubmit) newUserSubmit.disabled = false;
+				}
+			});
+			document.addEventListener('keydown', (event) => {
+				if (event.key === 'Escape' && !newUserModal?.classList.contains('hidden')) closeUserModal();
+				if (event.key === 'Escape' && !resetPasswordModal?.classList.contains('hidden')) closeResetPasswordModal();
+				if (event.key === 'Escape' && !confirmUserModal?.classList.contains('hidden')) closeConfirmUserModal();
+			});
+
+			const loadSession = async () => {
+				const { data, error } = await supabase.auth.getSession();
+				if (error) throw error;
+				if (!data.session?.user) {
+					showError('Faça login no painel para gerenciar usuários.');
+					return;
+				}
+				const { data: profile, error: profileError } = await supabase
+					.from('perfis_admin')
+					.select('administrador_principal')
+					.eq('user_id', data.session.user.id)
+					.eq('ativo', true)
+					.maybeSingle();
+				if (profileError) throw profileError;
+				if (!profile?.administrador_principal) {
+					await supabase.auth.signOut();
+					showError('Apenas o administrador principal pode acessar esta página.');
+					return;
+				}
+				panel?.classList.remove('hidden');
+				await loadUsers();
+			};
+			loadSession().catch(async (error) => showError(await getFunctionError(error)));
+		</script>
+	</body>
+</html>

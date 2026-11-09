@@ -1,0 +1,474 @@
+---
+import '../../styles/global.css';
+---
+
+<html lang="pt-BR">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content="Gerenciamento de tags do catálogo Art Brasil Presentes." />
+		<title>Gerenciar tags | Art Brasil Presentes</title>
+	</head>
+	<body>
+		<main class="min-h-screen px-5 py-10 sm:px-8 sm:py-16">
+			<section class="mx-auto max-w-6xl">
+				<div class="flex flex-wrap items-center justify-between gap-4">
+					<div>
+						<a href="/admin" class="brand-display text-2xl font-bold text-[#18324a]">
+							Art Brasil <span class="font-normal italic text-[#c96f4a]">Presentes</span>
+						</a>
+						<p class="mt-6 text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Painel administrativo</p>
+						<h1 class="brand-display mt-2 text-4xl font-bold text-[#18324a]">Organizar tags</h1>
+					</div>
+					<a href="/admin" class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Voltar ao catálogo</a>
+				</div>
+
+				<div id="login-error" class="hidden mt-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></div>
+				<section id="tags-panel" class="mt-8 hidden">
+					<div class="rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-sm sm:p-7">
+						<p id="tags-message" class="mt-5 hidden rounded-2xl p-4 text-sm" role="status"></p>
+						<div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+							<div class="flex min-w-0 flex-col">
+								<div class="flex h-10 items-center justify-between gap-3">
+									<h3 class="font-bold text-[#18324a]">Produtos</h3>
+									<button id="clear-products-button" type="button" class="text-sm font-bold text-[#c96f4a] hover:text-[#a95235]">Limpar seleção</button>
+								</div>
+								<input id="product-filter" type="search" placeholder="Procurar produto por nome ou código" class="admin-text-field mt-3 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a]" />
+								<div id="tag-products" class="mt-3 grid gap-3 sm:grid-cols-2"></div>
+								<div id="selected-product-tags" class="mt-4 hidden rounded-2xl border border-[#e4ddd2] bg-[#f7f3ec] p-4"></div>
+							</div>
+							<aside class="min-w-0">
+								<div class="flex h-10 items-center justify-between gap-3">
+									<h3 class="font-bold text-[#18324a]">Tags</h3>
+									<button id="new-tag-button" type="button" class="admin-action-button rounded-full bg-[#c96f4a] px-4 py-2 text-sm font-bold text-white hover:bg-[#a95235]">+ Nova tag</button>
+								</div>
+								<input id="tag-filter" type="search" placeholder="Procurar tag" class="admin-text-field mt-3 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a]" />
+								<div id="tag-list" class="mt-3 space-y-2"></div>
+							</aside>
+						</div>
+					</div>
+				</section>
+			</section>
+		</main>
+
+		<div id="new-tag-modal" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="new-tag-title">
+			<div class="admin-modal-backdrop" data-close-new-tag></div>
+			<form id="new-tag-form" class="admin-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-2xl sm:p-8">
+				<div class="flex items-start justify-between gap-4">
+					<div>
+						<p class="text-xs font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Organizar catálogo</p>
+						<h2 id="new-tag-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Criar nova tag</h2>
+						<p class="mt-2 text-sm leading-6 text-[#486174]">Dê um nome curto e fácil de encontrar para essa tag.</p>
+					</div>
+					<button type="button" class="admin-icon-button rounded-full p-2 text-2xl leading-none text-[#486174]" data-close-new-tag aria-label="Fechar">×</button>
+				</div>
+				<label for="new-tag-name" class="mt-6 block text-sm font-bold text-[#18324a]">Nome da tag</label>
+				<input id="new-tag-name" name="nome" type="text" maxlength="80" required autocomplete="off" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" placeholder="Ex.: Cerâmica" />
+				<div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+					<button type="button" data-close-new-tag class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Cancelar</button>
+					<button type="submit" class="admin-action-button rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]">Criar tag</button>
+				</div>
+			</form>
+		</div>
+
+		<script>
+			import { supabase } from '../../lib/supabase';
+
+			type Product = { id: string; nome: string; codigo: string; tags: string[] };
+			type Tag = { id: string; nome: string };
+			type Relation = { produto_id: string; tag_id: string };
+
+			const panel = document.querySelector<HTMLElement>('#tags-panel');
+			const loginError = document.querySelector<HTMLElement>('#login-error');
+			const productsElement = document.querySelector<HTMLElement>('#tag-products');
+			const tagsElement = document.querySelector<HTMLElement>('#tag-list');
+			const selectedProductTagsElement = document.querySelector<HTMLElement>('#selected-product-tags');
+			const productFilter = document.querySelector<HTMLInputElement>('#product-filter');
+			const tagFilter = document.querySelector<HTMLInputElement>('#tag-filter');
+			const newTagModal = document.querySelector<HTMLElement>('#new-tag-modal');
+			const newTagForm = document.querySelector<HTMLFormElement>('#new-tag-form');
+			const newTagName = document.querySelector<HTMLInputElement>('#new-tag-name');
+			const relationActionButtons: HTMLButtonElement[] = [];
+			const messageElement = document.querySelector<HTMLElement>('#tags-message');
+			let products: Product[] = [];
+			let tags: Tag[] = [];
+			let relations: Relation[] = [];
+			const selectedProducts = new Set<string>();
+			const selectedTags = new Set<string>();
+
+			const escapeHtml = (value: string) =>
+				value.replace(/[&<>"']/g, (character) => ({
+					'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
+				})[character] ?? character);
+			const showError = (message: string) => {
+				if (loginError) {
+					loginError.textContent = message;
+					loginError.classList.remove('hidden');
+				}
+			};
+			const showMessage = (message: string, error = false) => {
+				if (messageElement) {
+					messageElement.textContent = message;
+					messageElement.className = `mt-5 rounded-2xl border p-4 text-sm ${error ? 'border-red-200 bg-red-50 text-red-900' : 'border-green-200 bg-green-50 text-green-900'}`;
+				}
+			};
+			const closeNewTagModal = () => {
+				newTagModal?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+				newTagForm?.reset();
+			};
+			const openNewTagModal = () => {
+				newTagModal?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				window.setTimeout(() => newTagName?.focus(), 0);
+			};
+			const hasRelation = (productId: string, tagId: string) =>
+				relations.some((relation) => relation.produto_id === productId && relation.tag_id === tagId);
+			const syncSelectedTags = () => {
+				const selectedProductIds = [...selectedProducts];
+				selectedTags.clear();
+				if (!selectedProductIds.length) return;
+
+				for (const tag of tags) {
+					if (selectedProductIds.every((productId) => hasRelation(productId, tag.id))) {
+						selectedTags.add(tag.id);
+					}
+				}
+			};
+			const render = () => {
+				const normalizedProductFilter = productFilter?.value.trim().toLocaleLowerCase('pt-BR') ?? '';
+				const normalizedTagFilter = tagFilter?.value.trim().toLocaleLowerCase('pt-BR') ?? '';
+				const selectedProduct = selectedProducts.size === 1
+					? products.find((product) => selectedProducts.has(product.id))
+					: undefined;
+				const selectedProductList = products.filter((product) => selectedProducts.has(product.id));
+
+				if (productsElement) {
+					const filteredProducts = products.filter((product) =>
+						`${product.nome} ${product.codigo}`.toLocaleLowerCase('pt-BR').includes(normalizedProductFilter),
+					);
+					productsElement.innerHTML = filteredProducts.length
+						? filteredProducts.map((product) => `
+						<button type="button" draggable="true" data-product-id="${product.id}" class="tag-product-card ${selectedProducts.has(product.id) ? 'is-selected' : ''} rounded-2xl border p-4 text-left">
+							<span class="block font-bold text-[#18324a]">${escapeHtml(product.nome)}</span>
+							<span class="mt-1 block text-xs text-[#486174]">${escapeHtml(product.codigo)}</span>
+							<span class="mt-3 block text-xs text-[#486174]">${relations.filter((relation) => relation.produto_id === product.id).length} tag(s) atribuída(s)</span>
+						</button>
+					`).join('')
+						: '<p class="rounded-2xl border border-dashed border-[#d8cfc2] p-5 text-sm text-[#486174] sm:col-span-2">Nenhum produto encontrado.</p>';
+				}
+				if (selectedProductTagsElement) {
+					if (!selectedProductList.length) {
+						selectedProductTagsElement.classList.add('hidden');
+						selectedProductTagsElement.innerHTML = '';
+					} else {
+						selectedProductTagsElement.classList.remove('hidden');
+						selectedProductTagsElement.innerHTML = `
+							<p class="text-xs font-bold uppercase tracking-[0.12em] text-[#c96f4a]">Tags dos produtos selecionados</p>
+							<div class="mt-3 space-y-3">
+								${selectedProductList.map((product) => {
+									const productTags = tags.filter((tag) => hasRelation(product.id, tag.id));
+									return `
+										<div class="rounded-2xl border border-[#e4ddd2] bg-white p-3">
+											<p class="font-bold text-[#18324a]">${escapeHtml(product.nome)}</p>
+											<div class="mt-2 flex flex-wrap gap-2">
+												${
+													productTags.length
+														? productTags.map((tag) => `<span class="rounded-full bg-[#c96f4a] px-3 py-1.5 text-xs font-bold text-white">${escapeHtml(tag.nome)}</span>`).join('')
+														: '<span class="text-sm text-[#486174]">Sem tags atribuídas.</span>'
+												}
+											</div>
+										</div>
+									`;
+								}).join('')}
+							</div>
+						`;
+					}
+				}
+				if (tagsElement) {
+					const filteredTags = tags.filter((tag) => tag.nome.toLocaleLowerCase('pt-BR').includes(normalizedTagFilter));
+					tagsElement.innerHTML = filteredTags.length ? filteredTags.map((tag) => {
+						const count = products.filter((product) => hasRelation(product.id, tag.id)).length;
+						const isAssignedToSelectedProduct = Boolean(selectedProduct && hasRelation(selectedProduct.id, tag.id));
+						return `
+							<div data-tag-id="${tag.id}" class="tag-drop-target ${selectedTags.has(tag.id) ? 'is-selected' : ''} ${isAssignedToSelectedProduct ? 'is-assigned' : ''} flex w-full items-center justify-between gap-3 rounded-2xl border p-3 text-left">
+								<span class="font-bold text-[#18324a]">${escapeHtml(tag.nome)}</span>
+								<span class="flex items-center gap-2">
+									<span class="rounded-full bg-[#e8eef0] px-2 py-1 text-xs text-[#486174]">${count}</span>
+									<button type="button" data-delete-tag="${tag.id}" class="tag-delete-button rounded-full p-2 text-red-600 hover:bg-red-50" aria-label="Excluir tag ${escapeHtml(tag.nome)}" title="Excluir tag">
+										<svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+											<path d="M4 7h16" />
+											<path d="M10 11v6M14 11v6" />
+											<path d="M6 7l1 13h10l1-13" />
+											<path d="M9 7V4h6v3" />
+										</svg>
+									</button>
+								</span>
+							</div>
+						`;
+					}).join('') : '<p class="rounded-2xl border border-dashed border-[#d8cfc2] p-4 text-sm text-[#486174]">Nenhuma tag encontrada.</p>';
+				}
+			};
+			const refresh = async () => {
+				const [{ data: productData, error: productError }, { data: tagData, error: tagError }, { data: relationData, error: relationError }] = await Promise.all([
+					supabase.from('produtos').select('id,nome,codigo,tags').order('nome'),
+					supabase.from('tags').select('id,nome').order('nome'),
+					supabase.from('produto_tags').select('produto_id,tag_id'),
+				]);
+				if (productError) throw productError;
+				if (tagError) throw tagError;
+				if (relationError) throw relationError;
+				products = (productData ?? []) as Product[];
+				tags = (tagData ?? []) as Tag[];
+				relations = (relationData ?? []) as Relation[];
+				syncSelectedTags();
+				render();
+			};
+			const updateRelations = async (add: boolean) => {
+				if (!selectedProducts.size || !selectedTags.size) {
+					showMessage('Selecione pelo menos um produto e uma tag.', true);
+					return;
+				}
+				relationActionButtons.forEach((button) => {
+					button.disabled = true;
+				});
+				const productIds = [...selectedProducts];
+				const tagIds = [...selectedTags];
+				try {
+					if (add) {
+						const rows = productIds.flatMap((produto_id) => tagIds.map((tag_id) => ({ produto_id, tag_id })));
+						const { error } = await supabase.from('produto_tags').upsert(rows, { onConflict: 'produto_id,tag_id', ignoreDuplicates: true });
+						if (error) throw error;
+					} else {
+						const { error } = await supabase.from('produto_tags').delete().in('produto_id', productIds).in('tag_id', tagIds);
+						if (error) throw error;
+					}
+
+					const selectedTagNames = tags.filter((tag) => tagIds.includes(tag.id)).map((tag) => tag.nome);
+					await Promise.all(productIds.map(async (productId) => {
+						const product = products.find((item) => item.id === productId);
+						if (!product) return;
+						const nextTags = add
+							? [...new Set([...product.tags, ...selectedTagNames])]
+							: product.tags.filter((nome) => !selectedTagNames.includes(nome));
+						const { error } = await supabase.from('produtos').update({ tags: nextTags }).eq('id', productId);
+						if (error) throw error;
+					}));
+
+					selectedProducts.clear();
+					selectedTags.clear();
+					await refresh();
+					showMessage(add ? 'Tags adicionadas com sucesso.' : 'Tags removidas com sucesso.');
+				} finally {
+					relationActionButtons.forEach((button) => {
+						button.disabled = false;
+					});
+				}
+			};
+			const assignTagToSelectedProducts = async (tagId: string) => {
+				const tag = tags.find((item) => item.id === tagId);
+				if (!tag || !selectedProducts.size) return;
+
+				relationActionButtons.forEach((button) => {
+					button.disabled = true;
+				});
+				try {
+					const productIds = [...selectedProducts];
+					const { error: relationError } = await supabase
+						.from('produto_tags')
+						.upsert(productIds.map((produto_id) => ({ produto_id, tag_id: tagId })), { onConflict: 'produto_id,tag_id', ignoreDuplicates: true });
+					if (relationError) throw relationError;
+
+					await Promise.all(productIds.map(async (productId) => {
+						const product = products.find((item) => item.id === productId);
+						if (!product) return;
+						const nextTags = [...new Set([...product.tags, tag.nome])];
+						const { error: productError } = await supabase.from('produtos').update({ tags: nextTags }).eq('id', productId);
+						if (productError) throw productError;
+					}));
+
+					selectedTags.delete(tagId);
+					await refresh();
+					showMessage(`Tag "${tag.nome}" adicionada ${productIds.length === 1 ? 'ao produto selecionado' : 'aos produtos selecionados'}.`);
+				} finally {
+					relationActionButtons.forEach((button) => {
+						button.disabled = false;
+					});
+				}
+			};
+			const removeTagFromSelectedProducts = async (tagId: string) => {
+				const tag = tags.find((item) => item.id === tagId);
+				if (!tag || !selectedProducts.size) return;
+
+				const productIds = [...selectedProducts];
+				relationActionButtons.forEach((button) => {
+					button.disabled = true;
+				});
+				try {
+					const { error: relationError } = await supabase
+						.from('produto_tags')
+						.delete()
+						.in('produto_id', productIds)
+						.eq('tag_id', tagId);
+					if (relationError) throw relationError;
+
+					await Promise.all(productIds.map(async (productId) => {
+						const product = products.find((item) => item.id === productId);
+						if (!product) return;
+						const nextTags = product.tags.filter((nome) => nome !== tag.nome);
+						const { error: productError } = await supabase.from('produtos').update({ tags: nextTags }).eq('id', productId);
+						if (productError) throw productError;
+					}));
+
+					selectedTags.delete(tagId);
+					await refresh();
+					showMessage(`Tag "${tag.nome}" removida ${productIds.length === 1 ? 'do produto selecionado' : 'dos produtos selecionados'}.`);
+				} finally {
+					relationActionButtons.forEach((button) => {
+						button.disabled = false;
+					});
+				}
+			};
+
+			productsElement?.addEventListener('click', (event) => {
+				const card = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-product-id]');
+				if (!card) return;
+				const id = card.dataset.productId;
+				if (!id) return;
+				selectedProducts.has(id) ? selectedProducts.delete(id) : selectedProducts.add(id);
+				syncSelectedTags();
+				render();
+			});
+			productsElement?.addEventListener('dragstart', (event) => {
+				const card = (event.target as HTMLElement).closest<HTMLElement>('[data-product-id]');
+				if (card?.dataset.productId && event.dataTransfer) event.dataTransfer.setData('text/product-id', card.dataset.productId);
+			});
+			tagsElement?.addEventListener('click', async (event) => {
+				const deleteButton = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-delete-tag]');
+				if (deleteButton) {
+					event.stopPropagation();
+					const tagId = deleteButton.dataset.deleteTag;
+					const tag = tags.find((item) => item.id === tagId);
+					if (!tag || !confirm(`Excluir a tag "${tag.nome}"? Os produtos não serão excluídos.`)) return;
+					try {
+						const { error: relationError } = await supabase.from('produto_tags').delete().eq('tag_id', tag.id);
+						if (relationError) throw relationError;
+						await Promise.all(products.map(async (product) => {
+							const nextTags = product.tags.filter((nome) => nome !== tag.nome);
+							if (nextTags.length === product.tags.length) return;
+							const { error: productError } = await supabase.from('produtos').update({ tags: nextTags }).eq('id', product.id);
+							if (productError) throw productError;
+						}));
+						const { error: tagError } = await supabase.from('tags').delete().eq('id', tag.id);
+						if (tagError) throw tagError;
+						selectedTags.delete(tag.id);
+						await refresh();
+						showMessage('Tag excluída. Os produtos foram preservados.');
+					} catch (error) {
+						showMessage(error instanceof Error ? error.message : 'Não foi possível excluir a tag.', true);
+					}
+					return;
+				}
+				const tag = (event.target as HTMLElement).closest<HTMLElement>('[data-tag-id]');
+				if (!tag) return;
+				const id = tag.dataset.tagId;
+				if (!id) return;
+				if (!selectedProducts.size) return;
+				const selectedProductId = selectedProducts.size === 1 ? [...selectedProducts][0] : undefined;
+				if (selectedProducts.size > 1) {
+					try {
+						const isCommonTag = [...selectedProducts].every((productId) => hasRelation(productId, id));
+						if (isCommonTag) await removeTagFromSelectedProducts(id);
+						else await assignTagToSelectedProducts(id);
+					} catch (error) {
+						showMessage(error instanceof Error ? error.message : 'Não foi possível adicionar a tag aos produtos.', true);
+					}
+					return;
+				}
+				if (selectedProductId && hasRelation(selectedProductId, id)) {
+					try {
+						await removeTagFromSelectedProducts(id);
+					} catch (error) {
+						showMessage(error instanceof Error ? error.message : 'Não foi possível desatribuir a tag.', true);
+					}
+					return;
+				}
+				try {
+					await assignTagToSelectedProducts(id);
+				} catch (error) {
+					showMessage(error instanceof Error ? error.message : 'Não foi possível atribuir a tag ao produto.', true);
+				}
+			});
+			tagsElement?.addEventListener('dragover', (event) => {
+				if ((event.target as HTMLElement).closest('[data-tag-id]')) event.preventDefault();
+			});
+			tagsElement?.addEventListener('drop', async (event) => {
+				const tag = (event.target as HTMLElement).closest<HTMLElement>('[data-tag-id]');
+				const productId = event.dataTransfer?.getData('text/product-id');
+				if (!tag || !productId) return;
+				event.preventDefault();
+				selectedProducts.clear();
+				selectedTags.clear();
+				selectedProducts.add(productId);
+				selectedTags.add(tag.dataset.tagId ?? '');
+				try {
+					await updateRelations(true);
+				} catch (error) {
+					showMessage(error instanceof Error ? error.message : 'Não foi possível atribuir a tag.', true);
+				}
+			});
+			document.querySelector('#clear-products-button')?.addEventListener('click', () => {
+				selectedProducts.clear();
+				selectedTags.clear();
+				render();
+			});
+			productFilter?.addEventListener('input', render);
+			tagFilter?.addEventListener('input', render);
+			document.querySelector('#new-tag-button')?.addEventListener('click', openNewTagModal);
+			newTagModal?.querySelectorAll('[data-close-new-tag]').forEach((element) => {
+				element.addEventListener('click', closeNewTagModal);
+			});
+			newTagForm?.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				const nome = newTagName?.value.trim() ?? '';
+				if (!nome) {
+					newTagName?.focus();
+					return;
+				}
+				const submitButton = newTagForm.querySelector<HTMLButtonElement>('button[type="submit"]');
+				if (submitButton) submitButton.disabled = true;
+				const { error } = await supabase.from('tags').insert({ nome });
+				if (submitButton) submitButton.disabled = false;
+				if (error) {
+					showMessage(error.message, true);
+					return;
+				}
+				closeNewTagModal();
+				await refresh();
+				showMessage('Tag criada com sucesso.');
+			});
+			document.addEventListener('keydown', (event) => {
+				if (event.key === 'Escape' && !newTagModal?.classList.contains('hidden')) closeNewTagModal();
+			});
+
+			const loadSession = async () => {
+				const { data, error } = await supabase.auth.getSession();
+				if (error) throw error;
+				if (!data.session?.user) {
+					showError('Faça login no painel para gerenciar as tags.');
+					return;
+				}
+				const { data: admin, error: adminError } = await supabase.from('perfis_admin').select('ativo').eq('user_id', data.session.user.id).eq('ativo', true).maybeSingle();
+				if (adminError) throw adminError;
+				if (!admin) {
+					await supabase.auth.signOut();
+					showError('Este usuário não possui permissão para acessar o painel.');
+					return;
+				}
+				panel?.classList.remove('hidden');
+				await refresh();
+			};
+			loadSession().catch(() => showError('Não foi possível carregar as tags.'));
+		</script>
+	</body>
+</html>
