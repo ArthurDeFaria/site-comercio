@@ -111,7 +111,20 @@ import '../styles/global.css';
 								</label>
 								<div>
 									<label for="product-images" class="block text-sm font-bold text-[#18324a]">Adicionar imagens</label>
-									<input id="product-images" type="file" accept="image/*" multiple class="mt-2 block w-full text-sm text-[#486174]" />
+									<label for="product-images" class="admin-file-upload mt-2 flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-dashed border-[#d8cfc2] bg-[#f7f3ec] px-4 py-4 text-left hover:border-[#c96f4a] hover:bg-[#fff1e9]">
+										<span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-[#c96f4a] shadow-sm" aria-hidden="true">
+											<svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+												<path d="M12 16V4" />
+												<path d="m7 9 5-5 5 5" />
+												<path d="M5 20h14" />
+											</svg>
+										</span>
+										<span class="min-w-0">
+											<span class="block font-bold text-[#18324a]">Clique para escolher imagens</span>
+											<span id="product-images-hint" class="mt-1 block text-xs text-[#486174]">Você pode selecionar várias imagens.</span>
+										</span>
+									</label>
+									<input id="product-images" type="file" accept="image/*" multiple class="sr-only" />
 									<div id="current-images" class="mt-3 grid grid-cols-3 gap-2"></div>
 								</div>
 								<p id="editor-error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
@@ -187,6 +200,7 @@ import '../styles/global.css';
 				featured: document.querySelector<HTMLInputElement>('#product-featured'),
 				active: document.querySelector<HTMLInputElement>('#product-active'),
 				images: document.querySelector<HTMLInputElement>('#product-images'),
+				imagesHint: document.querySelector<HTMLElement>('#product-images-hint'),
 			};
 			let products: Product[] = [];
 			let availableTags: { id: string; nome: string }[] = [];
@@ -346,6 +360,7 @@ import '../styles/global.css';
 				if (productInputs.id) productInputs.id.value = '';
 				selectedTagIds.clear();
 				renderTagSelector();
+				if (productInputs.imagesHint) productInputs.imagesHint.textContent = 'Você pode selecionar várias imagens.';
 				if (productInputs.active) productInputs.active.checked = true;
 				if (imagePreview) imagePreview.innerHTML = '';
 				if (editorTitle) editorTitle.textContent = 'Novo produto';
@@ -474,6 +489,13 @@ import '../styles/global.css';
 				}
 			});
 			productSearch?.addEventListener('input', renderProducts);
+			productInputs.images?.addEventListener('change', () => {
+				const files = productInputs.images?.files;
+				if (!productInputs.imagesHint || !files?.length) return;
+				productInputs.imagesHint.textContent = files.length === 1
+					? files[0].name
+					: `${files.length} imagens selecionadas`;
+			});
 
 			const setTagsDropdownOpen = (open: boolean) => {
 				productInputs.tagsDropdown?.classList.toggle('hidden', !open);
