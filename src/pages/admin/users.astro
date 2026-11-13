@@ -128,11 +128,22 @@ import '../../styles/global.css';
 			const operationLoading = document.querySelector<HTMLElement>('#operation-loading');
 			const operationLoadingMessage = document.querySelector<HTMLElement>('#operation-loading-message');
 			let pendingRequests = 0;
+			let loadingTimer: number | undefined;
 			const originalFetch = window.fetch.bind(window);
 			const updateOperationLoading = (message = 'Processando...') => {
 				if (operationLoadingMessage) operationLoadingMessage.textContent = message;
-				operationLoading?.classList.toggle('hidden', pendingRequests === 0);
-				document.body.classList.toggle('modal-is-open', pendingRequests > 0);
+			if (pendingRequests > 0) {
+				if (loadingTimer === undefined) loadingTimer = window.setTimeout(() => {
+					operationLoading?.classList.remove('hidden');
+					document.body.classList.add('modal-is-open');
+					loadingTimer = undefined;
+				}, 180);
+			} else {
+				if (loadingTimer !== undefined) window.clearTimeout(loadingTimer);
+				loadingTimer = undefined;
+				operationLoading?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+			}
 			};
 			window.fetch = async (...args) => {
 				pendingRequests += 1;

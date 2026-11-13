@@ -105,9 +105,16 @@ import '../styles/global.css';
 									<input id="product-code" required pattern="[A-Za-z0-9_-]+" title="Use apenas letras sem acento, números, hífen ou sublinhado." class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
 									<p class="mt-1 text-xs text-[#486174]">Use apenas letras sem acento, números, hífen ou sublinhado. Não use espaços ou caracteres especiais.</p>
 								</div>
-								<div>
-									<label for="product-price" class="block text-sm font-bold text-[#18324a]">Preço por peça</label>
-									<input id="product-price" required min="0" step="0.01" type="number" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+								<div class="grid gap-4 sm:grid-cols-2">
+									<div>
+										<label for="product-price" class="block text-sm font-bold text-[#18324a]">Preço por peça</label>
+										<input id="product-price" required min="0" step="0.01" type="number" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+									</div>
+									<div>
+										<label for="product-minimum-quantity" class="block text-sm font-bold text-[#18324a]">Pedido mínimo (peças)</label>
+										<input id="product-minimum-quantity" required min="1" step="1" type="number" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+										<p class="mt-1 text-xs text-[#486174]">Quantidade mínima específica para este produto.</p>
+									</div>
 								</div>
 								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
 									<input id="product-featured" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
@@ -146,7 +153,11 @@ import '../styles/global.css';
 										</span>
 									</label>
 									<input id="product-images" type="file" accept="image/*" multiple class="sr-only" />
-									<div id="current-images" class="mt-3 grid grid-cols-3 gap-2"></div>
+					<div class="image-preview-carousel-shell mt-3">
+						<button type="button" data-image-carousel="previous" class="image-carousel-arrow image-carousel-arrow-previous hidden" aria-label="Ver imagens anteriores">‹</button>
+						<div id="current-images" class="grid grid-cols-3 gap-2"></div>
+						<button type="button" data-image-carousel="next" class="image-carousel-arrow image-carousel-arrow-next hidden" aria-label="Ver próximas imagens">›</button>
+					</div>
 								</div>
 								</div>
 								<p id="editor-error" class="hidden lg:col-span-2 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
@@ -188,11 +199,22 @@ import '../styles/global.css';
 			const operationLoading = document.querySelector<HTMLElement>('#operation-loading');
 			const operationLoadingMessage = document.querySelector<HTMLElement>('#operation-loading-message');
 			let pendingRequests = 0;
+			let loadingTimer: number | undefined;
 			const originalFetch = window.fetch.bind(window);
 			const updateOperationLoading = (message = 'Processando...') => {
 				if (operationLoadingMessage) operationLoadingMessage.textContent = message;
-				operationLoading?.classList.toggle('hidden', pendingRequests === 0);
-				document.body.classList.toggle('modal-is-open', pendingRequests > 0);
+				if (pendingRequests > 0) {
+					if (loadingTimer === undefined) loadingTimer = window.setTimeout(() => {
+						operationLoading?.classList.remove('hidden');
+						document.body.classList.add('modal-is-open');
+						loadingTimer = undefined;
+					}, 180);
+				} else {
+					if (loadingTimer !== undefined) window.clearTimeout(loadingTimer);
+					loadingTimer = undefined;
+					operationLoading?.classList.add('hidden');
+					document.body.classList.remove('modal-is-open');
+				}
 			};
 			const isStrongPassword = (password: string) =>
 				password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password) && /[^A-Za-z0-9]/.test(password);
@@ -213,6 +235,7 @@ import '../styles/global.css';
 				nome: string;
 				codigo: string;
 				preco_peca_branca: number | string;
+				quantidade_minima: number;
 				fotos: string[];
 				tags: string[];
 				destaque: boolean;
@@ -251,6 +274,7 @@ import '../styles/global.css';
 				name: document.querySelector<HTMLInputElement>('#product-name'),
 				code: document.querySelector<HTMLInputElement>('#product-code'),
 				price: document.querySelector<HTMLInputElement>('#product-price'),
+				minimum: document.querySelector<HTMLInputElement>('#product-minimum-quantity'),
 				tags: document.querySelector<HTMLElement>('#product-tags'),
 				tagsTrigger: document.querySelector<HTMLElement>('#product-tags-trigger'),
 				tagsChips: document.querySelector<HTMLElement>('#product-tags-chips'),
@@ -264,7 +288,9 @@ import '../styles/global.css';
 			let availableTags: { id: string; nome: string }[] = [];
 			let productTagIds = new Map<string, string[]>();
 			const selectedTagIds = new Set<string>();
+			let pendingImageFiles: File[] = [];
 			let pendingProductAction: { product: Product; action: 'toggle' | 'delete' } | null = null;
+			let pendingImageRemoval: { product: Product; path: string; button: HTMLButtonElement } | null = null;
 
 			const showLoginError = (message: string) => {
 				if (loginError) {
@@ -317,7 +343,7 @@ import '../styles/global.css';
 
 			const loadProducts = async () => {
 				const [{ data, error }, { data: tagData, error: tagError }, { data: relationData, error: relationError }] = await Promise.all([
-					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,fotos,tags,destaque,ativo').order('destaque', { ascending: false }).order('nome'),
+					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,quantidade_minima,fotos,tags,destaque,ativo').order('destaque', { ascending: false }).order('nome'),
 					supabase.from('tags').select('id,nome').order('nome'),
 					supabase.from('produto_tags').select('produto_id,tag_id'),
 				]);
@@ -406,6 +432,7 @@ import '../styles/global.css';
 									</div>
 									<p class="mt-1 text-sm text-[#486174]">${escapeHtml(product.codigo)}</p>
 									<p class="mt-1 font-bold text-[#c96f4a]">${formatPrice(product.preco_peca_branca)} <span class="text-xs font-normal text-[#486174]">por pç</span></p>
+									<p class="mt-1 text-sm font-bold text-[#18324a]">Pedido mínimo: ${product.quantidade_minima} peças</p>
 								</div>
 							</div>
 							<div class="mt-3 flex flex-wrap gap-2">
@@ -425,9 +452,12 @@ import '../styles/global.css';
 				productForm?.reset();
 				if (productInputs.id) productInputs.id.value = '';
 				selectedTagIds.clear();
+				pendingImageFiles = [];
+				if (productInputs.images) productInputs.images.value = '';
 				renderTagSelector();
 				if (productInputs.imagesHint) productInputs.imagesHint.textContent = 'Você pode selecionar várias imagens.';
 				if (productInputs.active) productInputs.active.checked = true;
+				if (productInputs.minimum) productInputs.minimum.value = '10';
 				if (imagePreview) imagePreview.innerHTML = '';
 				if (editorTitle) editorTitle.textContent = 'Novo produto';
 				clearEditorError();
@@ -440,6 +470,7 @@ import '../styles/global.css';
 					if (productInputs.name) productInputs.name.value = product.nome;
 					if (productInputs.code) productInputs.code.value = product.codigo;
 					if (productInputs.price) productInputs.price.value = String(product.preco_peca_branca);
+					if (productInputs.minimum) productInputs.minimum.value = String(product.quantidade_minima ?? 10);
 					selectedTagIds.clear();
 					for (const tagId of productTagIds.get(product.id) ?? []) selectedTagIds.add(tagId);
 					renderTagSelector();
@@ -461,6 +492,21 @@ import '../styles/global.css';
 				productConfirmModal?.classList.add('hidden');
 				document.body.classList.remove('modal-is-open');
 				pendingProductAction = null;
+				pendingImageRemoval = null;
+			};
+			const openImageRemovalConfirm = (product: Product, path: string, button: HTMLButtonElement) => {
+				pendingImageRemoval = { product, path, button };
+				pendingProductAction = null;
+				if (productConfirmTitle) productConfirmTitle.textContent = 'Remover imagem';
+				if (productConfirmMessage) productConfirmMessage.textContent = 'Tem certeza que deseja remover esta imagem do produto?';
+				if (confirmProductAction) {
+					confirmProductAction.textContent = 'Remover';
+					confirmProductAction.classList.remove('bg-red-700', 'hover:bg-red-800');
+					confirmProductAction.classList.add('bg-[#18324a]', 'hover:bg-[#274c69]');
+				}
+				productConfirmModal?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				confirmProductAction?.focus();
 			};
 			const openProductConfirm = (product: Product, action: 'toggle' | 'delete') => {
 				pendingProductAction = { product, action };
@@ -494,8 +540,21 @@ import '../styles/global.css';
 							`,
 						)
 						.join('');
+					updateImageCarousel();
 				}
 			};
+			const updateImageCarousel = () => {
+				if (!imagePreview) return;
+				const previous = document.querySelector<HTMLButtonElement>('[data-image-carousel="previous"]');
+				const next = document.querySelector<HTMLButtonElement>('[data-image-carousel="next"]');
+				const imageItems = Array.from(imagePreview.children);
+				const isCarousel = imageItems.length > 3;
+				imagePreview.classList.toggle('image-preview-carousel', isCarousel);
+			previous?.classList.toggle('hidden', !isCarousel);
+			next?.classList.toggle('hidden', !isCarousel);
+			};
+			document.querySelector<HTMLButtonElement>('[data-image-carousel="previous"]')?.addEventListener('click', () => imagePreview?.scrollBy({ left: -(imagePreview.clientWidth * 0.72), behavior: 'smooth' }));
+			document.querySelector<HTMLButtonElement>('[data-image-carousel="next"]')?.addEventListener('click', () => imagePreview?.scrollBy({ left: imagePreview.clientWidth * 0.72, behavior: 'smooth' }));
 
 			const syncTags = async (productId: string, tagIds: string[]) => {
 				const selectedTags = availableTags.filter((tag) => tagIds.includes(tag.id));
@@ -555,12 +614,28 @@ import '../styles/global.css';
 				}
 			});
 			productSearch?.addEventListener('input', renderProducts);
+			productInputs.images?.addEventListener('click', () => {
+				if (productInputs.images) productInputs.images.value = '';
+			});
 			productInputs.images?.addEventListener('change', () => {
 				const files = productInputs.images?.files;
 				if (!productInputs.imagesHint || !files?.length) return;
+				pendingImageFiles = [...pendingImageFiles, ...Array.from(files)];
+				const transfer = new DataTransfer();
+				pendingImageFiles.forEach((file) => transfer.items.add(file));
+				if (productInputs.images) productInputs.images.files = transfer.files;
 				productInputs.imagesHint.textContent = files.length === 1
-					? files[0].name
-					: `${files.length} imagens selecionadas`;
+					? `${pendingImageFiles.length} imagem selecionada${pendingImageFiles.length === 1 ? '' : 's'}: ${files[0].name}`
+					: `${pendingImageFiles.length} imagens selecionadas`;
+				pendingImageFiles.forEach((file, index) => {
+					if (imagePreview?.querySelector(`[data-pending-image-index="${index}"]`)) return;
+					const wrapper = document.createElement('div');
+					wrapper.className = 'relative';
+					wrapper.dataset.pendingImageIndex = String(index);
+					wrapper.innerHTML = `<img src="${URL.createObjectURL(file)}" alt="Prévia de ${escapeHtml(file.name)}" class="aspect-square w-full rounded-xl object-cover"><button type="button" data-remove-pending-image="${index}" class="admin-icon-button absolute right-1 top-1 rounded-full bg-[#fffdf9]/95 px-2 py-1 text-sm font-bold text-red-700 shadow" aria-label="Remover imagem selecionada">×</button>`;
+					imagePreview?.appendChild(wrapper);
+				});
+				updateImageCarousel();
 			});
 
 			const setTagsDropdownOpen = (open: boolean) => {
@@ -594,22 +669,46 @@ import '../styles/global.css';
 			});
 
 			imagePreview?.addEventListener('click', async (event) => {
+				const pendingButton = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-remove-pending-image]');
+				if (pendingButton) {
+					const pendingIndex = Number(pendingButton.dataset.removePendingImage);
+					pendingImageFiles.splice(pendingIndex, 1);
+					imagePreview?.querySelectorAll<HTMLElement>('[data-pending-image-index]').forEach((element) => {
+						const currentIndex = Number(element.dataset.pendingImageIndex);
+						if (currentIndex > pendingIndex) {
+							element.dataset.pendingImageIndex = String(currentIndex - 1);
+							const removeButton = element.querySelector<HTMLElement>('[data-remove-pending-image]');
+							if (removeButton) removeButton.dataset.removePendingImage = String(currentIndex - 1);
+						}
+					});
+					if (productInputs.images) {
+						const transfer = new DataTransfer();
+						pendingImageFiles.forEach((file) => transfer.items.add(file));
+						productInputs.images.files = transfer.files;
+					}
+					pendingButton.closest('[data-pending-image-index]')?.remove();
+					updateImageCarousel();
+					if (productInputs.imagesHint) productInputs.imagesHint.textContent = pendingImageFiles.length ? `${pendingImageFiles.length} imagens selecionadas` : 'Você pode selecionar várias imagens.';
+					return;
+				}
 				const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-remove-image]');
 				const productId = productInputs.id?.value;
 				const path = button?.dataset.removeImage;
 				if (!button || !productId || !path) return;
-				if (!confirm('Remover esta imagem do produto?')) return;
+				const product = products.find((item) => item.id === productId);
+				if (product) openImageRemovalConfirm(product, path, button);
+			});
+
+			const removeImage = async (product: Product, path: string, button: HTMLButtonElement) => {
 				button.disabled = true;
 				try {
-					const product = products.find((item) => item.id === productId);
-					if (!product) throw new Error('Produto não encontrado.');
 					const { error: storageError } = await supabase.storage.from('produtos').remove([path]);
 					if (storageError) throw storageError;
 					const fotos = product.fotos.filter((foto) => foto !== path);
-					const { error } = await supabase.from('produtos').update({ fotos }).eq('id', productId);
+					const { error } = await supabase.from('produtos').update({ fotos }).eq('id', product.id);
 					if (error) throw error;
 					const updatedProduct = { ...product, fotos };
-					products = products.map((item) => (item.id === productId ? updatedProduct : item));
+					products = products.map((item) => (item.id === product.id ? updatedProduct : item));
 					renderImagePreview(updatedProduct);
 					renderProducts();
 					showMessage('Imagem removida com sucesso.');
@@ -617,7 +716,7 @@ import '../styles/global.css';
 					showEditorError(error instanceof Error ? error.message : 'Não foi possível remover a imagem.');
 					button.disabled = false;
 				}
-			});
+			};
 
 			productForm?.addEventListener('submit', async (event) => {
 				event.preventDefault();
@@ -629,10 +728,11 @@ import '../styles/global.css';
 					const nome = productInputs.name?.value.trim() ?? '';
 					const codigo = productInputs.code?.value.trim() ?? '';
 					const preco_peca_branca = Number(productInputs.price?.value);
+					const quantidade_minima = Number(productInputs.minimum?.value);
 					const tagIds = [...selectedTagIds];
-					if (!nome || !codigo || !Number.isFinite(preco_peca_branca)) throw new Error('Preencha nome, código e preço corretamente.');
+					if (!nome || !codigo || !Number.isFinite(preco_peca_branca) || !Number.isInteger(quantidade_minima) || quantidade_minima < 1) throw new Error('Preencha nome, código, preço e pedido mínimo corretamente.');
 					if (!/^[A-Za-z0-9_-]+$/.test(codigo)) throw new Error('O código deve conter apenas letras sem acento, números, hífen ou sublinhado.');
-					const payload = { nome, codigo, preco_peca_branca, destaque: Boolean(productInputs.featured?.checked), ativo: Boolean(productInputs.active?.checked) };
+					const payload = { nome, codigo, preco_peca_branca, quantidade_minima, destaque: Boolean(productInputs.featured?.checked), ativo: Boolean(productInputs.active?.checked) };
 					let productId = id;
 					if (id) {
 						const { error } = await supabase.from('produtos').update(payload).eq('id', id);
@@ -667,6 +767,12 @@ import '../styles/global.css';
 			document.querySelector('#cancel-product-confirm')?.addEventListener('click', closeProductConfirm);
 			document.querySelector('[data-close-product-confirm]')?.addEventListener('click', closeProductConfirm);
 			confirmProductAction?.addEventListener('click', async () => {
+				if (pendingImageRemoval) {
+					const removal = pendingImageRemoval;
+					confirmProductAction.disabled = true;
+					try { await removeImage(removal.product, removal.path, removal.button); closeProductConfirm(); } finally { confirmProductAction.disabled = false; }
+					return;
+				}
 				if (!pendingProductAction || !confirmProductAction) return;
 				const { product, action } = pendingProductAction;
 				confirmProductAction.disabled = true;

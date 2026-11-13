@@ -70,6 +70,18 @@ import '../../styles/global.css';
 				</div>
 			</form>
 		</div>
+		<div id="tag-confirm-modal" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="tag-confirm-title">
+			<div class="admin-modal-backdrop" data-close-tag-confirm></div>
+			<section class="admin-modal-card max-w-lg rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-2xl sm:p-8">
+				<p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Confirmar ação</p>
+				<h2 id="tag-confirm-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Excluir tag</h2>
+				<p id="tag-confirm-message" class="mt-3 leading-6 text-[#486174]"></p>
+				<div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+					<button type="button" data-close-tag-confirm class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Cancelar</button>
+					<button id="confirm-tag-delete" type="button" class="admin-action-button rounded-full bg-red-700 px-5 py-3 font-bold text-white hover:bg-red-800">Excluir tag</button>
+				</div>
+			</section>
+		</div>
 
 		<div id="operation-loading" class="operation-loading hidden" role="alert" aria-live="assertive" aria-busy="true">
 			<div class="operation-loading-card">
@@ -84,11 +96,22 @@ import '../../styles/global.css';
 			const operationLoading = document.querySelector<HTMLElement>('#operation-loading');
 			const operationLoadingMessage = document.querySelector<HTMLElement>('#operation-loading-message');
 			let pendingRequests = 0;
+			let loadingTimer: number | undefined;
 			const originalFetch = window.fetch.bind(window);
 			const updateOperationLoading = (message = 'Processando...') => {
 				if (operationLoadingMessage) operationLoadingMessage.textContent = message;
-				operationLoading?.classList.toggle('hidden', pendingRequests === 0);
-				document.body.classList.toggle('modal-is-open', pendingRequests > 0);
+			if (pendingRequests > 0) {
+				if (loadingTimer === undefined) loadingTimer = window.setTimeout(() => {
+					operationLoading?.classList.remove('hidden');
+					document.body.classList.add('modal-is-open');
+					loadingTimer = undefined;
+				}, 180);
+			} else {
+				if (loadingTimer !== undefined) window.clearTimeout(loadingTimer);
+				loadingTimer = undefined;
+				operationLoading?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+			}
 			};
 			window.fetch = async (...args) => {
 				pendingRequests += 1;
@@ -122,6 +145,10 @@ import '../../styles/global.css';
 			let relations: Relation[] = [];
 			const selectedProducts = new Set<string>();
 			const selectedTags = new Set<string>();
+			const tagConfirmModal = document.querySelector<HTMLElement>('#tag-confirm-modal');
+			const tagConfirmMessage = document.querySelector<HTMLElement>('#tag-confirm-message');
+			const confirmTagDelete = document.querySelector<HTMLButtonElement>('#confirm-tag-delete');
+			let pendingTagDeletion: Tag | null = null;
 
 			const escapeHtml = (value: string) =>
 				value.replace(/[&<>"']/g, (character) => ({
@@ -148,6 +175,14 @@ import '../../styles/global.css';
 				newTagModal?.classList.remove('hidden');
 				document.body.classList.add('modal-is-open');
 				window.setTimeout(() => newTagName?.focus(), 0);
+			};
+			const closeTagConfirm = () => { tagConfirmModal?.classList.add('hidden'); document.body.classList.remove('modal-is-open'); pendingTagDeletion = null; };
+			const openTagConfirm = (tag: Tag) => {
+				pendingTagDeletion = tag;
+				if (tagConfirmMessage) tagConfirmMessage.textContent = `Excluir a tag "${tag.nome}"? Os produtos não serão excluídos.`;
+				tagConfirmModal?.classList.remove('hidden');
+				document.body.classList.add('modal-is-open');
+				confirmTagDelete?.focus();
 			};
 			const hasRelation = (productId: string, tagId: string) =>
 				relations.some((relation) => relation.produto_id === productId && relation.tag_id === tagId);
@@ -376,24 +411,8 @@ import '../../styles/global.css';
 					event.stopPropagation();
 					const tagId = deleteButton.dataset.deleteTag;
 					const tag = tags.find((item) => item.id === tagId);
-					if (!tag || !confirm(`Excluir a tag "${tag.nome}"? Os produtos não serão excluídos.`)) return;
-					try {
-						const { error: relationError } = await supabase.from('produto_tags').delete().eq('tag_id', tag.id);
-						if (relationError) throw relationError;
-						await Promise.all(products.map(async (product) => {
-							const nextTags = product.tags.filter((nome) => nome !== tag.nome);
-							if (nextTags.length === product.tags.length) return;
-							const { error: productError } = await supabase.from('produtos').update({ tags: nextTags }).eq('id', product.id);
-							if (productError) throw productError;
-						}));
-						const { error: tagError } = await supabase.from('tags').delete().eq('id', tag.id);
-						if (tagError) throw tagError;
-						selectedTags.delete(tag.id);
-						await refresh();
-						showMessage('Tag excluída. Os produtos foram preservados.');
-					} catch (error) {
-						showMessage(error instanceof Error ? error.message : 'Não foi possível excluir a tag.', true);
-					}
+					if (!tag) return;
+					openTagConfirm(tag);
 					return;
 				}
 				const tag = (event.target as HTMLElement).closest<HTMLElement>('[data-tag-id]');
@@ -426,6 +445,30 @@ import '../../styles/global.css';
 					showMessage(error instanceof Error ? error.message : 'Não foi possível atribuir a tag ao produto.', true);
 				}
 			});
+			confirmTagDelete?.addEventListener('click', async () => {
+				const tag = pendingTagDeletion;
+				if (!tag || !confirmTagDelete) return;
+				confirmTagDelete.disabled = true;
+				try {
+					const { error: relationError } = await supabase.from('produto_tags').delete().eq('tag_id', tag.id);
+					if (relationError) throw relationError;
+					await Promise.all(products.map(async (product) => {
+						const nextTags = product.tags.filter((nome) => nome !== tag.nome);
+						if (nextTags.length === product.tags.length) return;
+						const { error } = await supabase.from('produtos').update({ tags: nextTags }).eq('id', product.id);
+						if (error) throw error;
+					}));
+					const { error: tagError } = await supabase.from('tags').delete().eq('id', tag.id);
+					if (tagError) throw tagError;
+					selectedTags.delete(tag.id);
+					await refresh();
+					closeTagConfirm();
+					showMessage('Tag excluída. Os produtos foram preservados.');
+				} catch (error) {
+					showMessage(error instanceof Error ? error.message : 'Não foi possível excluir a tag.', true);
+				} finally { confirmTagDelete.disabled = false; }
+			});
+			document.querySelectorAll<HTMLElement>('[data-close-tag-confirm]').forEach((element) => element.addEventListener('click', closeTagConfirm));
 			tagsElement?.addEventListener('dragover', (event) => {
 				if ((event.target as HTMLElement).closest('[data-tag-id]')) event.preventDefault();
 			});
