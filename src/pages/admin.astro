@@ -34,6 +34,24 @@ import '../styles/global.css';
 					</form>
 				</div>
 
+				<div id="password-setup-panel" class="mx-auto mt-10 hidden max-w-xl rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-sm sm:p-8">
+					<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Primeiro acesso</p>
+					<h1 class="brand-display mt-3 text-4xl font-bold text-[#18324a]">Defina sua senha</h1>
+					<p class="mt-3 text-[#486174]">Para continuar no painel, crie uma senha com pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.</p>
+					<form id="password-setup-form" class="mt-8 space-y-5">
+						<div>
+							<label for="new-password" class="block text-sm font-bold text-[#18324a]">Nova senha</label>
+							<input id="new-password" type="password" required minlength="8" autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20" />
+						</div>
+						<div>
+							<label for="confirm-password" class="block text-sm font-bold text-[#18324a]">Confirmar senha</label>
+							<input id="confirm-password" type="password" required minlength="8" autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20" />
+						</div>
+						<p id="password-setup-error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
+						<button id="password-setup-submit" type="submit" class="w-full rounded-full bg-[#18324a] px-5 py-3.5 font-bold text-white hover:bg-[#274c69] disabled:cursor-wait disabled:opacity-60">Salvar senha e continuar</button>
+					</form>
+				</div>
+
 				<div id="admin-panel" class="mt-10 hidden">
 					<header class="flex flex-col gap-4 border-b border-[#e4ddd2] pb-6 sm:flex-row sm:items-end sm:justify-between">
 						<div>
@@ -67,7 +85,7 @@ import '../styles/global.css';
 
 						<div id="product-editor" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="editor-title">
 							<div class="admin-modal-backdrop" data-close-editor></div>
-							<section class="admin-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-xl sm:p-7">
+							<section class="admin-modal-card product-editor-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-xl sm:p-7">
 							<div class="flex items-start justify-between gap-3">
 								<div>
 									<p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Editor</p>
@@ -75,8 +93,9 @@ import '../styles/global.css';
 								</div>
 								<button id="close-editor-button" type="button" class="admin-icon-button rounded-lg px-2 py-1 text-xl text-[#486174]" aria-label="Fechar editor">×</button>
 							</div>
-							<form id="product-form" class="mt-6 space-y-4">
+							<form id="product-form" class="mt-6 grid gap-6 lg:grid-cols-2">
 								<input id="product-id" type="hidden" />
+								<div class="space-y-4">
 								<div>
 									<label for="product-name" class="block text-sm font-bold text-[#18324a]">Nome</label>
 									<input id="product-name" required class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
@@ -90,6 +109,16 @@ import '../styles/global.css';
 									<label for="product-price" class="block text-sm font-bold text-[#18324a]">Preço por peça</label>
 									<input id="product-price" required min="0" step="0.01" type="number" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
 								</div>
+								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
+									<input id="product-featured" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
+									Produto em destaque
+								</label>
+								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
+									<input id="product-active" type="checkbox" checked class="h-5 w-5 accent-[#c96f4a]" />
+									Produto ativo no catálogo
+								</label>
+								</div>
+								<div class="space-y-4">
 								<div>
 									<label for="product-tags" class="block text-sm font-bold text-[#18324a]">Tags</label>
 									<div id="product-tags" class="relative mt-2">
@@ -101,14 +130,6 @@ import '../styles/global.css';
 									</div>
 									<p class="mt-1 text-xs text-[#486174]">Clique para escolher entre as tags já cadastradas. Clique no × para remover.</p>
 								</div>
-								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
-									<input id="product-featured" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
-									Produto em destaque
-								</label>
-								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
-									<input id="product-active" type="checkbox" checked class="h-5 w-5 accent-[#c96f4a]" />
-									Produto ativo no catálogo
-								</label>
 								<div>
 									<label for="product-images" class="block text-sm font-bold text-[#18324a]">Adicionar imagens</label>
 									<label for="product-images" class="admin-file-upload mt-2 flex cursor-pointer items-center gap-4 rounded-2xl border-2 border-dashed border-[#d8cfc2] bg-[#f7f3ec] px-4 py-4 text-left hover:border-[#c96f4a] hover:bg-[#fff1e9]">
@@ -127,8 +148,9 @@ import '../styles/global.css';
 									<input id="product-images" type="file" accept="image/*" multiple class="sr-only" />
 									<div id="current-images" class="mt-3 grid grid-cols-3 gap-2"></div>
 								</div>
-								<p id="editor-error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
-								<div class="flex gap-3">
+								</div>
+								<p id="editor-error" class="hidden lg:col-span-2 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-900" role="alert"></p>
+								<div class="flex gap-3 lg:col-span-2">
 									<button type="submit" class="admin-action-button flex-1 rounded-full bg-[#18324a] px-4 py-3 font-bold text-white hover:bg-[#274c69] disabled:cursor-wait disabled:opacity-60">Salvar</button>
 									<button id="cancel-editor-button" type="button" class="admin-outline-button rounded-full border border-[#18324a] px-4 py-3 font-bold text-[#18324a]">Cancelar</button>
 								</div>
@@ -153,8 +175,38 @@ import '../styles/global.css';
 			</section>
 		</div>
 
+		<div id="operation-loading" class="operation-loading hidden" role="alert" aria-live="assertive" aria-busy="true">
+			<div class="operation-loading-card">
+				<span class="loading-spinner" aria-hidden="true"></span>
+				<span id="operation-loading-message">Processando...</span>
+			</div>
+		</div>
+
 		<script>
 			import { supabase } from '../lib/supabase';
+
+			const operationLoading = document.querySelector<HTMLElement>('#operation-loading');
+			const operationLoadingMessage = document.querySelector<HTMLElement>('#operation-loading-message');
+			let pendingRequests = 0;
+			const originalFetch = window.fetch.bind(window);
+			const updateOperationLoading = (message = 'Processando...') => {
+				if (operationLoadingMessage) operationLoadingMessage.textContent = message;
+				operationLoading?.classList.toggle('hidden', pendingRequests === 0);
+				document.body.classList.toggle('modal-is-open', pendingRequests > 0);
+			};
+			const isStrongPassword = (password: string) =>
+				password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password) && /[^A-Za-z0-9]/.test(password);
+			const passwordRequirement = 'A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.';
+			window.fetch = async (...args) => {
+				pendingRequests += 1;
+				updateOperationLoading();
+				try {
+					return await originalFetch(...args);
+				} finally {
+					pendingRequests = Math.max(0, pendingRequests - 1);
+					updateOperationLoading();
+				}
+			};
 
 			type Product = {
 				id: string;
@@ -168,6 +220,12 @@ import '../styles/global.css';
 			};
 
 			const loginPanel = document.querySelector<HTMLElement>('#login-panel');
+			const passwordSetupPanel = document.querySelector<HTMLElement>('#password-setup-panel');
+			const passwordSetupForm = document.querySelector<HTMLFormElement>('#password-setup-form');
+			const newPasswordInput = document.querySelector<HTMLInputElement>('#new-password');
+			const confirmPasswordInput = document.querySelector<HTMLInputElement>('#confirm-password');
+			const passwordSetupError = document.querySelector<HTMLElement>('#password-setup-error');
+			const passwordSetupSubmit = document.querySelector<HTMLButtonElement>('#password-setup-submit');
 			const adminPanel = document.querySelector<HTMLElement>('#admin-panel');
 			const loginForm = document.querySelector<HTMLFormElement>('#login-form');
 			const loginError = document.querySelector<HTMLElement>('#login-error');
@@ -229,10 +287,18 @@ import '../styles/global.css';
 			const clearEditorError = () => editorError?.classList.add('hidden');
 			const showLogin = () => {
 				loginPanel?.classList.remove('hidden');
+				passwordSetupPanel?.classList.add('hidden');
 				adminPanel?.classList.add('hidden');
+			};
+			const showPasswordSetup = () => {
+				loginPanel?.classList.add('hidden');
+				passwordSetupPanel?.classList.remove('hidden');
+				adminPanel?.classList.add('hidden');
+				window.setTimeout(() => newPasswordInput?.focus(), 0);
 			};
 			const showAdmin = (email: string) => {
 				loginPanel?.classList.add('hidden');
+				passwordSetupPanel?.classList.add('hidden');
 				adminPanel?.classList.remove('hidden');
 				if (adminEmail) adminEmail.textContent = `Sessão ativa: ${email}`;
 			};
@@ -652,11 +718,53 @@ import '../styles/global.css';
 					showLoginError('Este usuário não possui permissão para acessar o painel.');
 					return;
 				}
+				if (data.session.user.user_metadata?.must_change_password === true) {
+					showPasswordSetup();
+					return;
+				}
 				showAdmin(data.session.user.email ?? 'usuário autenticado');
 				await loadProducts();
 				const { data: profile } = await supabase.from('perfis_admin').select('administrador_principal').eq('user_id', data.session.user.id).eq('ativo', true).maybeSingle();
 				if (profile?.administrador_principal) usersLink?.classList.remove('hidden');
 			};
+			passwordSetupForm?.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				passwordSetupError?.classList.add('hidden');
+				const password = newPasswordInput?.value ?? '';
+				const confirmation = confirmPasswordInput?.value ?? '';
+				if (!isStrongPassword(password)) {
+					if (passwordSetupError) passwordSetupError.textContent = passwordRequirement;
+					passwordSetupError?.classList.remove('hidden');
+					return;
+				}
+				if (password !== confirmation) {
+					if (passwordSetupError) passwordSetupError.textContent = 'As senhas não conferem.';
+					passwordSetupError?.classList.remove('hidden');
+					return;
+				}
+				if (passwordSetupSubmit) passwordSetupSubmit.disabled = true;
+				const { data: sessionData, error } = await supabase.auth.getSession();
+				if (error || !sessionData.session?.user) {
+					if (passwordSetupError) passwordSetupError.textContent = 'Sua sessão expirou. Solicite um novo convite.';
+					passwordSetupError?.classList.remove('hidden');
+					if (passwordSetupSubmit) passwordSetupSubmit.disabled = false;
+					return;
+				}
+				const userMetadata = sessionData.session.user.user_metadata ?? {};
+				const { error: updateError } = await supabase.auth.updateUser({
+					password,
+					data: { ...userMetadata, must_change_password: false },
+				});
+				if (updateError) {
+					if (passwordSetupError) passwordSetupError.textContent = updateError.message;
+					passwordSetupError?.classList.remove('hidden');
+					if (passwordSetupSubmit) passwordSetupSubmit.disabled = false;
+					return;
+				}
+				passwordSetupForm.reset();
+				if (passwordSetupSubmit) passwordSetupSubmit.disabled = false;
+				await loadSession();
+			});
 			loginForm?.addEventListener('submit', async (event) => {
 				event.preventDefault();
 				loginError?.classList.add('hidden');

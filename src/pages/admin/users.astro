@@ -57,13 +57,13 @@ import '../../styles/global.css';
 				<input id="new-user-email" type="email" required autocomplete="email" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" placeholder="usuario@empresa.com" />
 				<div id="direct-user-fields" class="hidden">
 					<label for="new-user-password" class="mt-5 block text-sm font-bold text-[#18324a]">Senha inicial</label>
-					<input id="new-user-password" type="password" minlength="6" autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+					<input id="new-user-password" type="password" minlength="8" autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
 					<label class="mt-4 flex items-center gap-3 text-sm text-[#18324a]">
 						<input id="new-user-must-change-password" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
 						Exigir troca de senha no primeiro acesso
 					</label>
 				</div>
-				<p id="new-user-help" class="mt-2 text-xs leading-5 text-[#486174]">O usuário receberá um convite para criar a própria senha.</p>
+				<p id="new-user-help" class="mt-2 text-xs leading-5 text-[#486174]">A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.</p>
 				<div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
 					<button type="button" data-close-user-modal class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 font-bold text-[#18324a]">Cancelar</button>
 					<button type="submit" class="admin-action-button rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]">Enviar convite</button>
@@ -102,7 +102,8 @@ import '../../styles/global.css';
 				</div>
 				<input id="reset-password-user-id" type="hidden" />
 				<label for="reset-password-value" class="mt-6 block text-sm font-bold text-[#18324a]">Nova senha</label>
-				<input id="reset-password-value" type="password" minlength="6" required autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+				<input id="reset-password-value" type="password" minlength="8" required autocomplete="new-password" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+				<p class="mt-2 text-xs leading-5 text-[#486174]">Use pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.</p>
 				<label class="mt-4 flex items-center gap-3 text-sm text-[#18324a]">
 					<input id="reset-password-must-change" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
 					Exigir troca de senha no próximo acesso
@@ -114,8 +115,35 @@ import '../../styles/global.css';
 			</form>
 		</div>
 
+		<div id="operation-loading" class="operation-loading hidden" role="alert" aria-live="assertive" aria-busy="true">
+			<div class="operation-loading-card">
+				<span class="loading-spinner" aria-hidden="true"></span>
+				<span id="operation-loading-message">Processando...</span>
+			</div>
+		</div>
+
 		<script>
 			import { supabase } from '../../lib/supabase';
+
+			const operationLoading = document.querySelector<HTMLElement>('#operation-loading');
+			const operationLoadingMessage = document.querySelector<HTMLElement>('#operation-loading-message');
+			let pendingRequests = 0;
+			const originalFetch = window.fetch.bind(window);
+			const updateOperationLoading = (message = 'Processando...') => {
+				if (operationLoadingMessage) operationLoadingMessage.textContent = message;
+				operationLoading?.classList.toggle('hidden', pendingRequests === 0);
+				document.body.classList.toggle('modal-is-open', pendingRequests > 0);
+			};
+			window.fetch = async (...args) => {
+				pendingRequests += 1;
+				updateOperationLoading();
+				try {
+					return await originalFetch(...args);
+				} finally {
+					pendingRequests = Math.max(0, pendingRequests - 1);
+					updateOperationLoading();
+				}
+			};
 
 			type AdminUser = {
 				user_id: string;
@@ -211,6 +239,9 @@ import '../../styles/global.css';
 				if (error instanceof Error && error.message !== 'Edge Function returned a non-2xx status code') return error.message;
 				return 'A Edge Function rejeitou a operação. Verifique se a versão publicada está atualizada.';
 			};
+			const isStrongPassword = (password: string) =>
+				password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password) && /[^A-Za-z0-9]/.test(password);
+			const passwordRequirement = 'A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.';
 			const closeUserModal = () => {
 				newUserModal?.classList.add('hidden');
 				document.body.classList.remove('modal-is-open');
@@ -225,7 +256,7 @@ import '../../styles/global.css';
 				directUserFields?.classList.toggle('hidden', !direct);
 				if (newUserPassword) newUserPassword.required = Boolean(direct);
 				if (newUserHelp) newUserHelp.textContent = direct
-					? 'O usuário será criado imediatamente com a senha definida pelo administrador.'
+					? 'A senha deve ter pelo menos 8 caracteres, uma letra maiúscula, um número e um caractere especial.'
 					: 'O usuário receberá um convite para criar a própria senha.';
 				if (newUserSubmit) newUserSubmit.textContent = direct ? 'Criar usuário' : 'Enviar convite';
 			};
@@ -324,7 +355,8 @@ import '../../styles/global.css';
 				event.preventDefault();
 				const userId = resetPasswordUserId?.value ?? '';
 				const password = resetPasswordValue?.value ?? '';
-				if (!userId || password.length < 6) {
+				if (!userId || !isStrongPassword(password)) {
+					showMessage(passwordRequirement, true);
 					resetPasswordValue?.focus();
 					return;
 				}
@@ -353,7 +385,8 @@ import '../../styles/global.css';
 				const email = newUserEmail?.value.trim() ?? '';
 				const direct = newUserMode?.value === 'direct';
 				const password = newUserPassword?.value ?? '';
-				if (direct && password.length < 6) {
+				if (direct && !isStrongPassword(password)) {
+					showMessage(passwordRequirement, true);
 					newUserPassword?.focus();
 					return;
 				}

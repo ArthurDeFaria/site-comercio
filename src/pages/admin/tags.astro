@@ -71,8 +71,35 @@ import '../../styles/global.css';
 			</form>
 		</div>
 
+		<div id="operation-loading" class="operation-loading hidden" role="alert" aria-live="assertive" aria-busy="true">
+			<div class="operation-loading-card">
+				<span class="loading-spinner" aria-hidden="true"></span>
+				<span id="operation-loading-message">Processando...</span>
+			</div>
+		</div>
+
 		<script>
 			import { supabase } from '../../lib/supabase';
+
+			const operationLoading = document.querySelector<HTMLElement>('#operation-loading');
+			const operationLoadingMessage = document.querySelector<HTMLElement>('#operation-loading-message');
+			let pendingRequests = 0;
+			const originalFetch = window.fetch.bind(window);
+			const updateOperationLoading = (message = 'Processando...') => {
+				if (operationLoadingMessage) operationLoadingMessage.textContent = message;
+				operationLoading?.classList.toggle('hidden', pendingRequests === 0);
+				document.body.classList.toggle('modal-is-open', pendingRequests > 0);
+			};
+			window.fetch = async (...args) => {
+				pendingRequests += 1;
+				updateOperationLoading();
+				try {
+					return await originalFetch(...args);
+				} finally {
+					pendingRequests = Math.max(0, pendingRequests - 1);
+					updateOperationLoading();
+				}
+			};
 
 			type Product = { id: string; nome: string; codigo: string; tags: string[] };
 			type Tag = { id: string; nome: string };

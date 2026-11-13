@@ -110,6 +110,33 @@ button:focus-visible {
 	animation: spin 800ms linear infinite;
 }
 
+.operation-loading {
+	align-items: center;
+	background: rgb(24 50 74 / 0.46);
+	display: flex;
+	inset: 0;
+	justify-content: center;
+	padding: 1rem;
+	position: fixed;
+	z-index: 100;
+}
+
+.operation-loading.hidden {
+	display: none;
+}
+
+.operation-loading-card {
+	align-items: center;
+	background: var(--paper);
+	border: 1px solid var(--line);
+	border-radius: 1rem;
+	box-shadow: 0 18px 45px rgb(24 50 74 / 0.25);
+	display: flex;
+	gap: 0.75rem;
+	max-width: min(100%, 22rem);
+	padding: 1rem 1.25rem;
+}
+
 @keyframes spin {
 	to {
 		transform: rotate(360deg);
@@ -233,6 +260,10 @@ button:focus-visible {
 	position: relative;
 	width: min(100%, 48rem);
 	animation: modal-enter 180ms ease-out;
+}
+
+.product-editor-card {
+	width: min(100%, 64rem);
 }
 
 body.modal-is-open {
