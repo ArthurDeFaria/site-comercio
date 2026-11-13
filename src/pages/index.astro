@@ -6,7 +6,7 @@ import '../styles/global.css';
 const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
 const { data, error } = await supabase
 	.from('produtos')
-	.select('id, nome, codigo, preco_peca_branca, fotos, tags, destaque')
+	.select('id, nome, codigo, preco_peca_branca, quantidade_minima, fotos, tags, destaque')
 	.order('destaque', { ascending: false })
 	.order('nome');
 
@@ -243,12 +243,24 @@ const whatsappLink = (produto: Produto) =>
 										{formatPrice(produto.preco_peca_branca)}
 										<span class="text-sm font-normal text-[#486174]">por pç</span>
 									</p>
+								<div class="mt-auto grid gap-2">
 									<a
 										href={whatsappLink(produto)}
-										class="mt-auto inline-flex min-h-12 w-full justify-center rounded-full bg-[#c96f4a] px-4 py-3 text-center font-bold text-white hover:bg-[#a95235]"
+										class="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#c96f4a] px-4 py-3 text-center font-bold text-white hover:bg-[#a95235]"
 									>
 										Pedir orçamento pelo WhatsApp
 									</a>
+									<button
+										type="button"
+										class="simulation-open-button inline-flex min-h-11 w-full items-center justify-center rounded-full border-2 border-[#18324a] px-4 py-2.5 text-center font-bold text-[#18324a] hover:bg-[#e8eef0]"
+										data-product-name={produto.nome}
+										data-product-price={produto.preco_peca_branca}
+										data-product-minimum={produto.quantidade_minima}
+										aria-haspopup="dialog"
+									>
+										Calcular personalização
+									</button>
+								</div>
 								</div>
 							</article>
 						))}
@@ -261,6 +273,89 @@ const whatsappLink = (produto: Produto) =>
 				)}
 			</section>
 		</main>
+		<div id="simulation-modal" class="simulation-modal hidden" role="dialog" aria-modal="true" aria-labelledby="simulation-title" data-whatsapp-number={whatsappNumber}>
+			<div class="simulation-modal-backdrop" data-close-simulation></div>
+			<section class="simulation-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-2xl sm:p-8">
+				<div class="flex items-start justify-between gap-4">
+					<div>
+						<p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Simulador de personalização</p>
+						<h2 id="simulation-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Calcular personalização</h2>
+						<p id="simulation-product" class="mt-2 text-base font-bold text-[#486174]"></p>
+					</div>
+					<button type="button" class="rounded-full p-2 text-2xl leading-none text-[#486174] hover:bg-[#f1e8dc] hover:text-[#18324a]" data-close-simulation aria-label="Fechar simulador">×</button>
+				</div>
+
+				<form id="simulation-form" class="mt-7 space-y-6">
+					<div>
+						<div class="flex items-center justify-between gap-3">
+							<label for="simulation-quantity" class="block text-base font-bold text-[#18324a]">Quantidade de peças</label>
+							<output id="simulation-quantity-output" for="simulation-quantity" class="rounded-full bg-[#fff1e9] px-3 py-1.5 text-base font-bold text-[#a95235]">10 peças</output>
+						</div>
+						<div class="mt-4 flex items-center gap-3">
+							<button id="simulation-quantity-decrease" type="button" class="simulation-quantity-button" aria-label="Diminuir quantidade">−</button>
+							<input id="simulation-quantity" type="range" min="10" max="201" step="1" value="10" class="simulation-range w-full" aria-describedby="simulation-quantity-help" />
+							<button id="simulation-quantity-increase" type="button" class="simulation-quantity-button" aria-label="Aumentar quantidade">+</button>
+						</div>
+						<div class="mt-1 flex justify-between text-sm font-bold text-[#486174]" aria-hidden="true">
+							<span>10</span>
+							<span>200+</span>
+						</div>
+						<p id="simulation-quantity-help" class="mt-2 text-sm text-[#486174]">Arraste ou use os botões para escolher de uma em uma peça.</p>
+					</div>
+
+					<div>
+						<label for="simulation-colors" class="block text-base font-bold text-[#18324a]">Cores da personalização</label>
+						<select id="simulation-colors" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3.5 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20">
+							<option value="1">1 cor</option>
+							<option value="2">2 cores</option>
+							<option value="3">3 cores</option>
+							<option value="4">4 cores</option>
+							<option value="5">5 cores</option>
+							<option value="6">6 cores</option>
+						</select>
+					</div>
+
+					<fieldset>
+						<legend class="block text-base font-bold text-[#18324a]">Tipo de aplicação</legend>
+						<div class="mt-2 grid gap-3 sm:grid-cols-2">
+							<label class="simulation-choice">
+								<input type="radio" name="simulation-application" value="frente" checked />
+								<span><strong>Frente</strong><small class="text-sm">Logotipo</small></span>
+							</label>
+							<label class="simulation-choice">
+								<input type="radio" name="simulation-application" value="faixa" />
+								<span><strong>Faixa</strong><small class="text-sm">Em volta da peça</small></span>
+							</label>
+						</div>
+					</fieldset>
+
+					<div class="space-y-2">
+						<p class="rounded-2xl border border-[#e8c9a5] bg-[#fff4e8] px-4 py-3 text-base leading-6 text-[#7b4a2d]">
+							<strong>Prazo de entrega:</strong> consulte a equipe antes de fechar o pedido.
+						</p>
+						<p class="rounded-2xl border border-[#c8d0d2] bg-[#e8eef0] px-4 py-3 text-base leading-6 text-[#486174]">
+							Para uma estimativa mais precisa, faça um orçamento pelo WhatsApp. Os valores não incluem frete.
+						</p>
+						<p id="simulation-minimum-order" class="rounded-2xl border border-[#b8cbe0] bg-[#eef5fb] px-4 py-3 text-base font-bold leading-6 text-[#18324a]" role="status">
+							Pedido mínimo: consulte a quantidade mínima deste produto.
+						</p>
+					</div>
+					<div id="simulation-result" class="rounded-2xl border border-[#d99a70] bg-[#fff1e9] p-5" aria-live="polite">
+						<p class="text-base font-bold uppercase tracking-[0.14em] text-[#a95235]">Estimativa da decoração</p>
+						<div class="mt-4 space-y-2 rounded-xl bg-white/70 px-4 py-3 text-base leading-7 text-[#486174]">
+							<p class="font-bold text-[#18324a]">Como chegamos ao valor:</p>
+							<p id="simulation-piece-calculation">Peças: 10 × R$ 0,00 = R$ 0,00</p>
+							<p id="simulation-decoration-calculation">Personalização: 10 × R$ 12,50 = R$ 125,00</p>
+						</div>
+						<p id="simulation-total-price" class="mt-4 border-t-2 border-[#d99a70] pt-3 text-xl font-bold text-[#a95235] sm:text-2xl">Total estimado: R$ 125,00 + frete</p>
+						<a id="simulation-special-quote" class="mx-auto mt-4 hidden inline-flex min-h-11 items-center justify-center rounded-full bg-[#c96f4a] px-4 py-2.5 text-center font-bold text-white hover:bg-[#a95235]" target="_blank" rel="noreferrer">Cotar condição especial no WhatsApp</a>
+					</div>
+					<div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+						<button type="button" data-close-simulation class="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-[#18324a] px-5 py-3 font-bold text-[#18324a] hover:bg-[#e8eef0]">Fechar</button>
+					</div>
+				</form>
+			</section>
+		</div>
 		<a
 			href={`https://wa.me/${whatsappNumber}`}
 			class="fixed bottom-5 right-5 z-20 flex h-14 w-14 items-center justify-center rounded-full bg-[#25d366] text-white shadow-xl hover:bg-[#1daa50] sm:bottom-7 sm:right-7"
@@ -278,7 +373,111 @@ const whatsappLink = (produto: Produto) =>
 			const searchInput = document.querySelector<HTMLInputElement>('#product-search');
 			const clearSearch = document.querySelector<HTMLButtonElement>('#clear-product-search');
 			const noSearchResults = document.querySelector<HTMLElement>('#no-search-results');
+			const simulationModal = document.querySelector<HTMLElement>('#simulation-modal');
+			const simulationProduct = document.querySelector<HTMLElement>('#simulation-product');
+			const simulationForm = document.querySelector<HTMLFormElement>('#simulation-form');
+			const simulationQuantity = document.querySelector<HTMLInputElement>('#simulation-quantity');
+			const simulationQuantityOutput = document.querySelector<HTMLOutputElement>('#simulation-quantity-output');
+			const simulationQuantityDecrease = document.querySelector<HTMLButtonElement>('#simulation-quantity-decrease');
+			const simulationQuantityIncrease = document.querySelector<HTMLButtonElement>('#simulation-quantity-increase');
+			const simulationColors = document.querySelector<HTMLSelectElement>('#simulation-colors');
+			const simulationMinimumOrder = document.querySelector<HTMLElement>('#simulation-minimum-order');
+			const simulationPieceCalculation = document.querySelector<HTMLElement>('#simulation-piece-calculation');
+			const simulationDecorationCalculation = document.querySelector<HTMLElement>('#simulation-decoration-calculation');
+			const simulationTotalPrice = document.querySelector<HTMLElement>('#simulation-total-price');
+			const simulationSpecialQuote = document.querySelector<HTMLAnchorElement>('#simulation-special-quote');
+			const simulationWhatsappNumber = simulationModal?.dataset.whatsappNumber ?? '';
+			let lastSimulationTrigger: HTMLButtonElement | null = null;
+			let selectedSimulationProduct = '';
+			let selectedSimulationProductPrice = 0;
+			let selectedSimulationProductMinimum = 10;
 			let selectedFilter = 'todos';
+			const decorationPrices: Record<number, Record<number, number>> = {
+				10: { 1: 12.5, 2: 17.5, 3: 21.5, 4: 26, 5: 30, 6: 35 },
+				20: { 1: 7.5, 2: 10, 3: 12, 4: 15, 5: 17, 6: 20 },
+				30: { 1: 5.85, 2: 7.5, 3: 8.9, 4: 10.5, 5: 12, 6: 13 },
+				40: { 1: 5, 2: 6.3, 3: 7.25, 4: 8.5, 5: 9.5, 6: 10.5 },
+				50: { 1: 4.5, 2: 5.5, 3: 6.3, 4: 7.2, 5: 8, 6: 9 },
+				100: { 1: 3.5, 2: 4, 3: 4.4, 4: 5, 5: 5.5, 6: 5.9 },
+				200: { 1: 3.3, 2: 3.5, 3: 3.5, 4: 3.9, 5: 4.5, 6: 4.5 },
+			};
+			const formatSimulationPrice = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+			const getQuantityBand = (quantity: number) => Object.keys(decorationPrices).map(Number).filter((band) => band <= quantity).pop() ?? null;
+			const getApplicationMultiplier = () => document.querySelector<HTMLInputElement>('input[name="simulation-application"]:checked')?.value === 'faixa' ? 3 : 1;
+			const updateSimulation = () => {
+				const quantity = Number(simulationQuantity?.value ?? 10);
+				const colors = Number(simulationColors?.value ?? 1);
+				const band = quantity > 200 ? null : getQuantityBand(quantity);
+				if (!simulationPieceCalculation || !simulationDecorationCalculation || !simulationTotalPrice || !simulationSpecialQuote) return;
+				if (simulationMinimumOrder) simulationMinimumOrder.textContent = `Pedido mínimo: ${selectedSimulationProductMinimum} peças.`;
+				if (simulationPieceCalculation) simulationPieceCalculation.textContent = `Peças: ${quantity} × ${formatSimulationPrice(selectedSimulationProductPrice)} = ${formatSimulationPrice(selectedSimulationProductPrice * quantity)}`;
+				if (!band) {
+					if (simulationDecorationCalculation) simulationDecorationCalculation.textContent = `Personalização: condição especial para ${quantity > 200 ? 'mais de 200' : quantity} peças.`;
+					simulationTotalPrice.textContent = 'Total estimado: consulte a equipe + frete';
+					simulationSpecialQuote.classList.remove('hidden');
+					simulationSpecialQuote.href = `https://wa.me/${simulationWhatsappNumber}?text=${encodeURIComponent(`Olá! Vim pelo site da Art Brasil e gostaria de cotar uma condição especial para ${selectedSimulationProduct} em quantidade acima de 200 peças.`)}`;
+					return;
+				}
+				const unitPrice = (decorationPrices[band]?.[colors] ?? 0) * getApplicationMultiplier();
+				if (simulationDecorationCalculation) simulationDecorationCalculation.textContent = `Personalização: ${quantity} × ${formatSimulationPrice(unitPrice)} = ${formatSimulationPrice(unitPrice * quantity)}`;
+				const subtotal = (selectedSimulationProductPrice + unitPrice) * quantity;
+				simulationTotalPrice.textContent = `Total estimado: ${formatSimulationPrice(subtotal)} + frete`;
+				simulationSpecialQuote.classList.add('hidden');
+			};
+
+			const updateQuantityOutput = () => {
+				if (!simulationQuantityOutput || !simulationQuantity) return;
+				const value = Number(simulationQuantity.value);
+				simulationQuantityOutput.textContent = value > 200 ? '200+ peças' : `${value} peças`;
+				if (simulationQuantityDecrease) simulationQuantityDecrease.disabled = value <= 10;
+				if (simulationQuantityIncrease) simulationQuantityIncrease.disabled = value >= 201;
+			};
+			updateQuantityOutput();
+			updateSimulation();
+			simulationQuantity?.addEventListener('input', updateQuantityOutput);
+			simulationQuantity?.addEventListener('input', updateSimulation);
+			simulationColors?.addEventListener('change', updateSimulation);
+			document.querySelectorAll<HTMLInputElement>('input[name="simulation-application"]').forEach((input) => input.addEventListener('change', updateSimulation));
+			simulationQuantityDecrease?.addEventListener('click', () => {
+				if (!simulationQuantity) return;
+				simulationQuantity.value = String(Math.max(10, Number(simulationQuantity.value) - 1));
+				updateQuantityOutput();
+				updateSimulation();
+			});
+			simulationQuantityIncrease?.addEventListener('click', () => {
+				if (!simulationQuantity) return;
+				simulationQuantity.value = String(Math.min(201, Number(simulationQuantity.value) + 1));
+				updateQuantityOutput();
+				updateSimulation();
+			});
+
+			const closeSimulation = () => {
+				simulationModal?.classList.add('hidden');
+				document.body.classList.remove('modal-is-open');
+				lastSimulationTrigger?.focus();
+				lastSimulationTrigger = null;
+			};
+			document.querySelectorAll<HTMLButtonElement>('.simulation-open-button').forEach((button) => {
+				button.addEventListener('click', () => {
+					lastSimulationTrigger = button;
+					simulationForm?.reset();
+					selectedSimulationProduct = button.dataset.productName ?? '';
+					selectedSimulationProductPrice = Number(button.dataset.productPrice ?? 0);
+					selectedSimulationProductMinimum = Math.max(1, Number(button.dataset.productMinimum ?? 10));
+					if (simulationQuantity) simulationQuantity.value = String(Math.min(201, Math.max(10, selectedSimulationProductMinimum)));
+					updateQuantityOutput();
+					updateSimulation();
+					if (simulationProduct) simulationProduct.textContent = `Produto: ${button.dataset.productName ?? ''}`;
+					simulationModal?.classList.remove('hidden');
+					document.body.classList.add('modal-is-open');
+					window.setTimeout(() => simulationForm?.querySelector<HTMLElement>('select')?.focus(), 0);
+				});
+			});
+			simulationModal?.querySelectorAll<HTMLElement>('[data-close-simulation]').forEach((element) => element.addEventListener('click', closeSimulation));
+			document.addEventListener('keydown', (event) => {
+				if (event.key === 'Escape' && !simulationModal?.classList.contains('hidden')) closeSimulation();
+			});
+			simulationForm?.addEventListener('submit', (event) => event.preventDefault());
 
 			const normalizeText = (value: string) =>
 				value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('pt-BR');
