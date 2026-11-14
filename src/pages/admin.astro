@@ -71,6 +71,8 @@ import '../styles/global.css';
 								</div>
 								<div class="flex flex-wrap gap-2">
 									<a href="/admin/tags" class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 text-center font-bold text-[#18324a]">Gerenciar tags</a>
+								<a href="/admin/portfolio" class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 text-center font-bold text-[#18324a]">Gerenciar portfólio</a>
+									<a href="/admin/decoration-prices" class="admin-outline-button rounded-full border border-[#18324a] px-5 py-3 text-center font-bold text-[#18324a]">Editar tabela de preços</a>
 									<a id="users-link" href="/admin/users" class="admin-outline-button hidden rounded-full border border-[#18324a] px-5 py-3 text-center font-bold text-[#18324a]">Gerenciar usuários</a>
 									<button id="new-product-button" type="button" class="admin-action-button rounded-full bg-[#c96f4a] px-5 py-3 font-bold text-white hover:bg-[#a95235]">Novo produto</button>
 								</div>
@@ -185,6 +187,7 @@ import '../styles/global.css';
 				</div>
 			</section>
 		</div>
+		<div id="promotion-modal" class="admin-modal hidden" role="dialog" aria-modal="true" aria-labelledby="promotion-title"><div class="admin-modal-backdrop" data-close-promotion></div><section class="admin-modal-card max-w-md rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-6 shadow-2xl sm:p-8"><p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Oferta do produto</p><h2 id="promotion-title" class="brand-display mt-2 text-3xl font-bold text-[#18324a]">Configurar promoção</h2><p id="promotion-product-name" class="mt-2 text-[#486174]"></p><form id="promotion-form" class="mt-6 space-y-4"><input id="promotion-product-id" type="hidden" /><div><label for="promotion-base-price" class="block text-sm font-bold text-[#18324a]">Preço base</label><input id="promotion-base-price" readonly class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-[#f7f3ec] px-4 py-3 text-[#486174]" /></div><div><label for="promotion-price" class="block text-sm font-bold text-[#18324a]">Preço promocional</label><input id="promotion-price" type="number" min="0" step="0.01" placeholder="Deixe vazio para remover" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" /><p class="mt-1 text-xs text-[#486174]">Use um valor maior que zero para exibir a promoção.</p></div><p id="promotion-error" class="hidden rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-900"></p><div class="flex gap-3"><button type="submit" class="flex-1 rounded-full bg-[#18324a] px-4 py-3 font-bold text-white">Salvar</button><button type="button" data-close-promotion class="rounded-full border border-[#18324a] px-4 py-3 font-bold text-[#18324a]">Cancelar</button></div></form></section></div>
 
 		<div id="operation-loading" class="operation-loading hidden" role="alert" aria-live="assertive" aria-busy="true">
 			<div class="operation-loading-card">
@@ -235,6 +238,7 @@ import '../styles/global.css';
 				nome: string;
 				codigo: string;
 				preco_peca_branca: number | string;
+				preco_promocional?: number | string | null;
 				quantidade_minima: number;
 				fotos: string[];
 				tags: string[];
@@ -266,6 +270,13 @@ import '../styles/global.css';
 			const adminMessage = document.querySelector<HTMLElement>('#admin-message');
 			const imagePreview = document.querySelector<HTMLElement>('#current-images');
 			const productConfirmModal = document.querySelector<HTMLElement>('#product-confirm-modal');
+			const promotionModal = document.querySelector<HTMLElement>('#promotion-modal');
+			const promotionForm = document.querySelector<HTMLFormElement>('#promotion-form');
+			const promotionProductId = document.querySelector<HTMLInputElement>('#promotion-product-id');
+			const promotionProductName = document.querySelector<HTMLElement>('#promotion-product-name');
+			const promotionBasePrice = document.querySelector<HTMLInputElement>('#promotion-base-price');
+			const promotionPrice = document.querySelector<HTMLInputElement>('#promotion-price');
+			const promotionError = document.querySelector<HTMLElement>('#promotion-error');
 			const productConfirmTitle = document.querySelector<HTMLElement>('#product-confirm-title');
 			const productConfirmMessage = document.querySelector<HTMLElement>('#product-confirm-message');
 			const confirmProductAction = document.querySelector<HTMLButtonElement>('#confirm-product-action');
@@ -343,7 +354,7 @@ import '../styles/global.css';
 
 			const loadProducts = async () => {
 				const [{ data, error }, { data: tagData, error: tagError }, { data: relationData, error: relationError }] = await Promise.all([
-					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,quantidade_minima,fotos,tags,destaque,ativo').order('destaque', { ascending: false }).order('nome'),
+					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,preco_promocional,quantidade_minima,fotos,tags,destaque,ativo').order('destaque', { ascending: false }).order('nome'),
 					supabase.from('tags').select('id,nome').order('nome'),
 					supabase.from('produto_tags').select('produto_id,tag_id'),
 				]);
@@ -431,7 +442,7 @@ import '../styles/global.css';
 										${product.destaque ? '<span class="rounded-full bg-[#c96f4a] px-2 py-1 text-[10px] font-bold uppercase text-white">Destaque</span>' : ''}
 									</div>
 									<p class="mt-1 text-sm text-[#486174]">${escapeHtml(product.codigo)}</p>
-									<p class="mt-1 font-bold text-[#c96f4a]">${formatPrice(product.preco_peca_branca)} <span class="text-xs font-normal text-[#486174]">por pç</span></p>
+					${Number(product.preco_promocional ?? 0) > 0 ? `<p class="mt-1"><span class="text-xs text-[#486174] line-through">${formatPrice(product.preco_peca_branca)}</span><br><strong class="font-bold text-[#c96f4a]">${formatPrice(product.preco_promocional)} <span class="text-xs font-normal text-[#486174]">por pç</span></strong><span class="ml-2 rounded-full bg-[#fff1e9] px-2 py-1 text-[10px] font-bold uppercase text-[#a95235]">Promoção</span></p>` : `<p class="mt-1 font-bold text-[#c96f4a]">${formatPrice(product.preco_peca_branca)} <span class="text-xs font-normal text-[#486174]">por pç</span></p>`}
 									<p class="mt-1 text-sm font-bold text-[#18324a]">Pedido mínimo: ${product.quantidade_minima} peças</p>
 								</div>
 							</div>
@@ -440,6 +451,7 @@ import '../styles/global.css';
 							</div>
 							<div class="mt-4 flex flex-wrap justify-center gap-2">
 								<button type="button" data-action="edit" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#18324a] px-3 py-2 text-sm font-bold text-[#18324a]">Editar</button>
+								<button type="button" data-action="promotion" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#c96f4a] px-3 py-2 text-sm font-bold text-[#a95235]">Promoção</button>
 								<button type="button" data-action="toggle" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#c96f4a] px-3 py-2 text-sm font-bold text-[#a95235]">${product.ativo ? 'Desativar' : 'Ativar'}</button>
 								<button type="button" data-action="delete" data-id="${product.id}" class="admin-outline-button rounded-full border border-red-300 px-3 py-2 text-sm font-bold text-red-700">Excluir</button>
 							</div>
@@ -494,6 +506,9 @@ import '../styles/global.css';
 				pendingProductAction = null;
 				pendingImageRemoval = null;
 			};
+			const closePromotion = () => { promotionModal?.classList.add('hidden'); document.body.classList.remove('modal-is-open'); promotionError?.classList.add('hidden'); };
+			const openPromotion = (product: Product) => { if (promotionProductId) promotionProductId.value = product.id; if (promotionProductName) promotionProductName.textContent = product.nome; if (promotionBasePrice) promotionBasePrice.value = formatPrice(product.preco_peca_branca); if (promotionPrice) promotionPrice.value = Number(product.preco_promocional ?? 0) > 0 ? String(product.preco_promocional) : ''; promotionModal?.classList.remove('hidden'); document.body.classList.add('modal-is-open'); promotionPrice?.focus(); };
+			promotionForm?.addEventListener('submit', async (event) => { event.preventDefault(); const product = products.find((item) => item.id === promotionProductId?.value); if (!product) return; const value = Number(promotionPrice?.value ?? 0); const basePrice = Number(product.preco_peca_branca); if (value < 0 || !Number.isFinite(value) || (value > 0 && value >= basePrice)) { if (promotionError) { promotionError.textContent = 'O preço promocional deve ser maior que zero e menor que o preço base.'; promotionError.classList.remove('hidden'); } return; } const { error } = await supabase.from('produtos').update({ preco_promocional: value > 0 ? value : null }).eq('id', product.id); if (error) { if (promotionError) { promotionError.textContent = error.message; promotionError.classList.remove('hidden'); } return; } product.preco_promocional = value > 0 ? value : null; closePromotion(); renderProducts(); showMessage('Promoção atualizada.'); });
 			const openImageRemovalConfirm = (product: Product, path: string, button: HTMLButtonElement) => {
 				pendingImageRemoval = { product, path, button };
 				pendingProductAction = null;
@@ -605,6 +620,7 @@ import '../styles/global.css';
 				if (!product) return;
 				try {
 					if (button.dataset.action === 'edit') openEditor(product);
+					if (button.dataset.action === 'promotion') openPromotion(product);
 					if (button.dataset.action === 'toggle') {
 						openProductConfirm(product, 'toggle');
 					}
@@ -766,6 +782,7 @@ import '../styles/global.css';
 			document.querySelector('[data-close-editor]')?.addEventListener('click', closeEditor);
 			document.querySelector('#cancel-product-confirm')?.addEventListener('click', closeProductConfirm);
 			document.querySelector('[data-close-product-confirm]')?.addEventListener('click', closeProductConfirm);
+			promotionModal?.querySelectorAll<HTMLElement>('[data-close-promotion]').forEach((element) => element.addEventListener('click', closePromotion));
 			confirmProductAction?.addEventListener('click', async () => {
 				if (pendingImageRemoval) {
 					const removal = pendingImageRemoval;
