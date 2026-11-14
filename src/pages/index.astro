@@ -104,8 +104,8 @@ const whatsappLink = (produto: Produto) =>
 
 			<section class="border-b border-[#e4ddd2] bg-[#f3eee6]" aria-labelledby="portfolio-callout-title">
 				<div class="mx-auto grid max-w-6xl gap-8 px-5 py-[3.5rem] sm:px-8 sm:py-[4.65rem] md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-12">
-					<div class="min-h-64 overflow-hidden rounded-[1.5rem] border border-[#e4ddd2] bg-[#e8eef0] shadow-xl max-[380px]:hidden md:min-h-[22rem]">
-						{portfolioDestaque ? <img src={portfolioDestaque.imagem_path.startsWith('http') ? portfolioDestaque.imagem_path : `${storageUrl}${portfolioDestaque.imagem_path}`} alt={portfolioDestaque.titulo} class="h-full min-h-64 w-full object-cover" loading="lazy" /> : <div class="flex h-full min-h-64 items-center justify-center p-8 text-center text-[#486174]">Conheça nossos trabalhos personalizados</div>}
+					<div class="relative aspect-[4/3] min-h-64 overflow-hidden rounded-[1.5rem] border border-[#e4ddd2] bg-[#e8eef0] shadow-xl max-[380px]:hidden md:aspect-auto md:h-[22rem]">
+						{portfolioDestaque ? <img src={portfolioDestaque.imagem_path.startsWith('http') ? portfolioDestaque.imagem_path : `${storageUrl}${portfolioDestaque.imagem_path}`} alt={portfolioDestaque.titulo} class="absolute inset-0 h-full w-full object-cover" loading="lazy" /> : <div class="flex h-full min-h-64 items-center justify-center p-8 text-center text-[#486174]">Conheça nossos trabalhos personalizados</div>}
 					</div>
 					<div class="flex flex-col justify-center py-2 sm:py-8">
 						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Inspire-se</p>
@@ -295,6 +295,7 @@ const whatsappLink = (produto: Produto) =>
 										class="simulation-open-button inline-flex min-h-11 w-full items-center justify-center rounded-full border-2 border-[#18324a] px-4 py-2.5 text-center font-bold text-[#18324a] hover:bg-[#e8eef0]"
 										data-product-name={produto.nome}
 						data-product-price={promotionalPrice(produto)}
+						data-product-base-price={produto.preco_peca_branca}
 										data-product-minimum={produto.quantidade_minima}
 										aria-haspopup="dialog"
 									>
@@ -315,7 +316,13 @@ const whatsappLink = (produto: Produto) =>
 		</main>
 		<div id="simulation-modal" class="simulation-modal hidden" role="dialog" aria-modal="true" aria-labelledby="simulation-title" data-whatsapp-number={whatsappNumber}>
 			<div class="simulation-modal-backdrop" data-close-simulation></div>
-			<section class="simulation-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-2xl sm:p-8">
+			<section id="simulation-modal-card" class="simulation-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-2xl sm:p-8">
+				<div id="simulation-loading" class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-[#fffdf9]/90" role="status" aria-live="polite" hidden>
+					<div class="flex items-center gap-3 rounded-2xl border border-[#e4ddd2] bg-white px-5 py-4 text-sm font-bold text-[#18324a] shadow-lg">
+						<span class="loading-spinner" aria-hidden="true"></span>
+						<span>Carregando preços de personalização...</span>
+					</div>
+				</div>
 				<div class="flex items-start justify-between gap-4">
 					<div>
 						<p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Simulador de personalização</p>
@@ -326,7 +333,7 @@ const whatsappLink = (produto: Produto) =>
 				</div>
 
 				<form id="simulation-form" class="mt-7 space-y-6">
-					<div>
+					<div id="simulation-quantity-section">
 						<div class="flex items-center justify-between gap-3">
 							<label for="simulation-quantity" class="block text-base font-bold text-[#18324a]">Quantidade de peças</label>
 							<output id="simulation-quantity-output" for="simulation-quantity" class="rounded-full bg-[#fff1e9] px-3 py-1.5 text-base font-bold text-[#a95235]">10 peças</output>
@@ -337,13 +344,13 @@ const whatsappLink = (produto: Produto) =>
 							<button id="simulation-quantity-increase" type="button" class="simulation-quantity-button" aria-label="Aumentar quantidade">+</button>
 						</div>
 						<div class="mt-1 flex justify-between text-sm font-bold text-[#486174]" aria-hidden="true">
-							<span>10</span>
+							<span id="simulation-quantity-min-label">10</span>
 							<span id="simulation-quantity-max-label">{Math.max(...priceQuantities, 200)}+</span>
 						</div>
 						<p id="simulation-quantity-help" class="mt-2 text-sm text-[#486174]">Arraste ou use os botões para escolher de uma em uma peça.</p>
 					</div>
 
-					<div>
+					<div id="simulation-colors-section">
 						<label for="simulation-colors" class="block text-base font-bold text-[#18324a]">Cores da personalização</label>
 						<select id="simulation-colors" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3.5 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20">
 							{priceColors.map((color) => <option value={color}>{color} {color === 1 ? 'cor' : 'cores'}</option>)}
@@ -351,7 +358,7 @@ const whatsappLink = (produto: Produto) =>
 						</select>
 					</div>
 
-					<fieldset>
+					<fieldset id="simulation-application-section">
 						<legend class="block text-base font-bold text-[#18324a]">Tipo de aplicação</legend>
 						<div class="mt-2 grid gap-3 sm:grid-cols-2">
 							<label class="simulation-choice">
@@ -365,7 +372,7 @@ const whatsappLink = (produto: Produto) =>
 						</div>
 					</fieldset>
 
-					<div class="space-y-2">
+					<div id="simulation-info-section" class="space-y-2">
 						<p class="rounded-2xl border border-[#e8c9a5] bg-[#fff4e8] px-4 py-3 text-base leading-6 text-[#7b4a2d]">
 							<strong>Prazo de entrega:</strong> consulte a equipe antes de fechar o pedido.
 						</p>
@@ -382,6 +389,7 @@ const whatsappLink = (produto: Produto) =>
 							<p class="font-bold text-[#18324a]">Como chegamos ao valor:</p>
 							<p id="simulation-piece-calculation">Peças: 10 × R$ 0,00 = R$ 0,00</p>
 							<p id="simulation-decoration-calculation">Personalização: 10 × R$ 12,50 = R$ 125,00</p>
+							<p id="simulation-savings" class="hidden font-bold text-green-700" aria-live="polite"></p>
 						</div>
 						<p id="simulation-total-price" class="mt-4 border-t-2 border-[#d99a70] pt-3 text-xl font-bold text-[#a95235] sm:text-2xl">Total estimado: R$ 125,00 + frete</p>
 						<button type="button" id="open-price-table" class="mx-auto mt-4 inline-flex min-h-11 items-center justify-center rounded-full border-2 border-[#18324a] px-4 py-2.5 text-center font-bold text-[#18324a] hover:bg-[#e8eef0]">Ver tabela de preços</button>
@@ -461,6 +469,7 @@ const whatsappLink = (produto: Produto) =>
 			const clearSearch = document.querySelector<HTMLButtonElement>('#clear-product-search');
 			const noSearchResults = document.querySelector<HTMLElement>('#no-search-results');
 			const simulationModal = document.querySelector<HTMLElement>('#simulation-modal');
+			const simulationLoading = document.querySelector<HTMLElement>('#simulation-loading');
 			const simulationProduct = document.querySelector<HTMLElement>('#simulation-product');
 			const simulationForm = document.querySelector<HTMLFormElement>('#simulation-form');
 			const simulationQuantity = document.querySelector<HTMLInputElement>('#simulation-quantity');
@@ -468,9 +477,11 @@ const whatsappLink = (produto: Produto) =>
 			const simulationQuantityDecrease = document.querySelector<HTMLButtonElement>('#simulation-quantity-decrease');
 			const simulationQuantityIncrease = document.querySelector<HTMLButtonElement>('#simulation-quantity-increase');
 			const simulationQuantityMaxLabel = document.querySelector<HTMLElement>('#simulation-quantity-max-label');
+			const simulationQuantityMinLabel = document.querySelector<HTMLElement>('#simulation-quantity-min-label');
 			const simulationColors = document.querySelector<HTMLSelectElement>('#simulation-colors');
 			const simulationMinimumOrder = document.querySelector<HTMLElement>('#simulation-minimum-order');
 			const simulationPieceCalculation = document.querySelector<HTMLElement>('#simulation-piece-calculation');
+			const simulationSavings = document.querySelector<HTMLElement>('#simulation-savings');
 			const simulationDecorationCalculation = document.querySelector<HTMLElement>('#simulation-decoration-calculation');
 			const simulationTotalPrice = document.querySelector<HTMLElement>('#simulation-total-price');
 			const simulationWhatsappQuote = document.querySelector<HTMLAnchorElement>('#simulation-whatsapp-quote');
@@ -480,6 +491,7 @@ const whatsappLink = (produto: Produto) =>
 			let lastSimulationTrigger: HTMLButtonElement | null = null;
 			let selectedSimulationProduct = '';
 			let selectedSimulationProductPrice = 0;
+			let selectedSimulationProductBasePrice = 0;
 			let selectedSimulationProductMinimum = 10;
 			let selectedFilter = 'todos';
 			let decorationPrices: Record<number, Record<number, number>> = JSON.parse(document.querySelector<HTMLScriptElement>('#decoration-price-data')?.textContent ?? '{}');
@@ -515,6 +527,11 @@ const whatsappLink = (produto: Produto) =>
 				if (!simulationPieceCalculation || !simulationDecorationCalculation || !simulationTotalPrice || !simulationWhatsappQuote) return;
 				if (simulationMinimumOrder) simulationMinimumOrder.textContent = `Pedido mínimo: ${selectedSimulationProductMinimum} peças.`;
 				if (simulationPieceCalculation) simulationPieceCalculation.textContent = `Peças: ${quantity} × ${formatSimulationPrice(selectedSimulationProductPrice)} = ${formatSimulationPrice(selectedSimulationProductPrice * quantity)}`;
+				const savingsPerPiece = Math.max(0, selectedSimulationProductBasePrice - selectedSimulationProductPrice);
+				if (simulationSavings) {
+					simulationSavings.textContent = `Você economiza ${formatSimulationPrice(savingsPerPiece * quantity)} neste pedido.`;
+					simulationSavings.classList.toggle('hidden', savingsPerPiece <= 0);
+				}
 				const maxQuantity = Math.max(...Object.keys(decorationPrices).map(Number), 0);
 				if (!band || quantity > maxQuantity || decorationPrices[band]?.[colors] === undefined) {
 					const specialReason = decorationPrices[band]?.[colors] === undefined ? `condição não cadastrada para ${colors} cores` : quantity > maxQuantity ? `mais de ${maxQuantity} peças` : `${quantity} peças`;
@@ -536,9 +553,10 @@ const whatsappLink = (produto: Produto) =>
 			const updateQuantityOutput = () => {
 				if (!simulationQuantityOutput || !simulationQuantity) return;
 				const value = Number(simulationQuantity.value);
+				const minimumQuantity = Number(simulationQuantity.min ?? selectedSimulationProductMinimum);
 				const maxQuantity = Number(simulationQuantity?.max ?? 201) - 1;
 				simulationQuantityOutput.textContent = value > maxQuantity ? `${maxQuantity}+ peças` : `${value} peças`;
-				if (simulationQuantityDecrease) simulationQuantityDecrease.disabled = value <= 10;
+				if (simulationQuantityDecrease) simulationQuantityDecrease.disabled = value <= minimumQuantity;
 				if (simulationQuantityIncrease) simulationQuantityIncrease.disabled = value >= Number(simulationQuantity.max);
 			};
 			updateQuantityOutput();
@@ -550,7 +568,7 @@ const whatsappLink = (produto: Produto) =>
 			document.querySelectorAll<HTMLInputElement>('input[name="simulation-application"]').forEach((input) => input.addEventListener('change', updateSimulation));
 			simulationQuantityDecrease?.addEventListener('click', () => {
 				if (!simulationQuantity) return;
-				simulationQuantity.value = String(Math.max(10, Number(simulationQuantity.value) - 1));
+				simulationQuantity.value = String(Math.max(Number(simulationQuantity.min), Number(simulationQuantity.value) - 1));
 				updateQuantityOutput();
 				updateSimulation();
 			});
@@ -576,14 +594,28 @@ const whatsappLink = (produto: Produto) =>
 					simulationForm?.reset();
 					selectedSimulationProduct = button.dataset.productName ?? '';
 					selectedSimulationProductPrice = Number(button.dataset.productPrice ?? 0);
+					selectedSimulationProductBasePrice = Number(button.dataset.productBasePrice ?? button.dataset.productPrice ?? 0);
 					selectedSimulationProductMinimum = Math.max(1, Number(button.dataset.productMinimum ?? 10));
-					await refreshDecorationPrices();
-					if (simulationQuantity) simulationQuantity.value = String(Math.min(Number(simulationQuantity.max), Math.max(10, selectedSimulationProductMinimum)));
-					updateQuantityOutput();
-					updateSimulation();
-					if (simulationProduct) simulationProduct.textContent = `Produto: ${button.dataset.productName ?? ''}`;
+					if (simulationQuantity) simulationQuantity.min = String(selectedSimulationProductMinimum);
+					if (simulationQuantityMinLabel) simulationQuantityMinLabel.textContent = String(selectedSimulationProductMinimum);
+					if (simulationProduct) simulationProduct.textContent = `Produto: ${selectedSimulationProduct}`;
 					simulationModal?.classList.remove('hidden');
 					document.body.classList.add('modal-is-open');
+					if (simulationForm) simulationForm.inert = true;
+					if (simulationLoading) simulationLoading.hidden = false;
+					try {
+						await refreshDecorationPrices();
+					} finally {
+						if (simulationLoading) simulationLoading.hidden = true;
+						if (simulationForm) simulationForm.inert = false;
+					}
+					if (simulationQuantity && Number(simulationQuantity.max) <= selectedSimulationProductMinimum) {
+						simulationQuantity.max = String(selectedSimulationProductMinimum + 1);
+						if (simulationQuantityMaxLabel) simulationQuantityMaxLabel.textContent = `${selectedSimulationProductMinimum}+`;
+					}
+					if (simulationQuantity) simulationQuantity.value = String(Math.max(Number(simulationQuantity.min), Math.min(Number(simulationQuantity.max), selectedSimulationProductMinimum)));
+					updateQuantityOutput();
+					updateSimulation();
 					window.setTimeout(() => simulationForm?.querySelector<HTMLElement>('select')?.focus(), 0);
 				});
 			});

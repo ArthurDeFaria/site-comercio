@@ -351,6 +351,113 @@ body.modal-is-open {
 	animation: modal-enter 180ms ease-out;
 }
 
+@media (max-width: 639px) {
+	#simulation-modal-card {
+		max-height: calc(100dvh - 1rem);
+		padding: 0.875rem;
+	}
+
+	#simulation-modal-card > div.flex.items-start {
+		gap: 0.5rem;
+	}
+
+	#simulation-modal-card #simulation-title {
+		font-size: 1.5rem;
+		line-height: 1.2;
+	}
+
+	#simulation-modal-card #simulation-form {
+		margin-top: 0.75rem;
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+		gap: 0.75rem;
+	}
+
+	#simulation-modal-card #simulation-quantity-section,
+	#simulation-modal-card #simulation-colors-section {
+		min-width: 0;
+	}
+
+	#simulation-modal-card #simulation-quantity-section {
+		grid-column: 1 / -1;
+	}
+
+	#simulation-modal-card #simulation-quantity-section > div:first-child {
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	#simulation-modal-card #simulation-quantity-section > div:nth-child(2) {
+		margin-top: 0.5rem;
+		gap: 0.35rem;
+	}
+
+	#simulation-modal-card #simulation-quantity-help {
+		font-size: 0.7rem;
+		line-height: 1.25;
+	}
+
+	#simulation-modal-card #simulation-colors-section select {
+		margin-top: 0.5rem;
+		padding: 0.65rem 0.75rem;
+	}
+
+	#simulation-modal-card #simulation-application-section,
+	#simulation-modal-card #simulation-info-section,
+	#simulation-modal-card #simulation-result,
+	#simulation-modal-card #simulation-form > div:last-child {
+		grid-column: 1 / -1;
+	}
+
+	#simulation-modal-card #simulation-application-section > div {
+		margin-top: 0.4rem;
+		gap: 0.5rem;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	#simulation-modal-card .simulation-choice {
+		gap: 0.45rem;
+		padding: 0.55rem 0.65rem;
+	}
+
+	#simulation-modal-card #simulation-info-section > p {
+		padding: 0.55rem 0.75rem;
+		font-size: 0.8rem;
+		line-height: 1.35;
+	}
+
+	#simulation-modal-card #simulation-result {
+		padding: 0.75rem;
+	}
+
+	#simulation-modal-card #simulation-result > div {
+		margin-top: 0.5rem;
+		padding: 0.5rem 0.65rem;
+		font-size: 0.8rem;
+		line-height: 1.4;
+	}
+
+	#simulation-modal-card #simulation-total-price {
+		margin-top: 0.65rem;
+		padding-top: 0.5rem;
+		font-size: 1.15rem;
+	}
+
+	#simulation-modal-card #open-price-table,
+	#simulation-modal-card #simulation-whatsapp-quote {
+		min-height: 2.5rem;
+		margin-top: 0.5rem;
+		padding: 0.5rem 0.75rem;
+		font-size: 0.85rem;
+	}
+
+	#simulation-modal-card #simulation-form > div:last-child button {
+		min-height: 2.5rem;
+		padding: 0.5rem 1rem;
+	}
+}
+
 .simulation-choice {
 	align-items: flex-start;
 	border: 2px solid var(--line);
@@ -408,6 +515,12 @@ body.modal-is-open {
 	height: 1.7rem;
 	margin-top: -0.5rem;
 	width: 1.7rem;
+}
+
+@media (max-width: 639px) {
+	.simulation-range::-webkit-slider-thumb {
+		margin-top: -0.2rem;
+	}
 }
 
 .simulation-range::-moz-range-track {
