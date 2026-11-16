@@ -35,7 +35,7 @@ const { data: portfolioDestaque } = await supabase
 	.maybeSingle();
 const tags = [...new Set(produtos.flatMap((produto) => produto.tags))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
 const storageUrl = import.meta.env.PUBLIC_SUPABASE_URL + '/storage/v1/object/public/produtos/';
-const logoUrl = `${storageUrl}logo/logo.jpeg`;
+const logoUrl = '/favicon.jpg';
 const formatPrice = (value: number | string) =>
 	Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const promotionalPrice = (produto: Produto) => {
