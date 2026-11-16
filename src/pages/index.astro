@@ -4,6 +4,7 @@ import type { Produto } from '../types/catalog';
 import '../styles/global.css';
 
 const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://artbrasilpresentes.com.br');
 const { data, error } = await supabase
 	.from('produtos')
 	.select('id, nome, codigo, preco_peca_branca, preco_promocional, quantidade_minima, fotos, tags, destaque')
@@ -52,15 +53,17 @@ const whatsappLink = (produto: Produto) =>
 <html lang="pt-BR">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+		<link rel="icon" type="image/jpeg" href="/favicon.jpg?v=2" />
 		<meta name="viewport" content="width=device-width" />
+		<link rel="canonical" href={canonicalUrl} />
+		<link rel="sitemap" href="/sitemap.xml" />
 		<meta name="generator" content={Astro.generator} />
 		<meta
 			name="description"
-			content="Porcelanas personalizadas da Art Brasil Presentes. Consulte produtos e peça seu orçamento pelo WhatsApp."
+			content="Porcelanas personalizadas para brindes corporativos, eventos e estabelecimentos em Pedreira (SP). Explore o catálogo da Art Brasil Presentes e peça seu orçamento pelo WhatsApp."
 		/>
-		<title>Art Brasil Presentes | Porcelanas personalizadas</title>
+		<title>Porcelanas personalizadas em Pedreira | Art Brasil Presentes</title>
 	</head>
 	<body id="topo">
 		<header class="border-b border-[#e4ddd2] bg-[#fffdf9]">
@@ -77,10 +80,10 @@ const whatsappLink = (produto: Produto) =>
 					<div class="max-w-2xl">
 						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Peças que contam histórias</p>
 						<h1 class="brand-display mt-4 text-5xl font-bold leading-[0.98] text-[#18324a] sm:text-7xl">
-							Porcelana feita para <span class="italic text-[#c96f4a]">ficar na memória.</span>
+							Porcelanas personalizadas para <span class="italic text-[#c96f4a]">momentos especiais.</span>
 						</h1>
 						<p class="mt-6 max-w-xl text-lg leading-8 text-[#486174]">
-							Peças personalizadas para presentear, celebrar e levar a sua marca para momentos especiais.
+							Brindes corporativos e peças de porcelana personalizadas para eventos e estabelecimentos.
 						</p>
 						<a
 							href="#catalogo"
@@ -96,6 +99,7 @@ const whatsappLink = (produto: Produto) =>
 								src={logoUrl}
 								alt="Logo Art Brasil Presentes Finos"
 								class="max-h-56 w-full max-w-sm object-contain lg:max-h-[26rem] lg:max-w-[36rem]"
+								decoding="async"
 							/>
 						</div>
 					</div>
@@ -105,7 +109,7 @@ const whatsappLink = (produto: Produto) =>
 			<section class="border-b border-[#e4ddd2] bg-[#f3eee6]" aria-labelledby="portfolio-callout-title">
 				<div class="mx-auto grid max-w-6xl gap-8 px-5 py-[3.5rem] sm:px-8 sm:py-[4.65rem] md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-12">
 					<div class="relative aspect-[4/3] min-h-64 overflow-hidden rounded-[1.5rem] border border-[#e4ddd2] bg-[#e8eef0] shadow-xl max-[380px]:hidden md:aspect-auto md:h-[22rem]">
-						{portfolioDestaque ? <img src={portfolioDestaque.imagem_path.startsWith('http') ? portfolioDestaque.imagem_path : `${storageUrl}${portfolioDestaque.imagem_path}`} alt={portfolioDestaque.titulo} class="absolute inset-0 h-full w-full object-cover" loading="lazy" /> : <div class="flex h-full min-h-64 items-center justify-center p-8 text-center text-[#486174]">Conheça nossos trabalhos personalizados</div>}
+						{portfolioDestaque ? <img src={portfolioDestaque.imagem_path.startsWith('http') ? portfolioDestaque.imagem_path : `${storageUrl}${portfolioDestaque.imagem_path}`} alt={portfolioDestaque.descricao ? `${portfolioDestaque.titulo}: ${portfolioDestaque.descricao}` : portfolioDestaque.titulo} class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" /> : <div class="flex h-full min-h-64 items-center justify-center p-8 text-center text-[#486174]">Conheça nossos trabalhos personalizados</div>}
 					</div>
 					<div class="flex flex-col justify-center py-2 sm:py-8">
 						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Inspire-se</p>
@@ -120,7 +124,7 @@ const whatsappLink = (produto: Produto) =>
 				<div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
 					<div>
 						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Escolha com calma</p>
-						<h2 id="catalog-title" class="brand-display mt-2 text-4xl font-bold text-[#18324a]">Nosso catálogo</h2>
+						<h2 id="catalog-title" class="brand-display mt-2 text-4xl font-bold text-[#18324a]">Catálogo de peças</h2>
 					</div>
 					{produtos.length > 0 && <p class="text-sm text-[#486174]">{produtos.length} produto(s)</p>}
 				</div>
@@ -238,7 +242,8 @@ const whatsappLink = (produto: Produto) =>
 													]}
 													data-gallery-image
 													data-image-index={index}
-													loading={index === 0 ? 'eager' : 'lazy'}
+														loading="lazy"
+														decoding="async"
 												/>
 											))}
 											{produto.fotos.length > 1 && (
@@ -316,7 +321,7 @@ const whatsappLink = (produto: Produto) =>
 		</main>
 		<div id="simulation-modal" class="simulation-modal hidden" role="dialog" aria-modal="true" aria-labelledby="simulation-title" data-whatsapp-number={whatsappNumber}>
 			<div class="simulation-modal-backdrop" data-close-simulation></div>
-			<section id="simulation-modal-card" class="simulation-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-2xl sm:p-8">
+			<section id="simulation-modal-card" class="simulation-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-2xl sm:p-8" tabindex="-1">
 				<div id="simulation-loading" class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center rounded-3xl bg-[#fffdf9]/90" role="status" aria-live="polite" hidden>
 					<div class="flex items-center gap-3 rounded-2xl border border-[#e4ddd2] bg-white px-5 py-4 text-sm font-bold text-[#18324a] shadow-lg">
 						<span class="loading-spinner" aria-hidden="true"></span>
@@ -391,7 +396,7 @@ const whatsappLink = (produto: Produto) =>
 							<p id="simulation-decoration-calculation">Personalização: 10 × R$ 12,50 = R$ 125,00</p>
 							<p id="simulation-savings" class="hidden font-bold text-green-700" aria-live="polite"></p>
 						</div>
-						<p id="simulation-total-price" class="mt-4 border-t-2 border-[#d99a70] pt-3 text-xl font-bold text-[#a95235] sm:text-2xl">Total estimado: R$ 125,00 + frete</p>
+						<p id="simulation-total-price" class="mt-4 border-t-2 border-[#d99a70] pt-3 text-xl font-bold text-[#a95235] sm:text-2xl">Total estimado: R$ 125,00 (frete não incluso)</p>
 						<button type="button" id="open-price-table" class="mx-auto mt-4 inline-flex min-h-11 items-center justify-center rounded-full border-2 border-[#18324a] px-4 py-2.5 text-center font-bold text-[#18324a] hover:bg-[#e8eef0]">Ver tabela de preços</button>
 						<a id="simulation-whatsapp-quote" class="mx-auto mt-4 inline-flex min-h-11 items-center justify-center rounded-full bg-[#c96f4a] px-4 py-2.5 text-center font-bold text-white hover:bg-[#a95235]" target="_blank" rel="noreferrer">Enviar simulação pelo WhatsApp</a>
 					</div>
@@ -403,7 +408,7 @@ const whatsappLink = (produto: Produto) =>
 		</div>
 		<div id="price-table-modal" class="simulation-modal hidden" role="dialog" aria-modal="true" aria-labelledby="price-table-title">
 			<div class="simulation-modal-backdrop" data-close-price-table></div>
-			<section class="simulation-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-2xl sm:p-8">
+			<section class="simulation-modal-card rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-5 shadow-2xl sm:p-8" tabindex="-1">
 				<div class="flex items-start justify-between gap-4">
 					<div>
 						<p class="text-sm font-bold uppercase tracking-[0.16em] text-[#c96f4a]">Referência de cálculo</p>
@@ -425,7 +430,7 @@ const whatsappLink = (produto: Produto) =>
 			<div class="mx-auto grid max-w-6xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.4fr_1fr_1fr]">
 				<div>
 					<p class="brand-display text-2xl font-bold">Art Brasil <span class="font-normal italic text-[#e9a078]">Presentes</span></p>
-					<p class="mt-4 max-w-md leading-7 text-[#dce8e8]">Porcelanas personalizadas para brindes, eventos e estabelecimentos, com atendimento personalizado e entrega confiável.</p>
+					<p class="mt-4 max-w-md leading-7 text-[#dce8e8]">Peças de porcelana para empresas, eventos e estabelecimentos, com atendimento personalizado e entrega confiável.</p>
 				</div>
 				<div>
 					<h2 class="text-sm font-bold uppercase tracking-[0.16em] text-[#e9a078]">Navegação</h2>
@@ -433,6 +438,7 @@ const whatsappLink = (produto: Produto) =>
 						<ul class="space-y-3 text-[#fffdf9]">
 							<li><a href="#catalogo" class="underline-offset-4 hover:text-[#e9a078] hover:underline">Catálogo</a></li>
 							<li><a href="/portfolio" class="underline-offset-4 hover:text-[#e9a078] hover:underline">Portfólio</a></li>
+							<li><a href="/informacoes" class="underline-offset-4 hover:text-[#e9a078] hover:underline">Termos e condições</a></li>
 							<li><a href="#topo" class="underline-offset-4 hover:text-[#e9a078] hover:underline">Voltar ao início</a></li>
 						</ul>
 					</nav>
@@ -440,7 +446,17 @@ const whatsappLink = (produto: Produto) =>
 				<div>
 					<h2 class="text-sm font-bold uppercase tracking-[0.16em] text-[#e9a078]">Canais oficiais</h2>
 					<ul class="mt-4 space-y-3 text-[#fffdf9]">
-							<li><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" class="underline-offset-4 hover:text-[#e9a078] hover:underline">WhatsApp: (19) 99140-7919</a></li>
+						<li><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" class="underline-offset-4 hover:text-[#e9a078] hover:underline">WhatsApp: (19) 99140-7919</a></li>
+						<li>
+							<a href="https://www.instagram.com/artbrasilpresentes/" target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 underline-offset-4 hover:text-[#e9a078] hover:underline" aria-label="Instagram da Art Brasil Presentes">
+								<svg viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current stroke-2" aria-hidden="true">
+									<rect x="3" y="3" width="18" height="18" rx="5"></rect>
+									<circle cx="12" cy="12" r="4"></circle>
+									<circle cx="17.5" cy="6.5" r="1" class="fill-current stroke-0"></circle>
+								</svg>
+								Instagram: @artbrasilpresentes
+							</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -536,7 +552,7 @@ const whatsappLink = (produto: Produto) =>
 				if (!band || quantity > maxQuantity || decorationPrices[band]?.[colors] === undefined) {
 					const specialReason = decorationPrices[band]?.[colors] === undefined ? `condição não cadastrada para ${colors} cores` : quantity > maxQuantity ? `mais de ${maxQuantity} peças` : `${quantity} peças`;
 					if (simulationDecorationCalculation) simulationDecorationCalculation.textContent = `Personalização: condição especial para ${specialReason}.`;
-					simulationTotalPrice.textContent = 'Total estimado: consulte a equipe + frete';
+					simulationTotalPrice.textContent = 'Total estimado: consulte a equipe (frete não incluso)';
 					simulationWhatsappQuote.textContent = 'Cotar condição especial no WhatsApp';
 					simulationWhatsappQuote.href = `https://wa.me/${simulationWhatsappNumber}?text=${encodeURIComponent(`Olá! Vim pelo site da Art Brasil e gostaria de cotar uma condição especial para ${selectedSimulationProduct}.\nQuantidade: ${quantity} peças.\nCores: ${colors > 6 ? 'mais de 6' : colors}.\nMotivo: ${specialReason}.`)}`;
 					return;
@@ -544,10 +560,10 @@ const whatsappLink = (produto: Produto) =>
 				const unitPrice = (decorationPrices[band]?.[colors] ?? 0) * getApplicationMultiplier();
 				if (simulationDecorationCalculation) simulationDecorationCalculation.textContent = `Personalização: ${quantity} × ${formatSimulationPrice(unitPrice)} = ${formatSimulationPrice(unitPrice * quantity)}`;
 				const subtotal = (selectedSimulationProductPrice + unitPrice) * quantity;
-				simulationTotalPrice.textContent = `Total estimado: ${formatSimulationPrice(subtotal)} + frete`;
+					simulationTotalPrice.textContent = `Total estimado: ${formatSimulationPrice(subtotal)} (frete não incluso)`;
 				const application = document.querySelector<HTMLInputElement>('input[name="simulation-application"]:checked')?.value === 'faixa' ? 'Em volta da peça' : 'Logotipo';
 				simulationWhatsappQuote.textContent = 'Enviar simulação pelo WhatsApp';
-				simulationWhatsappQuote.href = `https://wa.me/${simulationWhatsappNumber}?text=${encodeURIComponent(`Olá! Vim pelo site da Art Brasil e gostaria de fazer um orçamento.\nProduto: ${selectedSimulationProduct}\nQuantidade: ${quantity} peças\nCores: ${colors}\nAplicação: ${application}\nValor da peça: ${formatSimulationPrice(selectedSimulationProductPrice)} por unidade\nDecoração: ${formatSimulationPrice(unitPrice)} por unidade\nTotal estimado: ${formatSimulationPrice(subtotal)} + frete (frete não incluso).`)}`;
+				simulationWhatsappQuote.href = `https://wa.me/${simulationWhatsappNumber}?text=${encodeURIComponent(`Olá! Vim pelo site da Art Brasil e gostaria de fazer um orçamento.\nProduto: ${selectedSimulationProduct}\nQuantidade: ${quantity} peças\nCores: ${colors}\nAplicação: ${application}\nValor da peça: ${formatSimulationPrice(selectedSimulationProductPrice)} por unidade\nDecoração: ${formatSimulationPrice(unitPrice)} por unidade\nTotal estimado: ${formatSimulationPrice(subtotal)} (frete não incluso).`)}`;
 			};
 
 			const updateQuantityOutput = () => {
@@ -585,8 +601,15 @@ const whatsappLink = (produto: Produto) =>
 				lastSimulationTrigger?.focus();
 				lastSimulationTrigger = null;
 			};
-			const closePriceTable = () => priceTableModal?.classList.add('hidden');
-			openPriceTable?.addEventListener('click', async () => { await refreshDecorationPrices(); priceTableModal?.classList.remove('hidden'); });
+			const closePriceTable = () => {
+				priceTableModal?.classList.add('hidden');
+				if (!simulationModal?.classList.contains('hidden')) openPriceTable?.focus();
+			};
+			openPriceTable?.addEventListener('click', async () => {
+				await refreshDecorationPrices();
+				priceTableModal?.classList.remove('hidden');
+				priceTableModal?.querySelector<HTMLButtonElement>('button[data-close-price-table]')?.focus();
+			});
 			priceTableModal?.querySelectorAll<HTMLElement>('[data-close-price-table]').forEach((element) => element.addEventListener('click', closePriceTable));
 				document.querySelectorAll<HTMLButtonElement>('.simulation-open-button').forEach((button) => {
 					button.addEventListener('click', async () => {
@@ -603,6 +626,7 @@ const whatsappLink = (produto: Produto) =>
 					document.body.classList.add('modal-is-open');
 					if (simulationForm) simulationForm.inert = true;
 					if (simulationLoading) simulationLoading.hidden = false;
+					simulationModal?.querySelector<HTMLButtonElement>('button[data-close-simulation]')?.focus();
 					try {
 						await refreshDecorationPrices();
 					} finally {
@@ -621,8 +645,38 @@ const whatsappLink = (produto: Produto) =>
 			});
 			simulationModal?.querySelectorAll<HTMLElement>('[data-close-simulation]').forEach((element) => element.addEventListener('click', closeSimulation));
 			document.addEventListener('keydown', (event) => {
-				if (event.key === 'Escape' && !simulationModal?.classList.contains('hidden')) closeSimulation();
-				if (event.key === 'Escape' && !priceTableModal?.classList.contains('hidden')) closePriceTable();
+				const activeModal = !priceTableModal?.classList.contains('hidden')
+					? priceTableModal
+					: !simulationModal?.classList.contains('hidden')
+						? simulationModal
+						: null;
+				if (!activeModal) return;
+
+				if (event.key === 'Escape') {
+					if (activeModal === priceTableModal) closePriceTable();
+					else closeSimulation();
+					return;
+				}
+
+				if (event.key === 'Tab') {
+					const focusable = Array.from(activeModal.querySelectorAll<HTMLElement>(
+						'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])',
+					)).filter((element) => !element.closest('[inert]') && element.getClientRects().length > 0);
+					if (focusable.length === 0) {
+						event.preventDefault();
+						activeModal.querySelector<HTMLElement>('.simulation-modal-card')?.focus();
+						return;
+					}
+					const first = focusable[0];
+					const last = focusable[focusable.length - 1];
+					if (event.shiftKey && (document.activeElement === first || !activeModal.contains(document.activeElement))) {
+						event.preventDefault();
+						last.focus();
+					} else if (!event.shiftKey && (document.activeElement === last || !activeModal.contains(document.activeElement))) {
+						event.preventDefault();
+						first.focus();
+					}
+				}
 			});
 			simulationForm?.addEventListener('submit', (event) => event.preventDefault());
 
@@ -675,9 +729,6 @@ const whatsappLink = (produto: Produto) =>
 					}
 				});
 
-				if (images.length > 1) {
-					window.setInterval(() => showImage(currentIndex + 1), 10000);
-				}
 			});
 
 			buttons.forEach((button) => {
