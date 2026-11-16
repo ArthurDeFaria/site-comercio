@@ -1,19 +1,8 @@
 ---
 import '../styles/global.css';
-import { supabase } from '../lib/supabase';
 
 const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://artbrasilpresentes.com.br');
-const { data: projetosData } = await supabase
-	.from('portfolio_projetos')
-	.select('id, titulo, descricao, imagem_path')
-	.order('ordem', { ascending: true })
-	.order('created_at', { ascending: false });
-const storageUrl = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/produtos/`;
-const projetos = (projetosData ?? []).map((projeto) => ({
-	...projeto,
-	src: projeto.imagem_path.startsWith('http') ? projeto.imagem_path : `${storageUrl}${projeto.imagem_path}`,
-}));
 ---
 
 <html lang="pt-BR">
@@ -38,8 +27,8 @@ const projetos = (projetosData ?? []).map((projeto) => ({
 		<main>
 			<section class="hero-wash border-b border-[#e4ddd2]">
 				<div class="mx-auto grid min-w-0 max-w-6xl gap-10 px-5 py-14 sm:grid-cols-[0.9fr_1.1fr] sm:px-8 sm:py-20 sm:items-center">
-					<div class="mx-auto w-full max-w-full min-w-0 overflow-hidden rounded-[2rem] border border-[#d8cfc2] bg-[#e8eef0] shadow-sm max-[380px]:hidden">
-						{projetos[0] ? <img src={projetos[0].src} alt={projetos[0].descricao ? `${projetos[0].titulo}: ${projetos[0].descricao}` : projetos[0].titulo} class="aspect-[4/5] w-full object-cover" loading="eager" fetchpriority="high" decoding="async" /> : <div class="flex aspect-[4/5] items-center justify-center p-8 text-center text-[#486174]">Adicione um trabalho no painel para destacar uma imagem aqui.</div>}
+					<div id="portfolio-hero-image" class="mx-auto w-full max-w-full min-w-0 overflow-hidden rounded-[2rem] border border-[#d8cfc2] bg-[#e8eef0] shadow-sm max-[380px]:hidden">
+						<div class="flex aspect-[4/5] items-center justify-center p-8 text-center text-[#486174]">Carregando o portfólio...</div>
 					</div>
 					<div class="min-w-0">
 						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Trabalhos realizados</p>
@@ -57,16 +46,8 @@ const projetos = (projetosData ?? []).map((projeto) => ({
 					</div>
 					<p class="max-w-md text-sm leading-6 text-[#486174]">Cada peça pode receber nomes, logotipos, frases e elementos da identidade visual do seu projeto.</p>
 				</div>
-				{projetos.length > 1 ? <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-12">
-					{projetos.slice(1).map((projeto, index) => (
-						<figure class:list={['group overflow-hidden rounded-[1.75rem] border border-[#e4ddd2] bg-[#fffdf9] shadow-sm', index === 0 ? 'lg:col-span-7 lg:row-span-2' : index === 1 || index === 2 ? 'lg:col-span-5' : 'lg:col-span-4']}>
-							<div class:list={['relative overflow-hidden bg-[#e8eef0]', index === 0 ? 'aspect-[4/5] lg:h-full' : 'aspect-[4/3]']}>
-								<img src={projeto.src} alt={projeto.descricao ? `${projeto.titulo}: ${projeto.descricao}` : projeto.titulo} class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async" />
-								<div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#18324a]/85 to-transparent p-5 pt-12 text-white"><h3 class="text-xl font-bold">{projeto.titulo}</h3>{projeto.descricao && <p class="mt-1 text-sm leading-6 text-[#e8eef0]">{projeto.descricao}</p>}</div>
-							</div>
-						</figure>
-					))}
-				</div> : <p class="mt-8 rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center text-[#486174]">Estamos preparando nossa galeria de trabalhos.</p>}
+				<div id="portfolio-grid" class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-12"></div>
+				<p id="portfolio-empty" class="mt-8 rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center text-[#486174]">Carregando nossa galeria de trabalhos...</p>
 				<div class="mt-12 rounded-3xl border border-[#d99a70] bg-[#fff1e9] p-7 text-center sm:p-10">
 					<h2 class="brand-display text-3xl font-bold text-[#18324a]">Gostou de alguma ideia?</h2>
 					<p class="mx-auto mt-3 max-w-xl leading-7 text-[#486174]">Fale com a equipe e conte o que você gostaria de personalizar.</p>
@@ -104,5 +85,27 @@ const projetos = (projetosData ?? []).map((projeto) => ({
 				<p>© 2026 ArtBrasil Presentes · CNPJ: 58.151.605/0001-63 · Pedreira - SP</p>
 			</div>
 		</footer>
+		<script>
+			import { supabase as browserSupabase } from '../lib/supabase';
+			const portfolioStorageUrl = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/produtos/`;
+			const hero = document.querySelector<HTMLElement>('#portfolio-hero-image');
+			const grid = document.querySelector<HTMLElement>('#portfolio-grid');
+			const empty = document.querySelector<HTMLElement>('#portfolio-empty');
+			const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[character] ?? character);
+			const imageUrl = (path: string) => path.startsWith('http') ? path : `${portfolioStorageUrl}${path.replace(/^\/+/, '')}`;
+			const loadPortfolio = async () => {
+				const { data, error } = await browserSupabase.from('portfolio_projetos').select('id, titulo, descricao, imagem_path').eq('ativo', true).order('ordem', { ascending: true }).order('created_at', { ascending: false });
+				if (error) throw error;
+				const projects = data ?? [];
+				if (!projects.length) return;
+				const first = projects[0];
+				if (hero) hero.innerHTML = `<img src="${escapeHtml(imageUrl(first.imagem_path))}" alt="${escapeHtml(first.descricao ? `${first.titulo}: ${first.descricao}` : first.titulo)}" class="aspect-[4/5] w-full object-cover" loading="eager" fetchpriority="high" decoding="async">`;
+				if (grid) grid.innerHTML = projects.slice(1).map((project, index) => `<figure class="group overflow-hidden rounded-[1.75rem] border border-[#e4ddd2] bg-[#fffdf9] shadow-sm ${index === 0 ? 'lg:col-span-7 lg:row-span-2' : index === 1 || index === 2 ? 'lg:col-span-5' : 'lg:col-span-4'}"><div class="relative overflow-hidden bg-[#e8eef0] ${index === 0 ? 'aspect-[4/5] lg:h-full' : 'aspect-[4/3]'}"><img src="${escapeHtml(imageUrl(project.imagem_path))}" alt="${escapeHtml(project.descricao ? `${project.titulo}: ${project.descricao}` : project.titulo)}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" loading="lazy" decoding="async"><div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#18324a]/85 to-transparent p-5 pt-12 text-white"><h3 class="text-xl font-bold">${escapeHtml(project.titulo)}</h3>${project.descricao ? `<p class="mt-1 text-sm leading-6 text-[#e8eef0]">${escapeHtml(project.descricao)}</p>` : ''}</div></div></figure>`).join('');
+				empty?.classList.add('hidden');
+			};
+			loadPortfolio().catch(() => {
+				if (empty) empty.textContent = 'Não foi possível carregar a galeria neste momento.';
+			});
+		</script>
 	</body>
 </html>

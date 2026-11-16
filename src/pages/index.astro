@@ -1,39 +1,13 @@
 ---
-import { supabase } from '../lib/supabase';
 import type { Produto } from '../types/catalog';
 import '../styles/global.css';
 
 const whatsappNumber = import.meta.env.PUBLIC_WHATSAPP_NUMBER;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://artbrasilpresentes.com.br');
-const { data, error } = await supabase
-	.from('produtos')
-	.select('id, nome, codigo, preco_peca_branca, preco_promocional, quantidade_minima, fotos, tags, destaque')
-	.order('destaque', { ascending: false })
-	.order('nome');
-
-const produtos = (data ?? []) as Produto[];
-const { data: precosData } = await supabase
-	.from('precos_decoracao')
-	.select('quantidade, cores, valor')
-	.order('quantidade', { ascending: true })
-	.order('cores', { ascending: true });
-const precosDecoracao = (precosData ?? []) as Array<{ quantidade: number; cores: number; valor: number }>;
-const priceQuantities = [...new Set(precosDecoracao.map((preco) => preco.quantidade))].sort((a, b) => a - b);
-const priceColors = [...new Set(precosDecoracao.map((preco) => preco.cores))].sort((a, b) => a - b);
-const priceMap = precosDecoracao.reduce<Record<number, Record<number, number>>>((map, preco) => {
-	map[preco.quantidade] ??= {};
-	map[preco.quantidade][preco.cores] = Number(preco.valor);
-	return map;
-}, {});
-const { data: portfolioDestaque } = await supabase
-	.from('portfolio_projetos')
-	.select('titulo, descricao, imagem_path')
-	.eq('ativo', true)
-	.order('ordem', { ascending: true })
-	.order('created_at', { ascending: false })
-	.limit(1)
-	.maybeSingle();
-const tags = [...new Set(produtos.flatMap((produto) => produto.tags))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+const produtos: Produto[] = [];
+const tags: string[] = [];
+const error = null;
+const renderCatalog = false;
 const storageUrl = import.meta.env.PUBLIC_SUPABASE_URL + '/storage/v1/object/public/produtos/';
 const logoUrl = '/favicon.jpg';
 const formatPrice = (value: number | string) =>
@@ -108,8 +82,8 @@ const whatsappLink = (produto: Produto) =>
 
 			<section class="border-b border-[#e4ddd2] bg-[#f3eee6]" aria-labelledby="portfolio-callout-title">
 				<div class="mx-auto grid max-w-6xl gap-8 px-5 py-[3.5rem] sm:px-8 sm:py-[4.65rem] md:grid-cols-[0.9fr_1.1fr] md:items-center md:gap-12">
-					<div class="relative aspect-[4/3] min-h-64 overflow-hidden rounded-[1.5rem] border border-[#e4ddd2] bg-[#e8eef0] shadow-xl max-[380px]:hidden md:aspect-auto md:h-[22rem]">
-						{portfolioDestaque ? <img src={portfolioDestaque.imagem_path.startsWith('http') ? portfolioDestaque.imagem_path : `${storageUrl}${portfolioDestaque.imagem_path}`} alt={portfolioDestaque.descricao ? `${portfolioDestaque.titulo}: ${portfolioDestaque.descricao}` : portfolioDestaque.titulo} class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" /> : <div class="flex h-full min-h-64 items-center justify-center p-8 text-center text-[#486174]">Conheça nossos trabalhos personalizados</div>}
+						<div id="portfolio-highlight" class="relative aspect-[4/3] min-h-64 overflow-hidden rounded-[1.5rem] border border-[#e4ddd2] bg-[#e8eef0] shadow-xl max-[380px]:hidden md:aspect-auto md:h-[22rem]">
+							<div class="flex h-full min-h-64 items-center justify-center p-8 text-center text-[#486174]">Carregando trabalhos personalizados...</div>
 					</div>
 					<div class="flex flex-col justify-center py-2 sm:py-8">
 						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Inspire-se</p>
@@ -126,7 +100,7 @@ const whatsappLink = (produto: Produto) =>
 						<p class="text-sm font-bold uppercase tracking-[0.2em] text-[#c96f4a]">Escolha com calma</p>
 						<h2 id="catalog-title" class="brand-display mt-2 text-4xl font-bold text-[#18324a]">Catálogo de peças</h2>
 					</div>
-					{produtos.length > 0 && <p class="text-sm text-[#486174]">{produtos.length} produto(s)</p>}
+					<p id="product-total-label" class="hidden text-sm text-[#486174]"><span id="product-total-count">0</span> produto(s)</p>
 				</div>
 				<p class="mt-5 rounded-2xl border border-[#e8c9a5] bg-[#fff4e8] px-5 py-3 text-center text-sm text-[#7b4a2d]">
 					<strong>Importante:</strong> o valor dos produtos não inclui o frete, e o prazo de entrega deve ser consultado.
@@ -137,7 +111,7 @@ const whatsappLink = (produto: Produto) =>
 						<h3 class="font-semibold">Não foi possível carregar o catálogo.</h3>
 						<p class="mt-2 text-sm">Tente novamente em alguns instantes ou fale conosco pelo WhatsApp.</p>
 					</div>
-				) : produtos.length === 0 ? (
+				) : renderCatalog ? (
 					<div class="mt-8 rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center">
 						<h3 class="text-lg font-semibold">Estamos preparando nosso catálogo</h3>
 						<p class="mx-auto mt-2 max-w-xl text-slate-600">
@@ -184,8 +158,8 @@ const whatsappLink = (produto: Produto) =>
 							<p class="mt-2 text-xs text-[#486174]">Você pode digitar apenas parte do nome, como “300”, “can” ou “café”.</p>
 						</div>
 
-						{tags.length > 0 && (
-							<nav class="mt-8 flex flex-wrap gap-2" aria-label="Filtrar produtos por categoria">
+							{true && (
+								<nav id="product-filters" class="mt-8 flex flex-wrap gap-2" aria-label="Filtrar produtos por categoria">
 								<button
 									type="button"
 									class="filter-button is-active rounded-full border border-[#18324a] bg-[#18324a] px-4 py-3 text-sm font-bold text-white"
@@ -209,7 +183,19 @@ const whatsappLink = (produto: Produto) =>
 							<span id="visible-product-count">{produtos.length}</span> produto(s) exibido(s)
 						</p>
 
-					<div id="product-grid" class="mt-2 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+						<div id="catalog-loading" class="mt-8 rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center" role="status" aria-live="polite">
+							<span class="loading-spinner" aria-hidden="true"></span>
+							<p class="mt-3 text-[#486174]">Carregando catálogo...</p>
+						</div>
+						<div id="catalog-load-error" class="mt-8 hidden rounded-3xl border border-red-200 bg-red-50 p-6 text-red-900" role="alert">
+							<h3 class="font-semibold">Não foi possível carregar o catálogo.</h3>
+							<p class="mt-2 text-sm">Tente novamente em alguns instantes ou fale conosco pelo WhatsApp.</p>
+						</div>
+						<div id="catalog-empty" class="mt-8 hidden rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center">
+							<h3 class="text-lg font-semibold">Estamos preparando nosso catálogo</h3>
+							<p class="mx-auto mt-2 max-w-xl text-slate-600">Enquanto isso, fale com nossa equipe para consultar produtos e condições especiais.</p>
+						</div>
+						<div id="product-grid" class="mt-2 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"></div>
 						{produtos.map((produto) => (
 							<article
 								class:list={[
@@ -310,7 +296,6 @@ const whatsappLink = (produto: Produto) =>
 								</div>
 							</article>
 						))}
-					</div>
 					<div id="no-search-results" class="mt-8 hidden rounded-3xl border border-[#e4ddd2] bg-[#fffdf9] p-8 text-center" role="status">
 						<h3 class="text-lg font-semibold text-[#18324a]">Nenhum produto encontrado</h3>
 						<p class="mt-2 text-sm text-[#486174]">Tente outro nome, capacidade, código ou tag.</p>
@@ -345,12 +330,12 @@ const whatsappLink = (produto: Produto) =>
 						</div>
 						<div class="mt-4 flex items-center gap-3">
 							<button id="simulation-quantity-decrease" type="button" class="simulation-quantity-button" aria-label="Diminuir quantidade">−</button>
-						<input id="simulation-quantity" type="range" min="1" max={Math.max(...priceQuantities, 200) + 1} step="1" value="10" class="simulation-range w-full" aria-describedby="simulation-quantity-help" />
+						<input id="simulation-quantity" type="range" min="1" max="201" step="1" value="10" class="simulation-range w-full" aria-describedby="simulation-quantity-help" />
 							<button id="simulation-quantity-increase" type="button" class="simulation-quantity-button" aria-label="Aumentar quantidade">+</button>
 						</div>
 						<div class="mt-1 flex justify-between text-sm font-bold text-[#486174]" aria-hidden="true">
 							<span id="simulation-quantity-min-label">10</span>
-							<span id="simulation-quantity-max-label">{Math.max(...priceQuantities, 200)}+</span>
+							<span id="simulation-quantity-max-label">200+</span>
 						</div>
 						<p id="simulation-quantity-help" class="mt-2 text-sm text-[#486174]">Arraste ou use os botões para escolher de uma em uma peça.</p>
 					</div>
@@ -358,8 +343,8 @@ const whatsappLink = (produto: Produto) =>
 					<div id="simulation-colors-section">
 						<label for="simulation-colors" class="block text-base font-bold text-[#18324a]">Cores da personalização</label>
 						<select id="simulation-colors" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3.5 text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20">
-							{priceColors.map((color) => <option value={color}>{color} {color === 1 ? 'cor' : 'cores'}</option>)}
-							<option value={Math.max(7, ...(priceColors.length ? priceColors : [6]))}>Mais de {Math.max(6, ...(priceColors.length ? priceColors : [6]))} cores</option>
+							<option value="1">1 cor</option>
+							<option value="7">Mais de 6 cores</option>
 						</select>
 					</div>
 
@@ -417,9 +402,9 @@ const whatsappLink = (produto: Produto) =>
 					<button type="button" class="rounded-full p-2 text-2xl leading-none text-[#486174] hover:bg-[#f1e8dc]" data-close-price-table aria-label="Fechar tabela">×</button>
 				</div>
 				<div class="mt-6 overflow-x-auto rounded-2xl border border-[#d8cfc2]">
-					<table class="w-full min-w-[40rem] border-collapse text-left text-sm text-[#486174]">
-						<thead class="bg-[#18324a] text-white"><tr><th class="px-3 py-3">Quantidade</th>{priceColors.map((color) => <th class="px-3 py-3">{color} {color === 1 ? 'cor' : 'cores'}</th>)}</tr></thead>
-						<tbody>{priceQuantities.map((quantity) => <tr class="border-t border-[#e4ddd2] odd:bg-[#fff8f1]"><th class="px-3 py-2 font-bold text-[#18324a]">{quantity} peças</th>{priceColors.map((color) => <td class="px-3 py-2">{priceMap[quantity]?.[color] !== undefined ? formatPrice(priceMap[quantity][color]) : '—'}</td>)}</tr>)}</tbody>
+						<table class="w-full min-w-[40rem] border-collapse text-left text-sm text-[#486174]">
+							<thead id="price-table-head" class="bg-[#18324a] text-white"><tr><th class="px-3 py-3">Quantidade</th></tr></thead>
+							<tbody id="price-table-body"></tbody>
 					</table>
 				</div>
 				<div class="mt-5 space-y-2 text-sm leading-6 text-[#486174]"><p><strong class="text-[#18324a]">Como ler:</strong> quantidades entre duas faixas usam o preço da faixa imediatamente inferior (por exemplo, 10 a 19 usa a linha de 10).</p><p><strong class="text-[#18324a]">Aplicação:</strong> Logotipo usa o valor da tabela. Em volta da peça usa 3× o valor correspondente.</p><p>Valores são estimativas, não incluem frete e devem ser confirmados pela equipe.</p></div>
@@ -475,11 +460,32 @@ const whatsappLink = (produto: Produto) =>
 				<path d="M20.5 3.5A11.8 11.8 0 0 0 12.06 0C5.52 0 .2 5.32.2 11.86c0 2.09.55 4.13 1.59 5.93L.1 24l6.36-1.67a11.85 11.85 0 0 0 5.6 1.42h.01c6.54 0 11.86-5.32 11.86-11.86 0-3.17-1.23-6.15-3.43-8.39Zm-8.44 18.2h-.01a9.84 9.84 0 0 1-5.01-1.37l-.36-.21-3.77.99 1.01-3.68-.23-.38a9.82 9.82 0 0 1-1.5-5.19C2.19 6.43 6.62 2 12.06 2c2.64 0 5.12 1.03 6.98 2.9a9.8 9.8 0 0 1 2.88 6.99c0 5.44-4.43 9.81-9.86 9.81Zm5.4-7.35c-.3-.15-1.78-.88-2.05-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.17.2-.35.23-.65.08-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.5-1.78-1.67-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.08-.15-.68-1.64-.93-2.25-.24-.59-.49-.51-.68-.52h-.58c-.2 0-.53.08-.8.38-.28.3-1.06 1.03-1.06 2.52s1.08 2.92 1.23 3.12c.15.2 2.12 3.24 5.13 4.54.72.31 1.28.49 1.72.63.72.23 1.37.2 1.89.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.18-1.43-.08-.13-.28-.2-.58-.35Z" />
 			</svg>
 		</a>
-		<script id="decoration-price-data" type="application/json" set:html={JSON.stringify(priceMap)}></script>
+		<script id="decoration-price-data" type="application/json" set:html={JSON.stringify({})}></script>
 		<script>
-			const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-button');
 			import { supabase as browserSupabase } from '../lib/supabase';
-			const cards = document.querySelectorAll<HTMLElement>('.product-card');
+			type ProductRecord = {
+				id: string;
+				nome: string;
+				codigo: string;
+				preco_peca_branca: number | string;
+				preco_promocional?: number | string | null;
+				quantidade_minima: number;
+				fotos: string[];
+				tags: string[];
+				destaque: boolean;
+			};
+			let buttons = document.querySelectorAll<HTMLButtonElement>('.filter-button');
+			let cards = document.querySelectorAll<HTMLElement>('.product-card');
+			const productGrid = document.querySelector<HTMLElement>('#product-grid');
+			const productFilters = document.querySelector<HTMLElement>('#product-filters');
+			const catalogLoading = document.querySelector<HTMLElement>('#catalog-loading');
+			const catalogLoadError = document.querySelector<HTMLElement>('#catalog-load-error');
+			const catalogEmpty = document.querySelector<HTMLElement>('#catalog-empty');
+			const productTotalLabel = document.querySelector<HTMLElement>('#product-total-label');
+			const productTotalCount = document.querySelector<HTMLElement>('#product-total-count');
+			const priceTableHead = document.querySelector<HTMLElement>('#price-table-head');
+			const priceTableBody = document.querySelector<HTMLElement>('#price-table-body');
+			const portfolioHighlight = document.querySelector<HTMLElement>('#portfolio-highlight');
 			const count = document.querySelector<HTMLElement>('#visible-product-count');
 			const searchInput = document.querySelector<HTMLInputElement>('#product-search');
 			const clearSearch = document.querySelector<HTMLButtonElement>('#clear-product-search');
@@ -510,10 +516,85 @@ const whatsappLink = (produto: Produto) =>
 			let selectedSimulationProductBasePrice = 0;
 			let selectedSimulationProductMinimum = 10;
 			let selectedFilter = 'todos';
-			let decorationPrices: Record<number, Record<number, number>> = JSON.parse(document.querySelector<HTMLScriptElement>('#decoration-price-data')?.textContent ?? '{}');
+			let decorationPrices: Record<number, Record<number, number>> = {};
+			const storageBaseUrl = `${import.meta.env.PUBLIC_SUPABASE_URL}/storage/v1/object/public/produtos/`;
+			const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#039;',
+			})[character] ?? character);
+			const catalogImageUrl = (path: string) => path.startsWith('http') ? path : `${storageBaseUrl}${path.replace(/^\/+/, '')}`;
+			const productPrice = (product: ProductRecord) => {
+				const promotion = Number(product.preco_promocional ?? 0);
+				return promotion > 0 ? promotion : Number(product.preco_peca_branca);
+			};
+			const productWhatsappUrl = (product: ProductRecord) => `https://wa.me/${simulationWhatsappNumber}?text=${encodeURIComponent(`Olá! Vim pelo site da Art Brasil e gostaria de orçar: ${product.nome}.`)}`;
+			const renderProductCard = (product: ProductRecord) => {
+				const photos = product.fotos ?? [];
+				const productTags = product.tags ?? [];
+				const promotion = Number(product.preco_promocional ?? 0);
+				const images = photos.map((photo, index) => `<img src="${escapeHtml(catalogImageUrl(photo))}" alt="${escapeHtml(product.nome)} - imagem ${index + 1} de ${photos.length}" class="aspect-square w-full object-cover${index === 0 ? '' : ' hidden'}" data-gallery-image data-image-index="${index}" loading="lazy" decoding="async">`).join('');
+				const gallery = photos.length > 0
+					? `<div class="product-gallery" data-gallery data-image-loading><div class="relative"><div class="gallery-loading" aria-hidden="true"><span class="loading-spinner"></span><span>Carregando imagem...</span></div>${product.destaque ? '<span class="featured-badge absolute left-4 top-4 z-10 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em]">Destaque</span>' : ''}${promotion > 0 ? '<span class="absolute right-4 top-4 z-10 rounded-full bg-[#a95235] px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-white shadow-lg">Promoção</span>' : ''}${images}${photos.length > 1 ? `<button type="button" class="gallery-control gallery-previous absolute left-3 top-1/2 -translate-y-1/2 rounded-full border-2 border-[#18324a] bg-[#fffdf9]/95 text-xl font-bold text-[#18324a] shadow-lg hover:bg-white" aria-label="Ver imagem anterior de ${escapeHtml(product.nome)}"><span class="flex h-full items-center justify-center text-4xl leading-none -translate-y-px" aria-hidden="true">‹</span></button><button type="button" class="gallery-control gallery-next absolute right-3 top-1/2 -translate-y-1/2 rounded-full border-2 border-[#18324a] bg-[#fffdf9]/95 text-xl font-bold text-[#18324a] shadow-lg hover:bg-white" aria-label="Ver próxima imagem de ${escapeHtml(product.nome)}"><span class="flex h-full items-center justify-center text-4xl leading-none -translate-y-px" aria-hidden="true">›</span></button><p class="gallery-counter absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full bg-[#18324a]/85 px-3 py-1 text-xs font-bold text-white" aria-live="polite">1 / ${photos.length}</p>` : ''}</div></div>`
+					: `<div class="relative flex aspect-square items-center justify-center bg-[#e8eef0] text-sm text-[#486174]">${product.destaque ? '<span class="featured-badge absolute left-4 top-4 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.12em]">Destaque</span>' : ''}${promotion > 0 ? '<span class="absolute right-4 top-4 z-10 rounded-full bg-[#a95235] px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.12em] text-white shadow-lg">Promoção</span>' : ''}Foto em breve</div>`;
+				const price = productPrice(product);
+				const priceHtml = promotion > 0
+					? `<div class="flex h-10 items-end justify-end"><div class="relative"><span class="absolute bottom-full right-0 whitespace-nowrap text-base font-normal text-[#486174] line-through">De: ${formatSimulationPrice(Number(product.preco_peca_branca))}</span><p class="text-2xl font-bold leading-none text-[#c96f4a] sm:text-3xl"><span class="text-sm font-normal text-[#486174]">Por:</span> ${formatSimulationPrice(price)} <span class="text-sm font-normal text-[#486174]">por pç</span></p></div></div>`
+					: `<p class="text-2xl font-bold leading-none text-[#c96f4a] sm:text-3xl">${formatSimulationPrice(price)} <span class="text-sm font-normal text-[#486174]">por pç</span></p>`;
+				return `<article class="product-card flex h-full flex-col overflow-hidden rounded-3xl border shadow-sm${product.destaque ? ' is-featured' : ''}" data-tags="${escapeHtml(productTags.join('|'))}" data-search="${escapeHtml(`${product.nome} ${product.codigo} ${productTags.join(' ')} ${photos.join(' ')}`)}">${gallery}<div class="flex flex-1 flex-col p-5"><h3 class="flex min-h-14 items-center justify-center text-center text-lg font-bold text-[#18324a]">${escapeHtml(product.nome)}</h3><div class="mt-3 mb-3 flex h-14 items-end justify-end gap-2 text-right">${priceHtml}</div><div class="mt-auto grid gap-2"><a href="${escapeHtml(productWhatsappUrl(product))}" target="_blank" rel="noreferrer" class="inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#c96f4a] px-4 py-3 text-center font-bold text-white hover:bg-[#a95235]">Pedir orçamento pelo WhatsApp</a><button type="button" class="simulation-open-button inline-flex min-h-11 w-full items-center justify-center rounded-full border-2 border-[#18324a] px-4 py-2.5 text-center font-bold text-[#18324a] hover:bg-[#e8eef0]" data-product-name="${escapeHtml(product.nome)}" data-product-price="${price}" data-product-base-price="${Number(product.preco_peca_branca)}" data-product-minimum="${Math.max(1, Number(product.quantidade_minima ?? 10))}" aria-haspopup="dialog">Calcular personalização</button></div></div></article>`;
+			};
+			const renderCatalogFilters = (products: ProductRecord[]) => {
+				if (!productFilters) return;
+				const catalogTags = [...new Set(products.flatMap((product) => product.tags ?? []))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+				productFilters.innerHTML = [`<button type="button" class="filter-button is-active rounded-full border border-[#18324a] bg-[#18324a] px-4 py-3 text-sm font-bold text-white" data-filter="todos">Todos</button>`, ...catalogTags.map((tag) => `<button type="button" class="filter-button rounded-full border border-[#c8d0d2] bg-[#fffdf9] px-4 py-3 text-sm font-bold text-[#486174] hover:border-[#18324a]" data-filter="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`)].join('');
+				selectedFilter = 'todos';
+				bindFilterButtons();
+			};
+			const renderCatalog = (products: ProductRecord[]) => {
+				if (!productGrid) return;
+				productGrid.innerHTML = products.map(renderProductCard).join('');
+				cards = productGrid.querySelectorAll<HTMLElement>('.product-card');
+				renderCatalogFilters(products);
+				bindGalleries();
+				bindSimulationButtons();
+				updateResults();
+			};
+			const loadCatalog = async () => {
+				const { data, error: catalogError } = await browserSupabase.from('produtos').select('id, nome, codigo, preco_peca_branca, preco_promocional, quantidade_minima, fotos, tags, destaque').order('destaque', { ascending: false }).order('nome');
+				if (catalogError) throw catalogError;
+				const products = (data ?? []) as ProductRecord[];
+				catalogLoading?.classList.add('hidden');
+				catalogLoadError?.classList.add('hidden');
+				catalogEmpty?.classList.toggle('hidden', products.length > 0);
+				productTotalLabel?.classList.toggle('hidden', products.length === 0);
+				if (productTotalCount) productTotalCount.textContent = String(products.length);
+				if (products.length > 0) renderCatalog(products);
+				else noSearchResults?.classList.add('hidden');
+			};
+			const renderPriceTable = (prices: Array<{ quantidade: number; cores: number; valor: number | string }>) => {
+				if (!priceTableHead || !priceTableBody) return;
+				const quantities = [...new Set(prices.map((price) => Number(price.quantidade)))].sort((a, b) => a - b);
+				const colors = [...new Set(prices.map((price) => Number(price.cores)))].sort((a, b) => a - b);
+				const priceMap = prices.reduce<Record<number, Record<number, number>>>((map, price) => {
+					map[Number(price.quantidade)] ??= {};
+					map[Number(price.quantidade)][Number(price.cores)] = Number(price.valor);
+					return map;
+				}, {});
+				priceTableHead.innerHTML = `<tr><th class="px-3 py-3">Quantidade</th>${colors.map((color) => `<th class="px-3 py-3">${color} ${color === 1 ? 'cor' : 'cores'}</th>`).join('')}</tr>`;
+				priceTableBody.innerHTML = quantities.map((quantity) => `<tr class="border-t border-[#e4ddd2] odd:bg-[#fff8f1]"><th class="px-3 py-2 font-bold text-[#18324a]">${quantity} peças</th>${colors.map((color) => `<td class="px-3 py-2">${priceMap[quantity]?.[color] !== undefined ? formatSimulationPrice(priceMap[quantity][color]) : '—'}</td>`).join('')}</tr>`).join('');
+			};
+			const loadPortfolioHighlight = async () => {
+				const { data } = await browserSupabase.from('portfolio_projetos').select('titulo, descricao, imagem_path').eq('ativo', true).order('ordem', { ascending: true }).order('created_at', { ascending: false }).limit(1).maybeSingle();
+				if (!data || !portfolioHighlight) return;
+				const imageUrl = catalogImageUrl(data.imagem_path);
+				portfolioHighlight.innerHTML = `<img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(data.descricao ? `${data.titulo}: ${data.descricao}` : data.titulo)}" class="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async">`;
+			};
 			const refreshDecorationPrices = async () => {
 				const { data } = await browserSupabase.from('precos_decoracao').select('quantidade, cores, valor').order('quantidade').order('cores');
 				if (!data?.length) return;
+				renderPriceTable(data);
 				decorationPrices = data.reduce<Record<number, Record<number, number>>>((map, price) => {
 					map[price.quantidade] ??= {};
 					map[price.quantidade][price.cores] = Number(price.valor);
@@ -611,6 +692,7 @@ const whatsappLink = (produto: Produto) =>
 				priceTableModal?.querySelector<HTMLButtonElement>('button[data-close-price-table]')?.focus();
 			});
 			priceTableModal?.querySelectorAll<HTMLElement>('[data-close-price-table]').forEach((element) => element.addEventListener('click', closePriceTable));
+			const bindSimulationButtons = () => {
 				document.querySelectorAll<HTMLButtonElement>('.simulation-open-button').forEach((button) => {
 					button.addEventListener('click', async () => {
 					lastSimulationTrigger = button;
@@ -642,7 +724,8 @@ const whatsappLink = (produto: Produto) =>
 					updateSimulation();
 					window.setTimeout(() => simulationForm?.querySelector<HTMLElement>('select')?.focus(), 0);
 				});
-			});
+				});
+			};
 			simulationModal?.querySelectorAll<HTMLElement>('[data-close-simulation]').forEach((element) => element.addEventListener('click', closeSimulation));
 			document.addEventListener('keydown', (event) => {
 				const activeModal = !priceTableModal?.classList.contains('hidden')
@@ -703,7 +786,8 @@ const whatsappLink = (produto: Produto) =>
 				clearSearch?.classList.toggle('inline-flex', Boolean(searchInput?.value));
 			};
 
-			document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+			const bindGalleries = () => {
+				document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
 				const images = Array.from(gallery.querySelectorAll<HTMLImageElement>('[data-gallery-image]'));
 				const previous = gallery.querySelector<HTMLButtonElement>('.gallery-previous');
 				const next = gallery.querySelector<HTMLButtonElement>('.gallery-next');
@@ -729,9 +813,12 @@ const whatsappLink = (produto: Produto) =>
 					}
 				});
 
-			});
+				});
+			};
 
-			buttons.forEach((button) => {
+			const bindFilterButtons = () => {
+				buttons = document.querySelectorAll<HTMLButtonElement>('.filter-button');
+				buttons.forEach((button) => {
 				button.addEventListener('click', () => {
 					selectedFilter = button.dataset.filter ?? 'todos';
 
@@ -746,7 +833,8 @@ const whatsappLink = (produto: Produto) =>
 
 					updateResults();
 				});
-			});
+				});
+			};
 
 			searchInput?.addEventListener('input', updateResults);
 			clearSearch?.addEventListener('click', () => {
@@ -756,6 +844,11 @@ const whatsappLink = (produto: Produto) =>
 				}
 				updateResults();
 			});
+			loadCatalog().catch(() => {
+				catalogLoading?.classList.add('hidden');
+				catalogLoadError?.classList.remove('hidden');
+			});
+			loadPortfolioHighlight().catch(() => undefined);
 		</script>
 	</body>
 </html>
