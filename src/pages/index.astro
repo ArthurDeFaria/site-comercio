@@ -9,7 +9,7 @@ const tags: string[] = [];
 const error = null;
 const renderCatalog = false;
 const storageUrl = import.meta.env.PUBLIC_SUPABASE_URL + '/storage/v1/object/public/produtos/';
-const logoUrl = '/favicon.jpg';
+const logoUrl = '/logo.png';
 const formatPrice = (value: number | string) =>
 	Number(value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 const promotionalPrice = (produto: Produto) => {
@@ -27,8 +27,7 @@ const whatsappLink = (produto: Produto) =>
 <html lang="pt-BR">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
-		<link rel="icon" type="image/jpeg" href="/favicon.jpg?v=2" />
+		<link rel="icon" type="image/png" href="/logo.png?v=4" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="canonical" href={canonicalUrl} />
 		<link rel="sitemap" href="/sitemap.xml" />
@@ -66,16 +65,13 @@ const whatsappLink = (produto: Produto) =>
 							Conhecer o catálogo <span class="ml-2" aria-hidden="true">↓</span>
 						</a>
 					</div>
-					<div class="relative hidden min-h-64 lg:block">
-						<div class="absolute inset-8 rotate-3 rounded-[3rem] bg-[#dce8e8]"></div>
-						<div class="relative flex min-h-64 items-center justify-center rounded-[3rem] border border-[#e4ddd2] bg-[#fffdf9] p-10 shadow-xl">
-							<img
-								src={logoUrl}
-								alt="Logo Art Brasil Presentes Finos"
-								class="max-h-56 w-full max-w-sm object-contain lg:max-h-[26rem] lg:max-w-[36rem]"
-								decoding="async"
-							/>
-						</div>
+					<div class="relative hidden min-h-64 items-center justify-center p-2 lg:flex">
+						<img
+							src={logoUrl}
+							alt="Logo Art Brasil Presentes Finos"
+							class="max-h-56 w-full max-w-sm object-contain lg:max-h-[26rem] lg:max-w-[36rem]"
+							decoding="async"
+						/>
 					</div>
 				</div>
 			</section>
