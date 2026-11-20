@@ -1,5 +1,6 @@
 # build output
 dist/
+
 # generated types
 .astro/
 
@@ -28,3 +29,6 @@ pnpm-debug.log*
 
 # Supabase local state
 supabase/.temp/
+
+#pastas
+*/.temp
