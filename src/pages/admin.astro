@@ -81,6 +81,24 @@ import '../styles/global.css';
 							</div>
 							<label for="product-search" class="sr-only">Procurar produto</label>
 							<input id="product-search" type="search" placeholder="Procurar produto por nome, código ou tag" class="admin-text-field mt-5 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20" />
+							<div class="mt-3 grid gap-3 sm:grid-cols-2">
+								<div>
+									<label for="product-status-filter" class="block text-sm font-bold text-[#18324a]">Status</label>
+									<select id="product-status-filter" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20">
+										<option value="todos">Todos os produtos</option>
+										<option value="ativos">Ativos</option>
+										<option value="desativados">Desativados</option>
+									</select>
+								</div>
+								<div>
+									<label for="product-promotion-filter" class="block text-sm font-bold text-[#18324a]">Promoção</label>
+									<select id="product-promotion-filter" class="admin-text-field mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a] focus:border-[#c96f4a] focus:outline-none focus:ring-2 focus:ring-[#c96f4a]/20">
+										<option value="todos">Todos os preços</option>
+										<option value="promocao">Em promoção</option>
+										<option value="sem-promocao">Sem promoção</option>
+									</select>
+								</div>
+							</div>
 							<p id="admin-message" class="mt-5 hidden rounded-2xl p-4 text-sm" role="status"></p>
 							<div id="product-list" class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
 								<p class="w-full rounded-3xl border border-dashed border-[#d8cfc2] p-8 text-center text-[#486174]">Carregando produtos...</p>
@@ -140,6 +158,16 @@ import '../styles/global.css';
 										<div id="product-tags-dropdown" class="absolute inset-x-0 top-full z-10 mt-2 hidden max-h-52 overflow-y-auto rounded-2xl border border-[#d8cfc2] bg-white p-2 shadow-lg" role="listbox"></div>
 									</div>
 									<p class="mt-1 text-xs text-[#486174]">Clique para escolher entre as tags já cadastradas. Clique no × para remover.</p>
+								</div>
+								<div>
+									<div class="flex items-center justify-between gap-3">
+										<div>
+											<label class="block text-sm font-bold text-[#18324a]">Medidas da caneca</label>
+											<p class="mt-1 text-xs text-[#486174]">Opcional. Cadastre uma ou mais medidas e seus valores.</p>
+										</div>
+										<button id="add-product-measure" type="button" class="admin-outline-button rounded-full border border-[#18324a] px-3 py-2 text-sm font-bold text-[#18324a]">Adicionar medida</button>
+									</div>
+									<div id="product-measures" class="mt-3 space-y-3"></div>
 								</div>
 								<div>
 									<label for="product-images" class="block text-sm font-bold text-[#18324a]">Adicionar imagens</label>
@@ -246,6 +274,7 @@ import '../styles/global.css';
 				tags: string[];
 				destaque: boolean;
 				ativo: boolean;
+				medidas: Record<string, string>;
 			};
 
 			const loginPanel = document.querySelector<HTMLElement>('#login-panel');
@@ -264,6 +293,8 @@ import '../styles/global.css';
 			const productList = document.querySelector<HTMLElement>('#product-list');
 			const productCount = document.querySelector<HTMLElement>('#product-count');
 			const productSearch = document.querySelector<HTMLInputElement>('#product-search');
+			const productStatusFilter = document.querySelector<HTMLSelectElement>('#product-status-filter');
+			const productPromotionFilter = document.querySelector<HTMLSelectElement>('#product-promotion-filter');
 			const usersLink = document.querySelector<HTMLElement>('#users-link');
 			const editor = document.querySelector<HTMLElement>('#product-editor');
 			const editorTitle = document.querySelector<HTMLElement>('#editor-title');
@@ -296,6 +327,8 @@ import '../styles/global.css';
 				active: document.querySelector<HTMLInputElement>('#product-active'),
 				images: document.querySelector<HTMLInputElement>('#product-images'),
 				imagesHint: document.querySelector<HTMLElement>('#product-images-hint'),
+				measures: document.querySelector<HTMLElement>('#product-measures'),
+				addMeasure: document.querySelector<HTMLButtonElement>('#add-product-measure'),
 			};
 			let products: Product[] = [];
 			let availableTags: { id: string; nome: string }[] = [];
@@ -356,7 +389,7 @@ import '../styles/global.css';
 
 			const loadProducts = async () => {
 				const [{ data, error }, { data: tagData, error: tagError }, { data: relationData, error: relationError }] = await Promise.all([
-					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,preco_promocional,quantidade_minima,fotos,tags,destaque,ativo').order('destaque', { ascending: false }).order('nome'),
+					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,preco_promocional,quantidade_minima,fotos,tags,destaque,ativo,medidas').order('destaque', { ascending: false }).order('nome'),
 					supabase.from('tags').select('id,nome').order('nome'),
 					supabase.from('produto_tags').select('produto_id,tag_id'),
 				]);
@@ -396,17 +429,50 @@ import '../styles/global.css';
 					: '<p class="p-3 text-sm text-[#486174]">Nenhuma tag cadastrada.</p>';
 			};
 
+			const renderMeasures = (measures: Record<string, string> = {}) => {
+				if (!productInputs.measures) return;
+				const entries = Object.entries(measures);
+				productInputs.measures.innerHTML = entries.length
+					? entries.map(([key, value], index) => `
+						<div class="grid gap-2 sm:grid-cols-[1fr_1fr_auto]" data-measure-row>
+							<input id="product-measure-key-${index}" data-measure-key value="${escapeHtml(key)}" placeholder="Ex.: Altura" aria-label="Nome da medida" class="w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a]" />
+							<input id="product-measure-value-${index}" data-measure-value value="${escapeHtml(value)}" placeholder="Ex.: 10 cm" aria-label="Valor da medida" class="w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-sm text-[#18324a]" />
+							<button type="button" data-remove-measure class="admin-outline-button self-stretch rounded-2xl border border-red-300 px-3 py-2 text-sm font-bold text-red-700 sm:self-auto" aria-label="Remover medida">Remover</button>
+						</div>
+					`).join('')
+					: '<p class="rounded-2xl border border-dashed border-[#d8cfc2] p-3 text-sm text-[#486174]">Nenhuma medida cadastrada.</p>';
+			};
+
+			const readMeasures = () => {
+				const measures: Record<string, string> = {};
+				const normalizedKeys = new Set<string>();
+				productInputs.measures?.querySelectorAll<HTMLElement>('[data-measure-row]').forEach((row) => {
+					const key = row.querySelector<HTMLInputElement>('[data-measure-key]')?.value.trim() ?? '';
+					const value = row.querySelector<HTMLInputElement>('[data-measure-value]')?.value.trim() ?? '';
+					if (!key || !value) throw new Error('Preencha o nome e o valor de todas as medidas ou remova as linhas vazias.');
+					const normalizedKey = key.toLocaleLowerCase('pt-BR');
+					if (normalizedKeys.has(normalizedKey)) throw new Error('Não repita o nome de uma medida.');
+					normalizedKeys.add(normalizedKey);
+					measures[key] = value;
+				});
+				return measures;
+			};
+
 			const renderProducts = () => {
 				const searchTerm = productSearch?.value.trim().toLocaleLowerCase('pt-BR') ?? '';
+				const statusFilter = productStatusFilter?.value ?? 'todos';
+				const promotionFilter = productPromotionFilter?.value ?? 'todos';
 				const filteredProducts = products.filter((product) =>
+					(statusFilter === 'todos' || (statusFilter === 'ativos' ? product.ativo : !product.ativo)) &&
+					(promotionFilter === 'todos' || (promotionFilter === 'promocao' ? Number(product.preco_promocional ?? 0) > 0 : Number(product.preco_promocional ?? 0) <= 0)) &&
 					`${product.nome} ${product.codigo} ${product.tags.join(' ')}`
 						.toLocaleLowerCase('pt-BR')
 						.includes(searchTerm),
 				);
 				if (productCount) {
-					productCount.textContent = searchTerm
-						? `${filteredProducts.length} de ${products.length} produto(s)`
-						: `${products.length} produto(s)`;
+					productCount.textContent = filteredProducts.length === products.length
+						? `${products.length} produto(s)`
+						: `${filteredProducts.length} de ${products.length} produto(s)`;
 				}
 				if (productList) {
 					if (products.length === 0) {
@@ -469,6 +535,7 @@ import '../styles/global.css';
 				pendingImageFiles = [];
 				if (productInputs.images) productInputs.images.value = '';
 				renderTagSelector();
+				renderMeasures();
 				if (productInputs.imagesHint) productInputs.imagesHint.textContent = 'Você pode selecionar várias imagens.';
 				if (productInputs.active) productInputs.active.checked = true;
 				if (productInputs.minimum) productInputs.minimum.value = '10';
@@ -490,6 +557,7 @@ import '../styles/global.css';
 					renderTagSelector();
 					if (productInputs.featured) productInputs.featured.checked = product.destaque;
 					if (productInputs.active) productInputs.active.checked = product.ativo;
+					renderMeasures(product.medidas ?? {});
 					renderImagePreview(product);
 					if (editorTitle) editorTitle.textContent = 'Editar produto';
 				}
@@ -632,6 +700,19 @@ import '../styles/global.css';
 				}
 			});
 			productSearch?.addEventListener('input', renderProducts);
+			productStatusFilter?.addEventListener('change', renderProducts);
+			productPromotionFilter?.addEventListener('change', renderProducts);
+			productInputs.addMeasure?.addEventListener('click', () => {
+				const currentMeasures = readMeasures();
+				renderMeasures({ ...currentMeasures, '': '' });
+				productInputs.measures?.querySelector<HTMLElement>('[data-measure-row]:last-child [data-measure-key]')?.focus();
+			});
+			productInputs.measures?.addEventListener('click', (event) => {
+				const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-remove-measure]');
+				if (!button) return;
+				button.closest('[data-measure-row]')?.remove();
+				if (productInputs.measures && !productInputs.measures.querySelector('[data-measure-row]')) renderMeasures();
+			});
 			productInputs.images?.addEventListener('click', () => {
 				if (productInputs.images) productInputs.images.value = '';
 			});
@@ -747,10 +828,11 @@ import '../styles/global.css';
 					const codigo = productInputs.code?.value.trim() ?? '';
 					const preco_peca_branca = Number(productInputs.price?.value);
 					const quantidade_minima = Number(productInputs.minimum?.value);
+					const medidas = readMeasures();
 					const tagIds = [...selectedTagIds];
 					if (!nome || !codigo || !Number.isFinite(preco_peca_branca) || !Number.isInteger(quantidade_minima) || quantidade_minima < 1) throw new Error('Preencha nome, código, preço e pedido mínimo corretamente.');
 					if (!/^[A-Za-z0-9_-]+$/.test(codigo)) throw new Error('O código deve conter apenas letras sem acento, números, hífen ou sublinhado.');
-					const payload = { nome, codigo, preco_peca_branca, quantidade_minima, destaque: Boolean(productInputs.featured?.checked), ativo: Boolean(productInputs.active?.checked) };
+					const payload = { nome, codigo, preco_peca_branca, quantidade_minima, medidas, destaque: Boolean(productInputs.featured?.checked), ativo: Boolean(productInputs.active?.checked) };
 					let productId = id;
 					if (id) {
 						const { error } = await supabase.from('produtos').update(payload).eq('id', id);
