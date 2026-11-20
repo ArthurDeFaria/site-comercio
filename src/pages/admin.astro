@@ -138,6 +138,11 @@ import '../styles/global.css';
 										<p class="mt-1 text-xs text-[#486174]">Quantidade mínima específica para este produto.</p>
 									</div>
 								</div>
+								<div>
+									<label for="product-order" class="block text-sm font-bold text-[#18324a]">Ordem no catálogo</label>
+									<input id="product-order" required min="0" step="1" type="number" value="0" class="mt-2 w-full rounded-2xl border border-[#d8cfc2] bg-white px-4 py-3 text-[#18324a]" />
+									<p class="mt-1 text-xs text-[#486174]">Use arrastar e soltar na lista para reorganizar rapidamente.</p>
+								</div>
 								<label class="flex items-center gap-3 text-sm font-bold text-[#18324a]">
 									<input id="product-featured" type="checkbox" class="h-5 w-5 accent-[#c96f4a]" />
 									Produto em destaque
@@ -270,6 +275,7 @@ import '../styles/global.css';
 				preco_peca_branca: number | string;
 				preco_promocional?: number | string | null;
 				quantidade_minima: number;
+				ordem: number;
 				fotos: string[];
 				tags: string[];
 				destaque: boolean;
@@ -319,6 +325,7 @@ import '../styles/global.css';
 				code: document.querySelector<HTMLInputElement>('#product-code'),
 				price: document.querySelector<HTMLInputElement>('#product-price'),
 				minimum: document.querySelector<HTMLInputElement>('#product-minimum-quantity'),
+				order: document.querySelector<HTMLInputElement>('#product-order'),
 				tags: document.querySelector<HTMLElement>('#product-tags'),
 				tagsTrigger: document.querySelector<HTMLElement>('#product-tags-trigger'),
 				tagsChips: document.querySelector<HTMLElement>('#product-tags-chips'),
@@ -389,7 +396,7 @@ import '../styles/global.css';
 
 			const loadProducts = async () => {
 				const [{ data, error }, { data: tagData, error: tagError }, { data: relationData, error: relationError }] = await Promise.all([
-					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,preco_promocional,quantidade_minima,fotos,tags,destaque,ativo,medidas').order('destaque', { ascending: false }).order('nome'),
+					supabase.from('produtos').select('id,nome,codigo,preco_peca_branca,preco_promocional,quantidade_minima,ordem,fotos,tags,destaque,ativo,medidas').order('ordem').order('destaque', { ascending: false }).order('nome'),
 					supabase.from('tags').select('id,nome').order('nome'),
 					supabase.from('produto_tags').select('produto_id,tag_id'),
 				]);
@@ -462,6 +469,7 @@ import '../styles/global.css';
 				const searchTerm = productSearch?.value.trim().toLocaleLowerCase('pt-BR') ?? '';
 				const statusFilter = productStatusFilter?.value ?? 'todos';
 				const promotionFilter = productPromotionFilter?.value ?? 'todos';
+				const canReorder = !searchTerm && statusFilter === 'todos' && promotionFilter === 'todos';
 				const filteredProducts = products.filter((product) =>
 					(statusFilter === 'todos' || (statusFilter === 'ativos' ? product.ativo : !product.ativo)) &&
 					(promotionFilter === 'todos' || (promotionFilter === 'promocao' ? Number(product.preco_promocional ?? 0) > 0 : Number(product.preco_promocional ?? 0) <= 0)) &&
@@ -484,7 +492,7 @@ import '../styles/global.css';
 						return;
 					}
 					productList.innerHTML = filteredProducts.map((product) => `
-						<article class="w-full rounded-3xl border ${product.ativo ? 'border-[#e4ddd2]' : 'border-dashed border-[#c8d0d2] opacity-70'} bg-[#fffdf9] p-4 text-center shadow-sm">
+						<article draggable="${canReorder}" data-product-card="${product.id}" class="w-full rounded-3xl border ${product.ativo ? 'border-[#e4ddd2]' : 'border-dashed border-[#c8d0d2]'} bg-[#fffdf9] p-4 text-center shadow-sm ${canReorder ? 'cursor-grab active:cursor-grabbing' : ''}">
 							<div class="flex justify-center gap-4 text-left">
 								<div class="w-24 shrink-0">
 									${product.fotos[0]
@@ -518,6 +526,7 @@ import '../styles/global.css';
 								${product.tags.map((tag) => `<span class="rounded-full bg-[#e8eef0] px-2 py-1 text-xs text-[#486174]">${escapeHtml(tag)}</span>`).join('')}
 							</div>
 							<div class="mt-4 flex flex-wrap justify-center gap-2">
+								${canReorder ? '<span class="inline-flex items-center rounded-full border border-[#c8d0d2] bg-[#f7f3ec] px-3 py-2 text-xs font-bold text-[#486174]" title="Arraste o card para alterar a ordem" aria-label="Arraste o card para alterar a ordem">↕ Ordenar</span>' : ''}
 								<button type="button" data-action="edit" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#18324a] px-3 py-2 text-sm font-bold text-[#18324a]">Editar</button>
 								<button type="button" data-action="promotion" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#c96f4a] px-3 py-2 text-sm font-bold text-[#a95235]">Promoção</button>
 								<button type="button" data-action="toggle" data-id="${product.id}" class="admin-outline-button rounded-full border border-[#c96f4a] px-3 py-2 text-sm font-bold text-[#a95235]">${product.ativo ? 'Desativar' : 'Ativar'}</button>
@@ -539,6 +548,7 @@ import '../styles/global.css';
 				if (productInputs.imagesHint) productInputs.imagesHint.textContent = 'Você pode selecionar várias imagens.';
 				if (productInputs.active) productInputs.active.checked = true;
 				if (productInputs.minimum) productInputs.minimum.value = '10';
+				if (productInputs.order) productInputs.order.value = '0';
 				if (imagePreview) imagePreview.innerHTML = '';
 				if (editorTitle) editorTitle.textContent = 'Novo produto';
 				clearEditorError();
@@ -552,6 +562,7 @@ import '../styles/global.css';
 					if (productInputs.code) productInputs.code.value = product.codigo;
 					if (productInputs.price) productInputs.price.value = String(product.preco_peca_branca);
 					if (productInputs.minimum) productInputs.minimum.value = String(product.quantidade_minima ?? 10);
+					if (productInputs.order) productInputs.order.value = String(product.ordem ?? 0);
 					selectedTagIds.clear();
 					for (const tagId of productTagIds.get(product.id) ?? []) selectedTagIds.add(tagId);
 					renderTagSelector();
@@ -699,6 +710,72 @@ import '../styles/global.css';
 					showMessage(error instanceof Error ? error.message : 'Não foi possível concluir a operação.', true);
 				}
 			});
+			const saveProductOrder = async () => {
+				const updates = products.map((product) => supabase.from('produtos').update({ ordem: product.ordem }).eq('id', product.id));
+				const results = await Promise.all(updates);
+				const error = results.find((result) => result.error)?.error;
+				if (error) showMessage(error.message, true);
+				else showMessage('Ordem dos produtos atualizada.');
+			};
+			let draggingProduct: HTMLElement | null = null;
+			let productDragPreview: HTMLElement | null = null;
+			let productPlaceholder: HTMLElement | null = null;
+			let productOrderChanged = false;
+			let lastProductDropKey = '';
+			productList?.addEventListener('dragstart', (event) => {
+				const card = (event.target as HTMLElement).closest<HTMLElement>('[data-product-card]');
+				const dragEvent = event as DragEvent;
+				if (!card || card.getAttribute('draggable') !== 'true') return;
+				draggingProduct = card;
+				dragEvent.dataTransfer?.setData('text/plain', card.dataset.productCard ?? '');
+				if (dragEvent.dataTransfer) dragEvent.dataTransfer.effectAllowed = 'move';
+				productDragPreview = card.cloneNode(true) as HTMLElement;
+				productDragPreview.style.position = 'fixed';
+				productDragPreview.style.top = '-10000px';
+				productDragPreview.style.left = '-10000px';
+				productDragPreview.style.width = `${card.getBoundingClientRect().width}px`;
+				productDragPreview.style.opacity = '0.9';
+				document.body.appendChild(productDragPreview);
+				dragEvent.dataTransfer?.setDragImage(productDragPreview, 40, 40);
+				productPlaceholder = document.createElement('div');
+				productPlaceholder.className = 'h-24 rounded-3xl border-2 border-dashed border-[#c96f4a] bg-[#fff1e9]';
+				card.parentElement?.insertBefore(productPlaceholder, card.nextSibling);
+				card.classList.add('hidden');
+				lastProductDropKey = '';
+				productOrderChanged = false;
+			});
+			productList?.addEventListener('dragover', (event) => {
+				event.preventDefault();
+				if (!draggingProduct || !productPlaceholder || !productList) return;
+				const targetCard = (event.target as HTMLElement).closest<HTMLElement>('[data-product-card]');
+				if (!targetCard || targetCard === draggingProduct) return;
+				const rect = targetCard.getBoundingClientRect();
+				const insertAfter = event.clientY > rect.top + rect.height / 2 || (Math.abs(event.clientY - (rect.top + rect.height / 2)) < rect.height / 3 && event.clientX > rect.left + rect.width / 2);
+				const dropKey = `${targetCard.dataset.productCard}:${insertAfter ? 'after' : 'before'}`;
+				if (dropKey === lastProductDropKey) return;
+				lastProductDropKey = dropKey;
+				targetCard.parentElement?.insertBefore(productPlaceholder, insertAfter ? targetCard.nextSibling : targetCard);
+				productOrderChanged = true;
+			});
+			productList?.addEventListener('dragend', async () => {
+				if (draggingProduct) draggingProduct.classList.remove('hidden');
+				if (draggingProduct && productPlaceholder) productPlaceholder.parentElement?.insertBefore(draggingProduct, productPlaceholder);
+				productPlaceholder?.remove();
+				productDragPreview?.remove();
+				if (productOrderChanged) {
+					products = Array.from(productList?.querySelectorAll<HTMLElement>('[data-product-card]') ?? [])
+						.map((item) => products.find((product) => product.id === item.dataset.productCard)!)
+						.filter(Boolean)
+						.map((product, index) => ({ ...product, ordem: index }));
+					await saveProductOrder();
+				}
+				draggingProduct = null;
+				productDragPreview = null;
+				productPlaceholder = null;
+				productOrderChanged = false;
+				lastProductDropKey = '';
+				renderProducts();
+			});
 			productSearch?.addEventListener('input', renderProducts);
 			productStatusFilter?.addEventListener('change', renderProducts);
 			productPromotionFilter?.addEventListener('change', renderProducts);
@@ -828,11 +905,12 @@ import '../styles/global.css';
 					const codigo = productInputs.code?.value.trim() ?? '';
 					const preco_peca_branca = Number(productInputs.price?.value);
 					const quantidade_minima = Number(productInputs.minimum?.value);
+					const ordem = Number(productInputs.order?.value);
 					const medidas = readMeasures();
 					const tagIds = [...selectedTagIds];
-					if (!nome || !codigo || !Number.isFinite(preco_peca_branca) || !Number.isInteger(quantidade_minima) || quantidade_minima < 1) throw new Error('Preencha nome, código, preço e pedido mínimo corretamente.');
+					if (!nome || !codigo || !Number.isFinite(preco_peca_branca) || !Number.isInteger(quantidade_minima) || quantidade_minima < 1 || !Number.isInteger(ordem) || ordem < 0) throw new Error('Preencha nome, código, preço, pedido mínimo e ordem corretamente.');
 					if (!/^[A-Za-z0-9_-]+$/.test(codigo)) throw new Error('O código deve conter apenas letras sem acento, números, hífen ou sublinhado.');
-					const payload = { nome, codigo, preco_peca_branca, quantidade_minima, medidas, destaque: Boolean(productInputs.featured?.checked), ativo: Boolean(productInputs.active?.checked) };
+					const payload = { nome, codigo, preco_peca_branca, quantidade_minima, ordem, medidas, destaque: Boolean(productInputs.featured?.checked), ativo: Boolean(productInputs.active?.checked) };
 					let productId = id;
 					if (id) {
 						const { error } = await supabase.from('produtos').update(payload).eq('id', id);

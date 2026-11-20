@@ -558,7 +558,7 @@ const whatsappLink = (produto: Produto) =>
 				updateResults();
 			};
 			const loadCatalog = async () => {
-				const { data, error: catalogError } = await browserSupabase.from('produtos').select('id, nome, codigo, preco_peca_branca, preco_promocional, quantidade_minima, fotos, tags, destaque').eq('ativo', true).order('destaque', { ascending: false }).order('nome');
+				const { data, error: catalogError } = await browserSupabase.from('produtos').select('id, nome, codigo, preco_peca_branca, preco_promocional, quantidade_minima, fotos, tags, destaque, ordem').eq('ativo', true).order('ordem').order('destaque', { ascending: false }).order('nome');
 				if (catalogError) throw catalogError;
 				const products = (data ?? []) as ProductRecord[];
 				catalogLoading?.classList.add('hidden');
